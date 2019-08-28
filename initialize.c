@@ -13,7 +13,7 @@ void MemoryAndBookkeepingInit(void){
 
       if (naTotLattice == NULL || naClusHistList == NULL ||
           naChainCheckList == NULL || naChainCheckList2 == NULL) {
-        printf( "Malloc Failed! Crashing. Sorry BREH.\n");
+        printf( "Malloc Failed! Crashing. Probably ran out of memory.\n");
         exit(1);
     }
       else {
@@ -39,20 +39,20 @@ void MemoryAndBookkeepingInit(void){
               }
         }
         //Initializing rotational orientational bias arrays.
-    for(i=0; i<MAX_VALENCY; i++){
+    for(i = 0; i<MAX_VALENCY; i++){
         for (j=0; j<MAX_ROTSTATES; j++){
             rot_trial[i][j] = -1;
           }
         }
-    for(i=0; i<MAX_ROTSTATES-1; i++){
+    for(i = 0; i<MAX_ROTSTATES-1; i++){
       Rot_IndArr[i] = i;
     }
         //Initializing arrays required for cluster analyses.
-    for(i=0; i <= tot_chains; i++){
+    for(i = 0; i <= tot_chains; i++){
         naChainCheckList[i]  =  0;
         naChainCheckList2[i] =  0;
         naClusHistList[i]    =  0;
-      for(j=0; j <= tot_chains; j++){
+      for(j = 0; j <= tot_chains; j++){
         naCluster[i][j]=-1;
       }
     }
@@ -70,13 +70,13 @@ void MemoryAndBookkeepingInit(void){
     nLargestClusterRightNow=0;
 
       //Checking which bead types interact rotationally and via overlap, separately.
-  for(i=0;i<MAX_AA;i++){
+  for(i = 0;i<MAX_AA;i++){
       TypeCanRot[i] = 0;//Assume beads don't rotationally interact.
     TypeCanOvlp[i] = 0;//Assume beads don't have an overlap cost
   }
 
-  for(i=0; i<MAX_AA;i++){
-    for(j=0; j<MAX_AA;j++){
+  for(i = 0; i < MAX_AA;i++){
+    for(j = 0; j < MAX_AA;j++){
       if (fEnergy[i][j][E_SC_SC] != 0.0){//Seeing if this beadType rotationally interacts.
         TypeCanRot[i] = 1;
       }
@@ -85,7 +85,7 @@ void MemoryAndBookkeepingInit(void){
       }
     }
   }
-  for (i=MV_NULL+2; i<MAX_MV; i++) {
+  for (i = MV_NULL+2; i < MAX_MV; i++) {
     fMCFreq[i] += fMCFreq[i-1]; // Cumulative Frequencies
   }
     if (RotBias_Mode == 1){
@@ -97,11 +97,11 @@ void MemoryAndBookkeepingInit(void){
 void Reset_Global_Arrays(void){
     //Zero-ing out all the arrays used for data tracking!
     int i,j;
-    for(i=0; i <= tot_chains; i++){
+    for(i = 0; i <= tot_chains; i++){
         naChainCheckList[i]  =  0;
         naChainCheckList2[i] =  0;
         naClusHistList[i]    =  0;
-        for(j=0; j <= tot_chains; j++){
+        for(j = 0; j <= tot_chains; j++){
             naCluster[i][j]=-1;
         }
     }
@@ -139,7 +139,7 @@ void initialize_with_topo(void){
     temp_list[i]=-1;
   }
   for(j=0;j<POS_MAX;j++){//Initialize the coordinate arrays to some numbers.
-    tmpR[j] = rand() % nBoxSize[j];
+    tmpR[j]  = rand() % nBoxSize[j];
     tmpR2[j] = tmpR[j];
   }
 
@@ -154,9 +154,9 @@ void initialize_with_topo(void){
     }
     list_it = 0;
 
-    for(i=fB; i<lB; i++){//Going bead-bead in this chain.
+    for(i = fB; i < lB; i++){//Going bead-bead in this chain.
       //Checking if the bead has already been placed.
-      for(idy=0; idy<list_it; idy++){
+      for(idy = 0; idy < list_it; idy++){
         if(i == temp_list[idy]){//This means this bead has already been placed.
           goto SproutForth;
         }
@@ -187,14 +187,14 @@ void initialize_with_topo(void){
       }
       TlCnt = 0;//Reset this counter.
       while(naTotLattice[LtIndV(tmpR2)] != -1 && TlCnt < 100000){
-        for(j=0;j<POS_MAX;j++){
+        for(j = 0; j < POS_MAX; j++){
           tmpR2[j] = (rand() % radUp) - radLow;
           tmpR2[j] = (tmpR[j] + tmpR2[j] + nBoxSize[j]) % nBoxSize[j];
         }
         TlCnt++;
       }
       if (TlCnt == 100000){printf("Not enough space in the lattice. Crashing. Maybe try increasing max trials, or make the box bigger!\t\n"); exit(1);}
-      for(j=0; j<POS_MAX; j++){
+      for(j = 0; j < POS_MAX; j++){
         bead_info[i][j] = tmpR2[j];
       }//Placing bead
       naTotLattice[LtIndV(tmpR2)] = i;//Putting on lattice
@@ -224,7 +224,7 @@ void initialize_with_topo(void){
     }
     SproutForth:
       //Now going over the list of bondParts for i and sprouting them
-      for(j=0; j<POS_MAX; j++){//Making the current bead an anchor.
+      for(j=0; j < POS_MAX; j++){//Making the current bead an anchor.
         tmpR[j] = bead_info[i][j];
       }
       idx = 0;//Resets things!

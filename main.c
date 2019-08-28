@@ -85,7 +85,7 @@ The system has thermalized!
   }
 
 
-  for(run_cycle = 0; run_cycle < 10; run_cycle++){
+  for(run_cycle = 0; run_cycle < 2; run_cycle++){
     fKT = temp_cycle[run_cycle];
     Calculate_Rot_Bias(temp_cycle[run_cycle]);
     Print_Data(-1, run_cycle);

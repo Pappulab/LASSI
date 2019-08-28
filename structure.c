@@ -376,7 +376,7 @@ int check_linker_constraint(int beadID, int tmpR[]){
     }
     idx++;
   }
-  return 1;//This means that all linker constraints are satisfied. MMHMMM
+  return 1;//This means that all linker constraints are satisfied.
 }
 
 int ShakeConstraint(int beadID, int tmpR[MAX_VALENCY][POS_MAX]){

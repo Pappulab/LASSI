@@ -897,13 +897,15 @@ int CoLocalMove(int beadID, float MyTemp){
 
   int bAccept = 0; //Used in MC steps
 
-  if (bead_info[beadID][BEAD_FACE] != -1){
+  if (bead_info[beadID][BEAD_FACE] == -1){
     bAccept = 0;
+    //printf("Bead has no partner!\n");
     return bAccept;
   }
   int tmpR[POS_MAX];//Random translation vector.
   int tmpR1[POS_MAX], tmpR2[POS_MAX];
   int beadPart = bead_info[beadID][BEAD_FACE];
+  //printf("Partner is (%d)?!\n", beadPart);
   float MCProb, oldEn, newEn; //For Metropolis Hastings.
   oldEn = 0.;
   newEn = 0.;
@@ -937,12 +939,14 @@ int CoLocalMove(int beadID, float MyTemp){
   MCProb = (float)rand()/(float)RAND_MAX;
   if (MCProb < expf((oldEn-newEn)/MyTemp)){
     bAccept = 1;
+    //printf("Accepted!\n");
     return bAccept;
   }
   else{
     undo_move_bead_to(beadID);
     undo_move_bead_to(beadPart);
     bAccept = 0;
+    //printf("Rejected move; undoing!\n");
     return bAccept;
   }
 }
