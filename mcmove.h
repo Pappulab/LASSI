@@ -52,4 +52,5 @@ void ShuffleRotIndecies(void);
 int CheckRotStatesOld(int beadID, int resi, float MyTemp);
 int CheckRotStatesNew(int beadID, int resi, float MyTemp);
 void NormalizeRotState(int beadVal, int CandNums);
+int PickRotState(int CandNums);
 #endif // _MCMOVE_H_

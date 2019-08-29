@@ -208,14 +208,7 @@ int RotMCMove(int beadID, float MyTemp){
   FWWeight = CheckRotStatesOld(beadID, resi, MyTemp);
   NormalizeRotState(0, FWWeight);
 
-  MCProb = (float)rand()/(float)RAND_MAX;
-  for(i=0; i<FWWeight; i++){
-    if (MCProb < bolt_fac[i]){
-      break;
-    }
-  }
-
-  yTemp = rot_trial[0][i];
+  yTemp = PickRotState(FWWeight);
 
   if (yTemp != -1){//There is a bead here
     resj = bead_info[yTemp][BEAD_TYPE];
@@ -300,16 +293,11 @@ int LocalMCMove(int beadID, float MyTemp){//Performs a local translation MC-move
       NormalizeRotState(0, FWWeight);
       FWRos = bolt_norm[0];
 
-      MCProb = (float)rand()/(float)RAND_MAX;
-      for(i=0; i<FWWeight; i++){
-        if (MCProb < bolt_fac[i]){
-          break;
-        }
-      }
-    yTemp = rot_trial[0][i];
-    if (yTemp != -1){//There is a bead at this position in the rot_trial, so let's add the energy.
-      resj = bead_info[yTemp][BEAD_TYPE];
-      newEn = fEnergy[resi][resj][E_SC_SC];
+      yTemp = PickRotState(FWWeight);
+
+      if (yTemp != -1){//There is a bead at this position in the rot_trial, so let's add the energy.
+        resj = bead_info[yTemp][BEAD_TYPE];
+        newEn = fEnergy[resi][resj][E_SC_SC];
       }
   }
     else{//These beads have no rotational states.
@@ -319,6 +307,7 @@ int LocalMCMove(int beadID, float MyTemp){//Performs a local translation MC-move
     //Now let's calculate the energy of the new state. SC-SC energy is already done.
     newEn += energy_cont_and_ovlp(beadID);
     MCProb = (float)rand()/(float)RAND_MAX;
+
     if (MCProb < (FWRos/BWRos)*expf((oldEn-newEn)/MyTemp)){//Accept this state
       if (bead_info[beadID][BEAD_FACE] != -1){//Breaking old bond
         bead_info[bead_info[beadID][BEAD_FACE]][BEAD_FACE] = -1;
@@ -489,18 +478,12 @@ int SlitherMCMove(int chainID, float MyTemp){//Performs a slither MC-move on cha
         //Note that the bonds need to be formed in this loop so that we don't overcount!
         if(bead_info[i][BEAD_FACE] == -1){//Make sure this bead is unbonded!
         //Let's assign a rotational state to this bead
-          MCProb = (float)rand()/(float)RAND_MAX;
-          for(j=0; j<FWWeight; j++){
-            if (MCProb < bolt_fac[j]){
-              break;
-              }
-            }
-          xTemp = rot_trial[yTemp][j];
-          if(xTemp != -1){//An appropriate partner has been selected. Form the bonds and add the energy
-            resj = bead_info[xTemp][BEAD_TYPE];
-            bead_info[i][BEAD_FACE] = xTemp;
-            bead_info[xTemp][BEAD_FACE] = i;
-            newEn += fEnergy[resi][resj][E_SC_SC];
+            xTemp = PickRotState(FWWeight);
+            if(xTemp != -1){//An appropriate partner has been selected. Form the bonds and add the energy
+                resj = bead_info[xTemp][BEAD_TYPE];
+                bead_info[i][BEAD_FACE] = xTemp;
+                bead_info[xTemp][BEAD_FACE] = i;
+                newEn += fEnergy[resi][resj][E_SC_SC];
             }
           }
         yTemp++;//This keeps track of which residue*/
@@ -614,13 +597,7 @@ int TransMCMove(int chainID, float MyTemp){//Performs a translation move with or
     //Note that the bonds need to be formed in this loop so that we don't overcount!
     if(bead_info[i][BEAD_FACE] == -1){//Make sure this bead is unbonded!
     //Let's assign a rotational state to this bead
-      MCProb = (float)rand()/(float)RAND_MAX;
-      for(j=0; j<FWWeight; j++){
-        if (MCProb < bolt_fac[j]){
-          break;
-          }
-        }
-      xTemp = rot_trial[yTemp][j];
+      xTemp = PickRotState(FWWeight);
       if(xTemp != -1){//An appropriate partner has been selected. Form the bonds and add the energy
         resj = bead_info[xTemp][BEAD_TYPE];
         bead_info[i][BEAD_FACE] = xTemp;
@@ -1081,13 +1058,7 @@ int ShakeMove(int beadID, float MyTemp){
   NormalizeRotState(yTemp, FWWeight);
   if(bead_info[curID][BEAD_FACE] == -1){//Make sure this bead is unbonded!
 
-  MCProb = (float)rand()/(float)RAND_MAX;
-  for(i=0; i<FWWeight; i++){
-    if (MCProb < bolt_fac[i]){
-      break;
-      }
-    }
-  xTemp = rot_trial[yTemp][i];
+  xTemp = PickRotState(FWWeight);
   if(xTemp != -1){//An appropriate partner has been selected. Form the bonds and add the energy
     resj = bead_info[xTemp][BEAD_TYPE];
     bead_info[curID][BEAD_FACE] = xTemp;
@@ -1244,13 +1215,8 @@ int PivotMCMove(int chainID, float MyTemp){
       //Note that the bonds need to be formed in this loop so that we don't overcount!
       if(bead_info[i][BEAD_FACE] == -1){//Make sure this bead is unbonded!
       //Let's assign a rotational state to this bead
-      MCProb = (float)rand()/(float)RAND_MAX;
-        for(j=0; j<FWWeight; j++){
-          if (MCProb < bolt_fac[j]){
-            break;
-            }
-          }
-        xTemp = rot_trial[yTemp][j];
+
+        xTemp = PickRotState(FWWeight);
         if(xTemp != -1){//An appropriate partner has been selected. Form the bonds and add the energy
           resj = bead_info[xTemp][BEAD_TYPE];
           bead_info[i][BEAD_FACE] = xTemp;
@@ -1393,13 +1359,7 @@ int BranchedRotMCMove(int chainID, float MyTemp){
           //Note that the bonds need to be formed in this loop so that we don't overcount!
           if(bead_info[i][BEAD_FACE] == -1){//Make sure this bead is unbonded!
           //Let's assign a rotational state to this bead
-          MCProb = (float)rand()/(float)RAND_MAX;
-            for(j=0; j<FWWeight; j++){
-              if (MCProb < bolt_fac[j]){
-                break;
-                }
-              }
-            xTemp = rot_trial[yTemp][j];
+            xTemp = PickRotState(FWWeight);
             if(xTemp != -1){//An appropriate partner has been selected. Form the bonds and add the energy
               resj = bead_info[xTemp][BEAD_TYPE];
               bead_info[i][BEAD_FACE] = xTemp;
@@ -2378,7 +2338,7 @@ void ShuffleRotIndecies(void){
     }
 }
 
-int CheckRotStatesOld(int beadID, int resi, float MyTemp){
+/*int CheckRotStatesOld(int beadID, int resi, float MyTemp){
 
   int i, j, k, tmpBead;
   int tmpR[POS_MAX], tmpR2[POS_MAX];
@@ -2411,10 +2371,39 @@ int CheckRotStatesOld(int beadID, int resi, float MyTemp){
     }
 
   return k;
+
+}*/
+
+int CheckRotStatesOld(int beadID, int resi, float MyTemp){
+
+    int i, j, k, tmpBead;
+    int CandNums = 0;
+    int tmpR[POS_MAX], tmpR2[POS_MAX];
+    for(j=0; j<POS_MAX; j++){
+        tmpR[j] = bead_info[beadID][j];
+    }
+    for(k=0; k<MAX_ROTSTATES-1; k++){
+        i = Rot_IndArr[k];
+        for(j=0; j<POS_MAX; j++){
+            tmpR2[j] = (tmpR[j] + LocalArr[i][j] + nBoxSize[j]) % nBoxSize[j];
+        }
+        tmpBead = LtIndV(tmpR2);
+        tmpBead = naTotLattice[tmpBead];
+        if (tmpBead != -1){
+            j = bead_info[tmpBead][BEAD_TYPE];
+            if (fEnergy[resi][j][E_SC_SC] != 0 && (bead_info[tmpBead][BEAD_FACE] == -1 || bead_info[tmpBead][BEAD_FACE] == beadID)){
+                bolt_fac[CandNums] = dbias_bolt_fac[resi][j];
+                rot_trial[0][CandNums] = tmpBead;
+                CandNums++;
+            }
+        }
+    }
+
+    return CandNums;
 
 }
 
-int CheckRotStatesNew(int beadID, int resi, float MyTemp){
+/*int CheckRotStatesNew(int beadID, int resi, float MyTemp){
 
   int i, j, k, tmpBead;
   int tmpR[POS_MAX], tmpR2[POS_MAX];
@@ -2447,19 +2436,73 @@ int CheckRotStatesNew(int beadID, int resi, float MyTemp){
     }
 
   return k;
+
+}*/
+
+int CheckRotStatesNew(int beadID, int resi, float MyTemp){
+
+    int i, j, k, tmpBead;
+    int CandNums = 0;
+    int tmpR[POS_MAX], tmpR2[POS_MAX];
+    for(j=0; j<POS_MAX; j++){
+        tmpR[j] = bead_info[beadID][j];
+    }
+    for(k=0; k<MAX_ROTSTATES-1; k++){
+        i = Rot_IndArr[k];
+        for(j=0; j<POS_MAX; j++){
+            tmpR2[j] = (tmpR[j] + LocalArr[i][j] + nBoxSize[j]) % nBoxSize[j];
+        }
+        tmpBead = LtIndV(tmpR2);
+        tmpBead = naTotLattice[tmpBead];
+        if (tmpBead != -1){
+            j = bead_info[tmpBead][BEAD_TYPE];
+            if (fEnergy[resi][j][E_SC_SC] != 0 && (bead_info[tmpBead][BEAD_FACE] == -1 || bead_info[tmpBead][BEAD_FACE] == beadID)){
+                bolt_fac[CandNums] = dbias_bolt_fac[resi][j];
+                rot_trial[0][CandNums] = tmpBead;
+                CandNums++;
+            }
+        }
+    }
+
+    return CandNums;
 
 }
 
 void NormalizeRotState(int beadVal, int CandNums){
   int i;
-    bolt_norm[beadVal] = 0.;
-  for(i=0; i<CandNums; i++){
-      bolt_norm[beadVal] += bolt_fac[i];
+  bolt_norm[beadVal] = 0.;
+  if (CandNums > 0){//There is a possible candidate, so normalize bolt_fac
+      for(i=0; i<CandNums; i++){
+          bolt_norm[beadVal] += bolt_fac[i];
+      }
+      for(i=0; i<CandNums; i++){
+          bolt_fac[i] /= bolt_norm[beadVal];
+      }
+      for(i=1; i<CandNums; i++){
+          bolt_fac[i] += bolt_fac[i - 1];
+      }
   }
-  for(i=0; i<CandNums; i++){
-      bolt_fac[i] /= bolt_norm[beadVal];
-  }
-  for(i=1; i<CandNums; i++){
-      bolt_fac[i] += bolt_fac[i - 1];
-  }
+    bolt_norm[beadVal] += 10.;
+}
+
+int PickRotState(int CandNums){
+    int newRot = -1;
+    int i;
+    float fProb;
+    int nCheck = CandNums + 1;
+    nCheck = rand() % nCheck;
+        if (nCheck == 0){
+            newRot = -1;
+        }
+        else{
+            fProb = (float)rand()/(float)RAND_MAX;
+            for(i=0; i<CandNums; i++){
+                if (fProb < bolt_fac[i]){
+                    break;
+                }
+            }
+
+            newRot = rot_trial[0][i];
+        }
+    return newRot;
 }
