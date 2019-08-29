@@ -81,7 +81,7 @@ The system has thermalized!
   int run_cycle;
   float temp_cycle[10];
   for(run_cycle=0; run_cycle<10; run_cycle++){
-      temp_cycle[run_cycle] = fKT*((float)i+0.1);
+      temp_cycle[run_cycle] = fKT*((float)run_cycle+0.1);
   }
 
 
