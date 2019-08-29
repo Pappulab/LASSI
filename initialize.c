@@ -277,26 +277,14 @@ void initialize_with_topo(void){
 void Calculate_Rot_Bias(float CurrentTemp){
 
     int i, j;
-    int all_zero = 1;
-    float LargestEn = -1e10;
     for(i=0; i<MAX_AA; i++){
         for(j=0; j<MAX_AA; j++){
-            if (fEnergy[i][j][E_SC_SC]!= 0.){//Checking for a non-zero energy!
-                all_zero = 0;
-            }
-            if (fEnergy[i][j][E_SC_SC]>=LargestEn && fEnergy[i][j][E_SC_SC]!= 0.){
-                LargestEn = fEnergy[i][j][E_SC_SC];
-            }
             dbias_bolt_fac[i][j] = expf(-fEnergy[i][j][E_SC_SC] / CurrentTemp);
         }
     }
-    if (all_zero == 1){//Since all energies are 0, set as 0
-        LargestEn = 0.;
-    }
-    if (RotBias_Mode == 0) {
-        fRot_Bias = LargestEn + CurrentTemp * logf(25.);
-        fRot_Bias = expf(-fRot_Bias / CurrentTemp);
-    }
+    //TODO: Make sure that fRot_Bias can be used in the future to set a solvent anisotropy
+    fRot_Bias = expf(-f_globRotBias / CurrentTemp);
+
 }
 
 float Temperature_Function(int mode, long nGen){

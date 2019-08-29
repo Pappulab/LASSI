@@ -89,7 +89,7 @@ lInt   Indent_Mode, RotBias_Mode;
 lInt   nBoxSize[POS_MAX];
 lInt   LocalArr[MAX_ROTSTATES-1][3];//Used to quickly iterate over nearby points in a R-cube
 lInt   Rot_IndArr[MAX_ROTSTATES-1];
-char  bReadConf;
+char   bReadConf;
 
 // energy matrices for stickers
 lInt   nSeqEn;
@@ -111,7 +111,7 @@ float fLinkerSprCon;
 float fLinkerEqLen;
 
 // MC setup
-float fKT, fPreKT, fCuTemp, fRot_Bias;
+float fKT, fPreKT, fCuTemp, fRot_Bias, f_globRotBias;
 lLong  nSteps, nPreSteps;
 float fMCFreq[MAX_MV];
 lInt   nMCMaxTrials;

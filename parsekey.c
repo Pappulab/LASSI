@@ -75,9 +75,7 @@ int parse_key(char filename[]) {
       } else if (strcmp(strKeyword, "MC_INDENT_MODE") == 0) {
         sscanf(strLine, "%*s %d", &Indent_Mode);
       } else if (strcmp(strKeyword, "ROT_ENERGY_BIAS") == 0) {
-        sscanf(strLine, "%*s %f", &fRot_Bias);
-      } else if (strcmp(strKeyword, "ROT_BIAS_MODE") == 0) {
-          sscanf(strLine, "%*s %d", &RotBias_Mode);
+        sscanf(strLine, "%*s %f", &f_globRotBias);
       } else if (strcmp(strKeyword, "MC_MAX_TRIALS") == 0) {
         sscanf(strLine, "%*s %d", &nMCMaxTrials);
       } else if (strcmp(strKeyword, "MV_TRANS_FREQ") == 0) {
