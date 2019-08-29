@@ -67,6 +67,7 @@
 #define CHAININFO_MAX  3
 
 #define RDF_MAXBINS    5000
+#define TEMP_CYCLES_MAX 26
 #define RDF_COMPS 22
 #define MAX_ROTSTATES  27
 
@@ -143,7 +144,7 @@ lInt nLargestClusterRightNow;
 //Radial Distribution Function
 float fRDF_TOT[RDF_MAXBINS];
 long double ldRDF_ARR[RDF_COMPS][RDF_MAXBINS];
-long double ldSRDF_ARR[26][RDF_COMPS][RDF_MAXBINS];
+long double ldSRDF_ARR[TEMP_CYCLES_MAX][RDF_COMPS][RDF_MAXBINS];
 lInt nrdfCounter;//This counts how many times the RDF has been calculated for averaging at the end.
 lInt nBins_RDF;
 float fGyrTensor[7];//Gyration tensor

@@ -81,11 +81,11 @@ The system has thermalized!
   int run_cycle;
   float temp_cycle[10];
   for(run_cycle=0; run_cycle<10; run_cycle++){
-      temp_cycle[run_cycle] = fKT*(1.+0.1);
+      temp_cycle[run_cycle] = fKT*((float)i+0.1);
   }
 
 
-  for(run_cycle = 0; run_cycle < 2; run_cycle++){
+  for(run_cycle = 0; run_cycle < 10; run_cycle++){
     fKT = temp_cycle[run_cycle];
     Calculate_Rot_Bias(temp_cycle[run_cycle]);
     Print_Data(-1, run_cycle);
