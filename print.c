@@ -118,7 +118,7 @@ void print_log(long nGen, int run_it) {
                     MCAccepMat[1][i]));
         }
     }
-  printf("\n");
+  printf("\n\n");
 }
 
 void write_energy(char* filename, long nGen) {
