@@ -38,7 +38,7 @@ void write_cluster(char* filename, long nGen) {
   } else {
     fprintf(fp, "#%ld\n",nGen);
     for(i = 0; i < tot_chains; i++){
-        fprintf(fp, "%d\t", naClusHistList[i]);
+        fprintf(fp, "%ld\t", naClusHistList[i]);
     }
     fprintf(fp, "\n");
   }
@@ -104,10 +104,20 @@ void write_mcmove(char* filename, long nGen, float fMCTemp) {
   fclose(fp);
 }
 
-void print_log(long nGen) {
-  printf("Step %.2e\n", (float)nGen);
-  printf("MC Temp = %.3e;\tRot Bias Prob = %.3e /site;\n", fCuTemp, fRot_Bias);
-  printf("Total E = %.3e;\tIso E = %.3e;\tAniso E = %.3e;\n", faCurrEn[E_TOT], faCurrEn[E_OVLP], faCurrEn[E_SC_SC]);
+void print_log(long nGen, int run_it) {
+  printf("Step       %.2e\n", (float)nGen);
+  printf("Run Cycle: %d\n", run_it);
+  //printf("MC Temp = %.3e;\tRot Bias Prob = %.3e /site;\n", fCuTemp, fRot_Bias);
+  printf("MC Temp  = %.3e;\n", fCuTemp);
+  printf("Total E  = %.3e;\tIso E = %.3e;\tAniso E = %.3e;\n", faCurrEn[E_TOT], faCurrEn[E_OVLP], faCurrEn[E_SC_SC]);
+  int i, j;
+    printf("Acceptance Ratios:\n");
+    for(i=1;i<MAX_MV;i++){
+        if (fMCFreq[i] != 0.) {
+            printf("%.3f\t", 100. * (float) MCAccepMat[1][i] / ((float) MCAccepMat[0][i] + 1. + (float)
+                    MCAccepMat[1][i]));
+        }
+    }
   printf("\n");
 }
 
@@ -194,14 +204,15 @@ void print_key(void) { // should be output-dependent (stdout, stderr, other file
   printf("\n");
 
   printf("%s MC Setup %s\n", lBrace, rBrace);
-  printf("MC Temperature               = %.2f\n", fKT);
-  printf("Temperature Mode             = %d\n", Temp_Mode);
-  printf("Indent Mode                  = %d\n", Indent_Mode);
-  printf("Rotational Bias Mode         = %d\n", RotBias_Mode);
-  printf("Number of MC Steps           = %e\n", (float)nSteps);
-  printf("Thermalizing Temperature     = %.2f\n", fPreKT);
-  printf("Number of Thermalizing Steps = %e\n", (float)nPreSteps);
-  printf("RNG Seed                     = %d\n", seed);
+  printf("MC Temperatures: (First, Last) = (%.2f, %.2f)\n", fKT, fKT*(1.+(float)(nTot_CycleNum-1)*fdelta_temp));
+  printf("Temperature Mode               = %d\n", Temp_Mode);
+  printf("Indent Mode                    = %d\n", Indent_Mode);
+  printf("Rotational Bias Mode           = %d\n", RotBias_Mode);
+  printf("Number of MC Cycles            = %e\n", (float)nTot_CycleNum);
+  printf("Number of MC Steps/Cycle       = %e\n", (float)nSteps);
+  printf("Thermalizing Temperature       = %.2f\n", fPreKT);
+  printf("Number of Thermalizing Steps   = %e\n", (float)nPreSteps);
+  printf("RNG Seed                       = %d\n", seed);
   char *MoveName[MAX_MV];
   MoveName[MV_PIVOT]   = "Pivot           ";
   MoveName[MV_DBPVT]   = "Double Pivot    ";
@@ -363,7 +374,7 @@ void write_topofile(char* filename){
   fclose(fp);
 }
 
-void write_SysProp(char* filename){
+void Write_SysProp(char* filename){
 
   FILE *fp;
   int i, j;
@@ -387,6 +398,57 @@ void write_SysProp(char* filename){
   fprintf(fp, "\n#Done");
 
   fclose(fp);
+
+}
+
+void Write_TotalSysProp(char* filename, int run_it){
+    /* This function writes one large file with all the averaged values from each run_cycle. run_it let's the function
+     * know how many cycles to write.
+     * As opposed to Write_SysProp, each of the relevant averaged parameters will be in their appropriately named files.
+     * The naming convention shall be: filename_*.dat where * will be GR, CLUS and RDF for the different measured
+     * quantities. Within each file, each run_cycle shall be written one-by-one in the style of Write_SysProp
+     */
+    FILE *fp;
+    int i,j,k;
+    sprintf(filename, "%s_RDF.dat", strReportPrefix);//Name Of the RDF Files
+    fp = fopen(filename, "w");
+    fprintf(fp, "#Split RDFs. ALL-ALL; DIAGONALS and then from 0-0, 0-1, and onwards \n");
+    for (i = 0; i < run_it; i++){
+        fprintf(fp, "#Run_Cycle = %d\n", i);
+        for (j = 0; j < RDF_COMPS ; j++){
+            for (k = 0; k < nBins_RDF; k++){
+                fprintf(fp, "%LE\t", ld_TOTRDF_ARR[i][j][k]);
+            }
+            fprintf(fp, "\n");
+        }
+    }
+    fprintf(fp, "#Done");
+    fclose(fp);
+
+    sprintf(filename, "%s_CLUS.dat", strReportPrefix);//Name Of the ClusterHistogram Files
+    fp = fopen(filename, "w");
+    fprintf(fp, "#Cluster Histograms: 1st column is largest cluster, and then clusters of size 1, 2, and so on\n");
+    for (i = 0; i < run_it; i++){
+        fprintf(fp, "#Run_Cycle = %d\n", i);
+            for (k = 0; k < tot_chains; k++){
+                fprintf(fp, "%LE\t", ld_TOTCLUS_ARR[i][k]);
+            }
+            fprintf(fp, "\n");
+    }
+    fprintf(fp, "#Done");
+    fclose(fp);
+
+
+    sprintf(filename, "%s_GR.dat", strReportPrefix);//Name Of the ClusterHistogram Files
+    fp = fopen(filename, "w");
+    fprintf(fp, "#Cluster Histograms: 1st column is largest cluster, and then clusters of size 1, 2, and so on\n");
+    for (i = 0; i < run_it; i++){
+        fprintf(fp, "#Run_Cycle = %d\n", i);
+        fprintf(fp, "%LE\t", ld_TOTGYRRAD_ARR[i][0]);
+        fprintf(fp, "%LE\n", ld_TOTGYRRAD_ARR[i][1]);
+    }
+    fprintf(fp, "#Done");
+    fclose(fp);
 
 }
 
@@ -426,7 +488,7 @@ void Print_Data(long nGen, int run_it){
                         exit(1);
                     }
                     Calc_Tot_Energy(); nFlagForEnCalc = 1;
-                    print_log(nGen);
+                    print_log(nGen, run_it);
                 }
             }
             if (nReport[REPORT_CONFIG] != 0){
@@ -461,7 +523,7 @@ void Print_Data(long nGen, int run_it){
                     exit(1);
                 }
                 Calc_Tot_Energy(); nFlagForEnCalc = 1;
-                print_log(nGen);
+                print_log(nGen, run_it);
             }
         }
         if (nReport[REPORT_CONFIG] != 0){
@@ -526,7 +588,7 @@ void Print_Data(long nGen, int run_it){
                         exit(1);
                     }
                     Calc_Tot_Energy(); nFlagForEnCalc = 1;
-                    print_log(nGen);
+                    print_log(nGen, run_it);
                 }
             }
             if (nReport[REPORT_CONFIG] != 0){
@@ -561,4 +623,19 @@ void Print_Data(long nGen, int run_it){
         }
     }
 
+}
+
+void Copy_Data(int run_it){
+    int i, j;
+    for(i = 0; i < RDF_COMPS; i++){
+        for (j = 0; j < RDF_MAXBINS; j++) {
+            ld_TOTRDF_ARR[run_it][i][j] = ldRDF_ARR[i][j] / (long double)nrdfCounter;
+        }
+    }
+    for(i=0; i<tot_chains; i++){
+        ld_TOTCLUS_ARR[run_it][i] = (long double)naClusHistList[i] / (long double)nClusListCounter;
+    }
+
+    ld_TOTGYRRAD_ARR[run_it][0] = (long double)fSysGyrRad / (long double)nTotGyrRadCounter;
+    ld_TOTGYRRAD_ARR[run_it][1] = (long double)nBoxSize[0]/2.;
 }

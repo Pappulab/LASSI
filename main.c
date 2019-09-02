@@ -79,13 +79,13 @@ printf("----------------------------\n\n");
 The system has thermalized!
 */
   int run_cycle;
-  float temp_cycle[10];
-  for(run_cycle=0; run_cycle<10; run_cycle++){
-      temp_cycle[run_cycle] = fKT*((float)run_cycle+0.1);
+  float temp_cycle[TEMP_CYCLES_MAX];
+  for(run_cycle = 0; run_cycle < nTot_CycleNum; run_cycle++){
+      temp_cycle[run_cycle] = fKT + (float)run_cycle*fdelta_temp;
   }
 
 
-  for(run_cycle = 0; run_cycle < 10; run_cycle++){
+  for(run_cycle = 0; run_cycle < nTot_CycleNum; run_cycle++){
     fKT = temp_cycle[run_cycle];
     Calculate_Rot_Bias(temp_cycle[run_cycle]);
     Print_Data(-1, run_cycle);
@@ -95,10 +95,12 @@ The system has thermalized!
     Print_Data(nGen, run_cycle);
   }
   Temp_Mode = -1;
-  write_SysProp(fileSysProp);
+  Copy_Data(run_cycle);
+  //Write_SysProp(fileSysProp);
   Reset_Global_Arrays();
   }
 
+  Write_TotalSysProp(fileSysProp, run_cycle);
 
   tEnd = clock();
   elapsed_time = (tEnd-tStart)/(double)CLOCKS_PER_SEC;

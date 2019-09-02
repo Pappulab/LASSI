@@ -10,31 +10,37 @@ int LtIndV(int xArr[POS_MAX]){//Just the vector form of the above function. Easi
 }
 
 float distf(float f1[POS_MAX], float f2[POS_MAX]) {
-  float f[POS_MAX];
+  float d[POS_MAX];
   int i;
   for (i=0; i<POS_MAX; i++) {
-    f[i] = (fabsf(f1[i] - f2[i]) < nBoxSize[i] - fabsf(f1[i] - f2[i])) ? fabsf(f1[i] - f2[i]) : (nBoxSize[i] - fabsf(f1[i] - f2[i]));
+    d[i] = fabsf(f1[i] - f2[i]);
+    d[i] = d[i] > (float)nBoxSize[i]/2. ? (float)nBoxSize[i] - d[i] : d[i];
+    //f[i] = (fabsf(f1[i] - f2[i]) < nBoxSize[i] - fabsf(f1[i] - f2[i])) ? fabsf(f1[i] - f2[i]) : (nBoxSize[i] - fabsf(f1[i] - f2[i]));
   }
 
-  return sqrtf(f[POS_X]*f[POS_X] + f[POS_Y]*f[POS_Y] + f[POS_Z]*f[POS_Z]);
+  return sqrtf(d[POS_X]*d[POS_X] + d[POS_Y]*d[POS_Y] + d[POS_Z]*d[POS_Z]);
 }
 
 float distInt(int f1[POS_MAX], int f2[POS_MAX]) {
-  int f[POS_MAX];
+  int d[POS_MAX];
   int i;
   for (i=0; i<POS_MAX; i++) {
-    f[i] = (abs(f1[i] - f2[i]) < nBoxSize[i] - abs(f1[i] - f2[i])) ? abs(f1[i] - f2[i]) : (nBoxSize[i] - abs(f1[i] - f2[i]));
-    f[i] = f[i];
+    d[i] = abs(f1[i] - f2[i]);
+    d[i] = d[i] > nBoxSize[i]/2 ? nBoxSize[i] - d[i] : d[i];
+    //f[i] = (abs(f1[i] - f2[i]) < nBoxSize[i] - abs(f1[i] - f2[i])) ? abs(f1[i] - f2[i]) : (nBoxSize[i] - abs(f1[i] - f2[i]));
+    //f[i] = f[i];
   }
 
-  return sqrtf((float)(f[POS_X]*f[POS_X] + f[POS_Y]*f[POS_Y] + f[POS_Z]*f[POS_Z]));
+  return sqrtf((float)(d[POS_X]*d[POS_X] + d[POS_Y]*d[POS_Y] + d[POS_Z]*d[POS_Z]));
 }
 
 float distBeadToVec(int beadID, int f1[POS_MAX]) {
     int d[POS_MAX];
     int i;
     for(i=0; i<POS_MAX;i++) {
-        d[i] = (abs(bead_info[beadID][i] - f1[i]) < nBoxSize[i] - abs(bead_info[beadID][i] - f1[i])) ? abs(bead_info[beadID][i] - f1[i]) : (nBoxSize[i] - abs(bead_info[beadID][i] - f1[i]));
+        d[i] = abs(bead_info[beadID][i] - f1[i]);
+        d[i] = d[i] > nBoxSize[i]/2 ? nBoxSize[i] - d[i] : d[i];
+        //d[i] = (abs(bead_info[beadID][i] - f1[i]) < nBoxSize[i] - abs(bead_info[beadID][i] - f1[i])) ? abs(bead_info[beadID][i] - f1[i]) : (nBoxSize[i] - abs(bead_info[beadID][i] - f1[i]));
     }
     return sqrtf((float)(d[POS_X]*d[POS_X] + d[POS_Y]*d[POS_Y] + d[POS_Z]*d[POS_Z]));
 }
@@ -44,7 +50,9 @@ float dist(int n1, int n2) {
   int i;
 
   for (i=0; i<POS_MAX; i++) {
-    d[i] = (abs(bead_info[n1][i] - bead_info[n2][i]) < nBoxSize[i] - abs(bead_info[n1][i] - bead_info[n2][i])) ? abs(bead_info[n1][i] - bead_info[n2][i]) : (nBoxSize[i] - abs(bead_info[n1][i] - bead_info[n2][i]));
+    d[i] = abs(bead_info[n1][i] - bead_info[n2][i]);
+    d[i] = d[i] > nBoxSize[i]/2 ? nBoxSize[i] - d[i] : d[i];
+    //d[i] = (abs(bead_info[n1][i] - bead_info[n2][i]) < nBoxSize[i] - abs(bead_info[n1][i] - bead_info[n2][i])) ? abs(bead_info[n1][i] - bead_info[n2][i]) : (nBoxSize[i] - abs(bead_info[n1][i] - bead_info[n2][i]));
   }
 
   return sqrtf((float)(d[POS_X]*d[POS_X] + d[POS_Y]*d[POS_Y] + d[POS_Z]*d[POS_Z]));
@@ -354,10 +362,10 @@ void avg_rdf_split(void){
       resj = bead_info[j][BEAD_TYPE];
       x = dist(i,j);
       //Note that dist(i,j) automatically ensures no distance is greater than (L/2)*sqrt(3)
-          myBin = (int)floor(4.*x);//I am assuming for now that dr=1/4
-        ldRDF_ARR[0][myBin] += 2.0;  //Adding a pair to that bin
-        array_pos = resi == resj ? 1 + resi : 6 + resj - resi*(resi-9)/2;
-        ldRDF_ARR[array_pos][myBin] += 2.0;
+      myBin = (int)floor(4.*x);//I am assuming for now that dr=1/4
+      ldRDF_ARR[0][myBin] += 2.0;  //Adding a pair to that bin
+      array_pos = resi == resj ? 1 + resi : 6 + resj - resi*(resi-9)/2;
+      ldRDF_ARR[array_pos][myBin] += 2.0;
     }
   }
   nrdfCounter++;

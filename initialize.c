@@ -6,20 +6,28 @@ void MemoryAndBookkeepingInit(void){
   int i, j, k, xTemp, yTemp, zTemp;//Indecies
   int myCubeLen = 3;
 
-    naTotLattice      = malloc(nBoxSize[0] * nBoxSize[1] * nBoxSize[2] * sizeof(lInt));
-    naClusHistList    = malloc((1 + tot_chains) * sizeof(lInt));
-    naChainCheckList  = malloc((1 + tot_chains) * sizeof(lInt));
-    naChainCheckList2 = malloc((1 + tot_chains) * sizeof(lInt));
+  naTotLattice      = malloc(nBoxSize[0] * nBoxSize[1] * nBoxSize[2] * sizeof(lInt));
+  naClusHistList    = malloc((1 + tot_chains) * sizeof(lInt));
+  naChainCheckList  = malloc((1 + tot_chains) * sizeof(lInt));
+  naChainCheckList2 = malloc((1 + tot_chains) * sizeof(lInt));
+  ld_TOTCLUS_ARR    = (lLDub **)malloc((nTot_CycleNum) * sizeof(lLDub));
+  for(i = 0; i < nTot_CycleNum; i++){
+      ld_TOTCLUS_ARR[i] = (lLDub *)malloc((1 + tot_chains) * sizeof(lLDub));
+      if (ld_TOTCLUS_ARR[i] == NULL){
+          printf( "Malloc Failed! Crashing. Probably ran out of memory.\n");
+          exit(1);
+      }
+  }
 
-      if (naTotLattice == NULL || naClusHistList == NULL ||
-          naChainCheckList == NULL || naChainCheckList2 == NULL) {
-        printf( "Malloc Failed! Crashing. Probably ran out of memory.\n");
-        exit(1);
+  if (naTotLattice == NULL || naClusHistList == NULL ||
+    naChainCheckList == NULL || naChainCheckList2 == NULL) {
+      printf( "Malloc Failed! Crashing. Probably ran out of memory.\n");
+      exit(1);
     }
-      else {
+  else {
       printf("Successfully allocated memory! Arrays initialized.\n");
-    }
-    for(i=0; i<nBoxSize[0]*nBoxSize[1]*nBoxSize[2]; i++){//Initializing the lattice
+  }
+  for(i=0; i<nBoxSize[0]*nBoxSize[1]*nBoxSize[2]; i++){//Initializing the lattice
       naTotLattice[i] = -1; //If -1, then there is no bead there.
     }
     i=0;
@@ -62,6 +70,13 @@ void MemoryAndBookkeepingInit(void){
           ldRDF_ARR[j][i] = 0.;
       }
     }
+    for (k = 0; k < TEMP_CYCLES_MAX; k++) {
+        for (j = 0; j < RDF_COMPS; j++) {
+            for (i = 0; i < RDF_MAXBINS; i++) {
+                ld_TOTRDF_ARR[k][j][i] = 0.;
+            }
+        }
+    }
       //Setting counters
     fSysGyrRad=0.;
     nTotGyrRadCounter=0;
@@ -72,7 +87,7 @@ void MemoryAndBookkeepingInit(void){
       //Checking which bead types interact rotationally and via overlap, separately.
   for(i = 0;i<MAX_AA;i++){
       TypeCanRot[i] = 0;//Assume beads don't rotationally interact.
-    TypeCanOvlp[i] = 0;//Assume beads don't have an overlap cost
+      TypeCanOvlp[i] = 0;//Assume beads don't have an overlap cost
   }
 
   for(i = 0; i < MAX_AA;i++){
@@ -96,7 +111,7 @@ void MemoryAndBookkeepingInit(void){
 
 void Reset_Global_Arrays(void){
     //Zero-ing out all the arrays used for data tracking!
-    int i,j;
+    int i,j,k;
     for(i = 0; i <= tot_chains; i++){
         naChainCheckList[i]  =  0;
         naChainCheckList2[i] =  0;

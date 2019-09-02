@@ -72,6 +72,10 @@ int parse_key(char filename[]) {
         sscanf(strLine, "%*s %f", &fPreKT);
       } else if (strcmp(strKeyword, "MC_TEMP_MODE") == 0) {
         sscanf(strLine, "%*s %d", &Temp_Mode);
+      } else if (strcmp(strKeyword, "MC_DELTA_TEMP") == 0) {
+          sscanf(strLine, "%*s %f", &fdelta_temp);
+      } else if (strcmp(strKeyword, "MC_CYCLE_NUM") == 0) {
+          sscanf(strLine, "%*s %d", &nTot_CycleNum);
       } else if (strcmp(strKeyword, "MC_INDENT_MODE") == 0) {
         sscanf(strLine, "%*s %d", &Indent_Mode);
       } else if (strcmp(strKeyword, "ROT_ENERGY_BIAS") == 0) {
