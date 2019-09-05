@@ -437,7 +437,7 @@ int SlitherMCMove(int chainID, float MyTemp){//Performs a slither MC-move on cha
   for(j=0;j<POS_MAX;j++){
     bead_info[i][j] = tmpR[j];
   }
-      naTotLattice[LtIndV(tmpR)]    = i;
+      naTotLattice[LtIndV(tmpR)]   = i;
   }
   else{//Slithering backwards in ID-space
     for (i=firstB+1; i<lastB; i++){
@@ -500,12 +500,12 @@ int SlitherMCMove(int chainID, float MyTemp){//Performs a slither MC-move on cha
       bAccept = 1;
       return bAccept;
     }
-     else{
+     else{//TODO: Make a function that resets a single chain, breaking new bonds and restoring old ones.
        for(i=firstB; i<lastB; i++){//Resetting the lattice
          if(bead_info[i][BEAD_FACE] != -1){//Need to break the newly proposed bond
            bead_info[bead_info[i][BEAD_FACE]][BEAD_FACE] = -1;
          }
-         for(j=0;j<POS_MAX; j++){//This is where I am
+         for(j=0; j<POS_MAX; j++){//This is where I am
           tmpR2[j] = bead_info[i][j];
         }
            naTotLattice[LtIndV(tmpR2)]  = -1;
@@ -572,7 +572,7 @@ int TransMCMove(int chainID, float MyTemp){//Performs a translation move with or
       oldEn += fEnergy[resi][resj][E_SC_SC];//Adding the energy.
       }
 
-    ShuffleRotIndecies();
+    //ShuffleRotIndecies();
     BWWeight = CheckRotStatesOld(i, resi, MyTemp);
     NormalizeRotState(yTemp, BWWeight);
     yTemp++;
