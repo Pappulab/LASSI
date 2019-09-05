@@ -66,10 +66,10 @@
 #define CHAIN_START    2
 #define CHAININFO_MAX  3
 
-#define RDF_MAXBINS    3000
+#define RDF_MAXBINS     3000
 #define TEMP_CYCLES_MAX 30
-#define RDF_COMPS 22
-#define MAX_ROTSTATES  27
+#define RDF_COMPS       22
+#define MAX_ROTSTATES   27
 
 
 

@@ -46,7 +46,7 @@ void write_cluster(char* filename, long nGen) {
   fclose(fp);
 }
 
-void write_GyrTen(char* filename, long nGen){
+void write_GyrTen(char* filename, long nGen) {
     FILE *fp;
     int i;
   if (nGen == -1) {

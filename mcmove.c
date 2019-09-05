@@ -281,14 +281,14 @@ int LocalMCMove(int beadID, float MyTemp){//Performs a local translation MC-move
         oldEn += fEnergy[resi][resj][E_SC_SC];
       }
 
-      ShuffleRotIndecies();
+      //ShuffleRotIndecies(); //No need to shuffle just to check.
       BWWeight = CheckRotStatesOld(beadID, resi, MyTemp);
       NormalizeRotState(0, BWWeight);
       BWRos = bolt_norm[0];
 
-      move_bead_to(beadID, tmpR2);
+      move_bead_to(beadID, tmpR2);//Does not break bond
 
-      ShuffleRotIndecies();
+      ShuffleRotIndecies();//Need to shuffle because this also acts as selecting new partner
       FWWeight = CheckRotStatesNew(beadID, resi, MyTemp);
       NormalizeRotState(0, FWWeight);
       FWRos = bolt_norm[0];
@@ -320,6 +320,7 @@ int LocalMCMove(int beadID, float MyTemp){//Performs a local translation MC-move
       return bAccept;
     }
     else{
+        //TODO: make separate undo function
       undo_move_bead_to(beadID);
       bAccept = 0;
       return bAccept;
@@ -334,13 +335,13 @@ int SlitherMCMove(int chainID, float MyTemp){//Performs a slither MC-move on cha
   //Finding the bounds for looping over the molecule/chain
   firstB = chain_info[chainID][CHAIN_START];
   lastB  = firstB + chain_info[chainID][CHAIN_LENGTH];
-  if(lastB - firstB == 1){//This means we have a monomer. Reject the move, because it Local or Trans
+  if(lastB - firstB == 1){//This means we have a monomer. Reject the move, because Local or Trans
     //moves should be the ones that move monomers.
     bAccept = 0;
     return bAccept;
   }
   else{
-    if(TypeIsLinear[chain_info[chainID][CHAIN_TYPE]] != 1){//If chain is not linear. Reject move because slithering will not werk!
+    if(TypeIsLinear[chain_info[chainID][CHAIN_TYPE]] != 1){//If chain is not linear. Reject move because slithering will not work!
       bAccept = 0;
       return bAccept;
     }
@@ -383,6 +384,7 @@ int SlitherMCMove(int chainID, float MyTemp){//Performs a slither MC-move on cha
       xTemp++;
         }
     }
+
     if (yTemp == 0 || xTemp == nMCMaxTrials){//Couldn't find a spot, so reject the damn move
       bAccept = 0;
       return bAccept;
@@ -2089,7 +2091,7 @@ void undo_move_bead_to(int beadID){//Undoes what the above function does
   int tmpR[POS_MAX], tmpR2[POS_MAX];
   for (i=0;i<BEADINFO_MAX;i++){
     if(i<POS_MAX){
-    tmpR[i] = bead_info[beadID][i];
+    tmpR[i]  = bead_info[beadID][i];
     tmpR2[i] = old_bead[beadID][i];
   }
     bead_info[beadID][i] = old_bead[beadID][i];
@@ -2491,18 +2493,18 @@ int PickRotState(int CandNums){
     float fProb;
     int nCheck = CandNums + 1;
     nCheck = rand() % nCheck;
-        if (nCheck == 0){
-            newRot = -1;
-        }
-        else{
-            fProb = (float)rand()/(float)RAND_MAX;
-            for(i=0; i<CandNums; i++){
-                if (fProb < bolt_fac[i]){
-                    break;
-                }
+    if (nCheck == 0){
+        newRot = -1;
+    }
+    else{
+        fProb = (float)rand()/(float)RAND_MAX;
+        for(i=0; i<CandNums; i++){
+            if (fProb < bolt_fac[i]){
+                break;
             }
-
-            newRot = rot_trial[0][i];
         }
+
+        newRot = rot_trial[0][i];
+    }
     return newRot;
 }
