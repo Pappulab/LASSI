@@ -398,18 +398,18 @@ int SlitherMCMove(int chainID, float MyTemp){//Performs a slither MC-move on cha
   }
     //Recording rotational degeneracy has no direction so doesn't matter if forwards or backwards
     yTemp = 0;
-    for (i=firstB; i<lastB; i++){//Counting states in the previous location
+    for (i=firstB; i<lastB; i++){
       resi = bead_info[i][BEAD_TYPE];
       oldEn += energy_cont_and_ovlp(i);
     if (TypeCanRot[resi] == 0){//Skip beads that don't interact
       continue;
     }
     if (bead_info[i][BEAD_FACE] != -1){//I am bonded to something
-      resj = bead_info[bead_info[i][BEAD_FACE]][BEAD_TYPE];//Type of bead I'm bonded to
+      resj   = bead_info[bead_info[i][BEAD_FACE]][BEAD_TYPE];//Type of bead I'm bonded to
       oldEn += fEnergy[resi][resj][E_SC_SC];
       }
 
-    ShuffleRotIndecies();
+    //ShuffleRotIndecies();
     BWWeight = CheckRotStatesOld(i, resi, MyTemp);
     NormalizeRotState(yTemp, BWWeight);
     yTemp++;
