@@ -80,12 +80,11 @@ void avg_clus_dist(int naList[MAX_CHAINS]){
   Calculates the cluster distribution using total_network_analysis framework, but keeps adding to
   naClusHistList for total averaging at the end. Read total_network_analysis() for what's happening here LOL
   */
-  //printf("Starting clus analysis\n");
   int curID, Cluster_length, currentLargest, i;
   int IsUnique = 1;
   for(i=0; i <= tot_chains; i++){
     naList[i]         = -1;
-      naChainCheckList[i] = -1;
+    naChainCheckList[i] = -1;
   }
   curID = 0;//Start with the 0th chain
   currentLargest = 0;
@@ -106,7 +105,6 @@ void avg_clus_dist(int naList[MAX_CHAINS]){
   }
   nClusListCounter++;
   nLargestClusterRightNow += currentLargest;
-  //printf("Ending clus analysis\n\n");
 }
 
 int chain_network_small(int chainID, int naList[MAX_CHAINS]){

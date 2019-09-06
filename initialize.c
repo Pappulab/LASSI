@@ -7,7 +7,7 @@ void MemoryAndBookkeepingInit(void){
   int myCubeLen = 3;
 
   naTotLattice      = malloc(nBoxSize[0] * nBoxSize[1] * nBoxSize[2] * sizeof(lInt));
-  naClusHistList    = malloc((1 + tot_chains) * sizeof(lInt));
+  naClusHistList    = malloc((1 + tot_chains) * sizeof(lLong));
   naChainCheckList  = malloc((1 + tot_chains) * sizeof(lInt));
   naChainCheckList2 = malloc((1 + tot_chains) * sizeof(lInt));
   ld_TOTCLUS_ARR    = (lLDub **)malloc((nTot_CycleNum) * sizeof(lLDub));
@@ -76,6 +76,13 @@ void MemoryAndBookkeepingInit(void){
                 ld_TOTRDF_ARR[k][j][i] = 0.;
             }
         }
+        ld_TOTGYRRAD_ARR[k][0] = 0.;
+        ld_TOTGYRRAD_ARR[k][1] = 0.;
+    }
+    for (k = 0; k < nTot_CycleNum; k++) {
+        for(i = 0; i <= tot_chains; i++){
+            ld_TOTCLUS_ARR[k][i] = 0.;
+        }
     }
       //Setting counters
     fSysGyrRad=0.;
@@ -117,7 +124,7 @@ void Reset_Global_Arrays(void){
         naChainCheckList2[i] =  0;
         naClusHistList[i]    =  0;
         for(j = 0; j <= tot_chains; j++){
-            naCluster[i][j]=-1;
+            naCluster[i][j] = -1;
         }
     }
     //Initializing arrays for pair-distribution calculations

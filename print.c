@@ -37,7 +37,7 @@ void write_cluster(char* filename, long nGen) {
     fprintf(fp, "#Step followed by histogram\n");
   } else {
     fprintf(fp, "#%ld\n",nGen);
-    for(i = 0; i < tot_chains; i++){
+    for(i = 0; i <= tot_chains; i++){
         fprintf(fp, "%ld\t", naClusHistList[i]);
     }
     fprintf(fp, "\n");
@@ -110,6 +110,7 @@ void print_log(long nGen, int run_it) {
   //printf("MC Temp = %.3e;\tRot Bias Prob = %.3e /site;\n", fCuTemp, fRot_Bias);
   printf("MC Temp  = %.3e;\n", fCuTemp);
   printf("Total E  = %.3e;\tIso E = %.3e;\tAniso E = %.3e;\n", faCurrEn[E_TOT], faCurrEn[E_OVLP], faCurrEn[E_SC_SC]);
+  printf("Percolation Parameter Is: %.3f\n", ((float)nLargestClusterRightNow)/((float)nClusListCounter+0.0001)/(float)tot_chains);
   int i, j;
     printf("Acceptance Ratios:\n");
     for(i=1;i<MAX_MV;i++){
@@ -632,10 +633,10 @@ void Copy_Data(int run_it){
             ld_TOTRDF_ARR[run_it][i][j] = ldRDF_ARR[i][j] / (long double)nrdfCounter;
         }
     }
-    for(i=0; i<tot_chains; i++){
+    ld_TOTCLUS_ARR[run_it][0] = (long double)nLargestClusterRightNow / (long double)nClusListCounter;
+    for(i=1; i<tot_chains; i++){
         ld_TOTCLUS_ARR[run_it][i] = (long double)naClusHistList[i] / (long double)nClusListCounter;
     }
-
     ld_TOTGYRRAD_ARR[run_it][0] = (long double)fSysGyrRad / (long double)nTotGyrRadCounter;
     ld_TOTGYRRAD_ARR[run_it][1] = (long double)nBoxSize[0]/2.;
 }
