@@ -898,7 +898,7 @@ int CoLocalMove(int beadID, float MyTemp){
   while(yTemp == 0 && xTemp < nMCMaxTrials){
     for(j=0; j<POS_MAX; j++){
       tmpR[j]  = (rand() % lRadUp) - lRadLow;
-      tmpR1[j] = (bead_info[beadID][j] + tmpR[j] + nBoxSize[j]) % nBoxSize[j];
+      tmpR1[j] = (bead_info[beadID][j]   + tmpR[j] + nBoxSize[j]) % nBoxSize[j];
       tmpR2[j] = (bead_info[beadPart][j] + tmpR[j] + nBoxSize[j]) % nBoxSize[j];
     }
 
@@ -1961,7 +1961,7 @@ int check_disp_chain(int chainID, const int tR[]){//Checks if chain can be displ
 }
 
 void disp_chain(int chainID, const int movR[]){
-  //Displaces current chain by movR and handles the fucking lattice BS
+  //Displaces current chain by movR and handles the lattice
   //Also remembers where everything was moved and saves into old_bead
 
   int i, l;
@@ -2000,8 +2000,8 @@ void trans_disp_chain(int chainID, const int movR[]){
       tmpR2[l] = bead_info[i][l];//Where we are now
     }
     }
-        naTotLattice[LtIndV(tmpR)]  = -1;//Removing from old place
-    naTotLattice[LtIndV(tmpR2)] = i;
+      naTotLattice[LtIndV(tmpR)]  = -1;//Removing from old place
+      naTotLattice[LtIndV(tmpR2)] = i;//Adding to new place
   }
   for(i=fB; i<lB; i++){//Delete bonds AFTER old_bead has remembered things
     if(old_bead[i][BEAD_FACE] != -1){
@@ -2025,7 +2025,7 @@ void restore_chain(int chainID){//Uses old_bead to undo what disp_chain does.
       bead_info[i][l] = old_bead[i][l];//Moving back
     }
       naTotLattice[LtIndV(tmpR)] = -1;//Removing from old place
-    naTotLattice[LtIndV(tmpR2)] = i;
+      naTotLattice[LtIndV(tmpR2)] = i;
   }
 }
 
@@ -2041,13 +2041,11 @@ void trans_restore_chain(int chainID){//Uses old_bead to undo what trans_disp_ch
       bead_info[i][BEAD_FACE] = -1;
     }
       for (l=0; l<POS_MAX; l++){
-      tmpR[l] = bead_info[i][l];//Where we now are and must be removed from
-    }
-    for (l=0; l<POS_MAX; l++){
-    tmpR2[l] = old_bead[i][l];//This is where we should be
+      tmpR[l]  = bead_info[i][l];//Where we now are and must be removed from
+      tmpR2[l] = old_bead[i][l];//This is where we should be
   }
       naTotLattice[LtIndV(tmpR)] = -1;//Removing from old place
-    naTotLattice[LtIndV(tmpR2)] = i;//Removing from old place
+      naTotLattice[LtIndV(tmpR2)] = i;//Removing from old place
   }
   for (i=fB; i<lB; i++){
     for(l=0; l<BEADINFO_MAX; l++){
@@ -2125,7 +2123,7 @@ void swap_beads(int bead1, int bead2){
   int tmpR[POS_MAX], tmpR2[POS_MAX];
   //First the coordinates
     for(i=0; i<POS_MAX; i++){
-      tmpR[i] = bead_info[bead1][i];
+      tmpR[i]  = bead_info[bead1][i];
       tmpR2[i] = bead_info[bead2][i];
       bead_info[bead1][i] = tmpR2[i];
       bead_info[bead2][i] = tmpR[i];
@@ -2138,7 +2136,7 @@ void swap_beads(int bead1, int bead2){
     if(MyF1 != bead2){
     bead_info[bead1][BEAD_FACE] = MyF2;
     bead_info[bead2][BEAD_FACE] = MyF1;
-    if(MyF1 != -1){//Need to swap partners -- very 2018
+    if(MyF1 != -1){//Need to swap partners -- very 2019
         bead_info[MyF1][BEAD_FACE] = bead2;//It's bonded to bead2 now
     }
     if(MyF2 != -1){

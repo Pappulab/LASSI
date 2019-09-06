@@ -204,7 +204,7 @@ void print_key(void) { // should be output-dependent (stdout, stderr, other file
   printf("\n");
 
   printf("%s MC Setup %s\n", lBrace, rBrace);
-  printf("MC Temperatures: (First, Last) = (%.2f, %.2f)\n", fKT, fKT*(1.+(float)(nTot_CycleNum-1)*fdelta_temp));
+  printf("MC Temperatures: (First, Last) = (%.2f, %.2f)\n", fKT, fKT+(float)(nTot_CycleNum-1)*fdelta_temp);
   printf("Temperature Mode               = %d\n", Temp_Mode);
   printf("Indent Mode                    = %d\n", Indent_Mode);
   printf("Rotational Bias Mode           = %d\n", RotBias_Mode);
