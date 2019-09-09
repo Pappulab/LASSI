@@ -431,7 +431,7 @@ void Write_TotalSysProp(char* filename, int run_it){
     fprintf(fp, "#Cluster Histograms: 1st column is largest cluster, and then clusters of size 1, 2, and so on\n");
     for (i = 0; i < run_it; i++){
         fprintf(fp, "#Run_Cycle = %d\n", i);
-            for (k = 0; k < tot_chains; k++){
+            for (k = 0; k <= tot_chains; k++){
                 fprintf(fp, "%LE\t", ld_TOTCLUS_ARR[i][k]);
             }
             fprintf(fp, "\n");
@@ -634,7 +634,7 @@ void Copy_Data(int run_it){
         }
     }
     ld_TOTCLUS_ARR[run_it][0] = (long double)nLargestClusterRightNow / (long double)nClusListCounter;
-    for(i=1; i<tot_chains; i++){
+    for(i=1; i<=tot_chains; i++){
         ld_TOTCLUS_ARR[run_it][i] = (long double)naClusHistList[i] / (long double)nClusListCounter;
     }
     ld_TOTGYRRAD_ARR[run_it][0] = (long double)fSysGyrRad / (long double)nTotGyrRadCounter;
