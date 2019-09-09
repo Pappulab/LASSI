@@ -37,7 +37,7 @@ int main(int argc, char* argv[]) {
   MemoryAndBookkeepingInit();
 
   if (bReadConf == 0) {
-    initialize_with_topo();
+      Initialize_Dilute();
   } else if (bReadConf == -1) {
     printf("ERROR: no structure information.\n");
     exit(1);
@@ -92,6 +92,7 @@ The system has thermalized!
   for(nGen = 0; nGen <= nSteps; nGen++){
     fCuTemp = Temperature_Function(Temp_Mode, nGen);
     nMCInfo = MC_Step(fCuTemp);
+    //printf("Move:\t%d;\tState:\t%d\n", nMCInfo/12, nMCInfo % 12);
     Print_Data(nGen, run_cycle);
   }
   Temp_Mode = -1;

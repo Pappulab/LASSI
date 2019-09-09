@@ -141,9 +141,14 @@ void Reset_Global_Arrays(void){
     nLargestClusterRightNow=0;
 }
 
-void initialize_with_topo(void){
+void Initialize_Dilute(void){
   /*
-  Generates initial conditions for a system with topology information. The idea is to see if the selected bead has been placed or not. If it has been placed, we move on to sequentially placing all of it's bonded beads within linker constraints. Therefore, each bead shall sprouth forth its partners. Since I like goto statements, they have been used. YEET. If a bead has not been placed, it's first checked if one of its bonding partners might have been placed, and will thus act as an anchor. This means that for each chain we need to know which beads have already been placed, thus a temporary list is used.
+  Generates initial conditions for a system with topology information. The idea is to see if the selected bead has been placed or not.
+  If it has been placed, we move on to sequentially placing all of it's bonded beads within linker constraints.
+  Therefore, each bead shall sprouth forth its partners. Since I like goto statements, they have been used.
+  YEET. If a bead has not been placed, it's first checked if one of its bonding partners might have been placed,
+  and will thus act as an anchor. This means that for each chain we need to know which beads have already been placed,
+  thus a temporary list is used.
   */
 
   int idx, idy, idz;//Just internal counters for various things.
@@ -208,14 +213,17 @@ void initialize_with_topo(void){
         tmpR2[j] = tmpR[j];
       }
       TlCnt = 0;//Reset this counter.
-      while(naTotLattice[LtIndV(tmpR2)] != -1 && TlCnt < 100000){
+      while(naTotLattice[LtIndV(tmpR2)] != -1 && TlCnt < 500000){
         for(j = 0; j < POS_MAX; j++){
           tmpR2[j] = (rand() % radUp) - radLow;
           tmpR2[j] = (tmpR[j] + tmpR2[j] + nBoxSize[j]) % nBoxSize[j];
         }
         TlCnt++;
       }
-      if (TlCnt == 100000){printf("Not enough space in the lattice. Crashing. Maybe try increasing max trials, or make the box bigger!\t\n"); exit(1);}
+      if (TlCnt == 500000){
+          printf("Not enough space in the lattice. Crashing. Maybe try increasing max trials, "
+                 "or make the box bigger!\t\n");
+          exit(1);}
       for(j = 0; j < POS_MAX; j++){
         bead_info[i][j] = tmpR2[j];
       }//Placing bead
@@ -229,13 +237,16 @@ void initialize_with_topo(void){
         }
         //This usually means this is the first bead in the chain.
         TlCnt = 0;
-        while(naTotLattice[LtIndV(tmpR)] != -1 && TlCnt < 100000){//Keep looping till we find an empty lattice site.
+        while(naTotLattice[LtIndV(tmpR)] != -1 && TlCnt < 500000){//Keep looping till we find an empty lattice site.
           TlCnt++;
           for(j=0; j<POS_MAX; j++){//Generate a random point in the lattice.
             tmpR[j] = rand() % nBoxSize[j];
           }
         }
-        if (TlCnt == 100000){printf("\n\nNot enough space in the lattice for first bead, bruh. Maybe try increasing max trials, or make the box bigger!\n\n"); exit(1);}
+        if (TlCnt == 500000){
+            printf("\n\nNot enough space in the lattice for first bead, bruh. Maybe try increasing max trials, "
+                   "or make the box bigger!\n\n");
+            exit(1);}
         //Placing this bead wherever there is space, and using it as anchor.
         //Also updating the lattice, and temp_list
         for(j=0;j<POS_MAX;j++){
@@ -267,7 +278,7 @@ void initialize_with_topo(void){
           tmpR2[j] = tmpR[j];
         }
         TlCnt = 0;//Reset this counter.
-        while(naTotLattice[LtIndV(tmpR2)] != -1 && TlCnt < 100000){
+        while(naTotLattice[LtIndV(tmpR2)] != -1 && TlCnt < 500000){
           for(j=0;j<POS_MAX;j++){
             tmpR2[j] = (rand() % radUp) - radLow;
             tmpR2[j] = (tmpR[j] + tmpR2[j] + nBoxSize[j]) % nBoxSize[j];
@@ -275,7 +286,11 @@ void initialize_with_topo(void){
           //printf("%d %d %d\n", tmpR2[0], tmpR2[1], tmpR2[2]);
           TlCnt++;
         }
-        if (TlCnt == 100000){printf("\n\nNot enough space in the lattice. Crashing. Maybe try increasing max trials, or make the box bigger!\t %d\t%d %d\n\n", TlCnt, i, naTotLattice[LtIndV(tmpR2)]); exit(1);}
+        if (TlCnt == 500000){
+            printf("\n\nNot enough space in the lattice. Crashing. Maybe try increasing max trials, "
+                                    "or make the box bigger!\t %d\t%d %d\n\n", TlCnt, i, naTotLattice[LtIndV(tmpR2)]);
+            exit(1);
+        }
         for(j=0; j<POS_MAX; j++){//Placing bead
           bead_info[bondPart][j] = tmpR2[j];
         }

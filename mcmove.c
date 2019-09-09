@@ -90,7 +90,7 @@ int MC_Step(float fMCTemp) {
   }
 
   MCAccepMat[nAccept][mode]++;//Just adding which move got accepted/rejected.
-  return nAccept + 2 * mode;
+  return mode*12+nAccept;
 }
 
 int MC_Step_Equil(float fMCTemp) {
