@@ -83,14 +83,15 @@ void avg_clus_dist(int naList[MAX_CHAINS]){
   int curID, Cluster_length, currentLargest, i;
   int IsUnique = 1;
   for(i=0; i <= tot_chains; i++){
-    naList[i]         = -1;
+    naList[i]           = -1;
     naChainCheckList[i] = -1;
   }
   curID = 0;//Start with the 0th chain
   currentLargest = 0;
   while(curID < tot_chains && IsUnique == 1){
     Cluster_length = chain_network_for_tot(curID, naList);//This is the length of curID cluster
-    naClusHistList[Cluster_length]++;//Adding to that cluster-size bin
+    //printf("Clus Len: %d\n", Cluster_length);
+    naClusHistList[Cluster_length]++; //Adding to that cluster-size bin
     if(Cluster_length > currentLargest){
       currentLargest = Cluster_length;
     }

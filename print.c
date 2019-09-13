@@ -563,7 +563,7 @@ void Print_Data(long nGen, int run_it){
             if (nReport[REPORT_CONFIG] != 0) {
                 sprintf(fileStruct, "%s_%d_trj.lammpstrj", strReportPrefix, run_it);//Naming convention for trajectory files.
                 write_trajectory(fileStruct, -1);//This opens a new trajectory file; each run_it will have its own
-                write_trajectory(fileStruct, 0);//End of previous run_it is initial conditions for this one!
+                //write_trajectory(fileStruct, 0);//End of previous run_it is initial conditions for this one!
             }
             if (nReport[REPORT_ENERGY] != 0) {
                 sprintf(fileEnergy, "%s_%d_energy.dat", strReportPrefix, run_it);

@@ -18,6 +18,14 @@ void MemoryAndBookkeepingInit(void){
           exit(1);
       }
   }
+  /*k = 0;
+    for(i = 0; i < nTot_CycleNum; i++){
+        for (j = 0; j < tot_chains; j++){
+            ld_TOTCLUS_ARR[i][j] = k++;
+            printf("%d %d %Lf\n", i, j, ld_TOTCLUS_ARR[i][j]);
+        }
+    }
+    exit(1);*/
 
   if (naTotLattice == NULL || naClusHistList == NULL ||
     naChainCheckList == NULL || naChainCheckList2 == NULL) {
