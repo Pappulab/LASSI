@@ -46,8 +46,8 @@ float distBeadToVec(int beadID, int f1[POS_MAX]) {
 }
 
 float dist(int n1, int n2) {
-  long d[POS_MAX];
-  int i;
+  lInt d[POS_MAX];
+  lInt i;
 
   for (i=0; i<POS_MAX; i++) {
     d[i] = abs(bead_info[n1][i] - bead_info[n2][i]);
@@ -69,8 +69,12 @@ int check_structure_topo(void){
   for(j=0; j<POS_MAX; j++){
     tmpR[j] = bead_info[i][j];
   }
+  if(naTotLattice[LtIndV(tmpR)] == -1){
+      printf("Lattice Position for bead %d is empty! Chain: %d\n", i, bead_info[i][BEAD_CHAINID]);
+      return i+1;
+  }
   if(i - naTotLattice[LtIndV(tmpR)] != 0){//This means there is a mismatch between where the bead is and where the lattice thinks the bead is
-    printf("Somehow the lattice was not correctly dealt with. Crashing\t\t");
+    printf("Bead position and lattice value not the same. Crashing\t\t");
     printf("B1:%d B2:%d\t C1:%d C2:%d\n", i, naTotLattice[LtIndV(tmpR)], bead_info[i][BEAD_CHAINID], bead_info[naTotLattice[LtIndV(tmpR)]][BEAD_CHAINID]);
     return i+1;
   }
@@ -397,7 +401,6 @@ int ShakeConstraint(int beadID, int tmpR[MAX_VALENCY][POS_MAX]){
 
   while (curID != -1){
     for(j=0; j<POS_MAX; j++){
-    //old_bead[curID][j] = bead_info[curID][j];//Remembering
     bead_info[curID][j] = tmpR[topIt][j];//Moving
     }
     curID = topo_info[beadID][topIt++];
@@ -420,7 +423,6 @@ int ShakeConstraint(int beadID, int tmpR[MAX_VALENCY][POS_MAX]){
       for (j=0; j<POS_MAX; j++) {
           bead_info[curID][j] = old_bead[curID][j];//Moving back
       }
-      //printf("Moved back after shake constraint! CanI=%d\n", canI);
       curID = topo_info[beadID][topIt++];
   }
 

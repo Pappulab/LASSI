@@ -69,6 +69,7 @@ int main(int argc, char* argv[]) {
   Print_Data(-1,-1);//Initialization of files
   for (nGen = 0; nGen < nPreSteps; nGen++) {//Intentionally not performing any data acquisition in the thermalizing phase
       nMCInfo = MC_Step_Equil(fCuTemp);
+      //printf("Move:\t%d;\tState:\t%d\n", nMCInfo/12, nMCInfo % 12);
       Print_Data(nGen,-1);
   }
 

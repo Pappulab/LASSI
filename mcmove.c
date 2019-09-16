@@ -178,7 +178,7 @@ int MC_Step_Equil(float fMCTemp) {
   }
 
   MCAccepMat[nAccept][mode]++;//Just adding which move got accepted/rejected.
-  return nAccept + 2 * mode;
+  return mode*12+nAccept;
 }
 
 int RotMCMove(int beadID, float MyTemp){
@@ -931,170 +931,174 @@ int CoLocalMove(int beadID, float MyTemp){
 }
 
 int ShakeMove(int beadID, float MyTemp){
+    int topIt; //Iterator for topo_info
+    int i,j; //Loop iterators
+    int curID; //current bead being looked at
+    int tmpR[MAX_VALENCY][POS_MAX]; //Storing temporary locations
+    int  bAccept;
+    int lRadLow, lRadUp;
+    lRadLow = 2;
+    lRadUp  = lRadLow*2 + 1;//2*2+1
+    int xTemp = 0;
+    int yTemp = 0;
 
-  int topIt; //Iterator for topo_info
-  int i, j, k; //Loop iterators
-  int curID; //current bead being looked at
-  int tmpR[MAX_BONDS][POS_MAX]; //Storing temporary locations
-  int  bAccept;
-  int lRadLow, lRadUp;
-  lRadLow = 2;
-  lRadUp  = lRadLow*2 + 1;//2*2+1
-  int xTemp = 0;
-  int yTemp = 0;
-
-  curID = beadID; topIt = 0;
-  while (curID != -1) {
-      for (j=0; j<BEADINFO_MAX; j++) {
-          old_bead[curID][j] = bead_info[curID][j];//Remembering
-          if(j<POS_MAX){
-              tmpR[topIt][j] = bead_info[curID][j];
-          }
-      }
-      naTotLattice[LtIndV(tmpR[topIt])] = -1;
-      curID = topo_info[beadID][topIt++];
-  }
-
-  while(yTemp == 0 && xTemp < nMCMaxTrials){
-      curID = beadID; topIt = 0;
-      while (curID != -1){
-        yTemp = 1;
-        for(j=0; j<POS_MAX; j++){
-          tmpR[topIt][j] = (rand() % lRadUp) - lRadLow;
-          tmpR[topIt][j] = (bead_info[curID][j] + tmpR[topIt][j] + nBoxSize[j]) % nBoxSize[j];
+    curID = beadID; topIt = 0;
+    while (curID != -1) {
+        for (j=0; j<BEADINFO_MAX; j++) {
+            old_bead[curID][j] = bead_info[curID][j];//Remembering
+            if(j<POS_MAX){
+                tmpR[topIt][j] = bead_info[curID][j];
+            }
         }
-        if (naTotLattice[LtIndV(tmpR[topIt])] != -1 ){
-          yTemp = 0;
-          break;
+        curID = topo_info[beadID][topIt++];
+    }
+
+    while(yTemp == 0 && xTemp < nMCMaxTrials){
+        curID = beadID; topIt = 0;
+        while (curID != -1){
+            naTotLattice[LtIndV(bead_info[curID])] = -1;
+            curID = topo_info[beadID][topIt++];
         }
-          naTotLattice[LtIndV(tmpR[topIt])] = curID;
-          curID = topo_info[beadID][topIt++];
-      }
-      if (yTemp == 1){//No steric clash so check for topology constraint
-      yTemp = ShakeConstraint(beadID, tmpR);
-      }
-      xTemp++;
-      for(i=0; i<topIt; i++){
-          naTotLattice[LtIndV(tmpR[i])] = -1;
-      }
-  }
-  if(xTemp == nMCMaxTrials || yTemp == 0){//Linker and steric clash didn't work out
-    bAccept = 0;
-      while (curID != -1) {
-          for (j=0; j<POS_MAX; j++) {
-              tmpR[topIt][j] = bead_info[curID][j];
-          }
-          naTotLattice[LtIndV(tmpR[topIt])] = curID;
-          curID = topo_info[beadID][topIt++];
-     }
-    return bAccept;
-  }
-
-  int FWWeight, BWWeight;//Used to perform orientational bias MC
-  float FSum, BSum;
-  int resi, resj;
-  //int tmpR2[POS_MAX], tmpR3[POS_MAX];
-  float oldEn = 0.;
-  float newEn = 0.;
-  float MCProb;
-
-  /*curID = beadID; topIt = 0;
-  while (curID != -1){//Memorize old locations
-      for(j=0; j<BEADINFO_MAX; j++){
-          old_bead[curID][j] = bead_info[curID][j];
-      }
-      //naTotLattice[LtIndV(tmpR[topIt])] = -1;
-      curID = topo_info[beadID][topIt++];
-  }*/
-
-  curID = beadID; topIt = 0; yTemp = 0;
-  while (curID != -1){
-    resi = bead_info[curID][BEAD_TYPE];
-    oldEn += energy_cont_and_ovlp(curID);
-  if (TypeCanRot[resi] != 1){//Skip non-interactors
-    curID = topo_info[beadID][topIt++];
-    continue;
-  }
-  if (bead_info[curID][BEAD_FACE] != -1){//I am bonded to something
-    resj = bead_info[bead_info[curID][BEAD_FACE]][BEAD_TYPE];//Type of bead I'm bonded to
-    oldEn += fEnergy[resi][resj][E_SC_SC];
+        curID = beadID; topIt = 0;
+        while (curID != -1){
+            yTemp = 1;
+            for(j = 0; j < POS_MAX; j++){
+                tmpR[topIt][j] = (rand() % lRadUp) - lRadLow;
+                tmpR[topIt][j] = (bead_info[curID][j] + tmpR[topIt][j] + nBoxSize[j]) % nBoxSize[j];
+            }
+            if (naTotLattice[LtIndV(tmpR[topIt])] != -1 ){
+                yTemp = 0;
+                break;
+            }
+            naTotLattice[LtIndV(tmpR[topIt])] = curID;
+            curID = topo_info[beadID][topIt++];
+        }
+        if (yTemp == 1){//No steric clash so check for topology constraint
+            yTemp = ShakeConstraint(beadID, tmpR);
+        }
+        for(i = 0; i < topIt; i++){
+            naTotLattice[LtIndV(tmpR[i])] = -1;
+        }
+        xTemp++;
     }
 
-  ShuffleRotIndecies();
-  BWWeight = CheckRotStatesOld(curID, resi, MyTemp);
-  NormalizeRotState(yTemp, BWWeight);
-  curID = topo_info[beadID][topIt++];
-  yTemp++;
-  }
-
-  BSum = 1.;
-  for(i=0; i<yTemp; i++){
-      BSum += log10(bolt_norm[i]);
-  }
-
-  curID = beadID; topIt = 0;
-  while (curID != -1){
-    move_bead_to(curID, tmpR[topIt]);
-    curID = topo_info[beadID][topIt++];
-  }
-
-  curID = beadID; topIt = 0;
-  while (curID != -1){//Breaking old bonds
-    if(bead_info[curID][BEAD_FACE] != -1){
-      bead_info[bead_info[curID][BEAD_FACE]][BEAD_FACE] = -1;
-      bead_info[curID][BEAD_FACE] = -1;
+    if(xTemp == nMCMaxTrials || yTemp == 0){//Linker or steric clash didn't work out
+        curID = beadID; topIt = 0;
+        while (curID != -1) {
+            naTotLattice[LtIndV(bead_info[curID])] = curID;
+            curID = topo_info[beadID][topIt++];
+        }
+        //printf("No space!\n");
+        bAccept = 0;
+        return bAccept;
     }
-    curID = topo_info[beadID][topIt++];
-  }
 
-  curID = beadID; topIt = 0; yTemp = 0;
-  while (curID != -1){
-    resi   = bead_info[curID][BEAD_TYPE];
-    newEn += energy_cont_and_ovlp(curID);
-  if (TypeCanRot[resi] != 1){//Skip non-interactors
-    curID = topo_info[beadID][topIt++];
-    continue;
-  }
-  ShuffleRotIndecies();
-  FWWeight = CheckRotStatesNew(curID, resi, MyTemp);
-  NormalizeRotState(yTemp, FWWeight);
-  if(bead_info[curID][BEAD_FACE] == -1){//Make sure this bead is unbonded!
+    int FWWeight, BWWeight;//Used to perform orientational bias MC
+    float FSum, BSum;
+    int resi, resj;
+    //int tmpR2[POS_MAX], tmpR3[POS_MAX];
+    float oldEn = 0.;
+    float newEn = 0.;
+    float MCProb;
 
-  xTemp = PickRotState(FWWeight);
-  if(xTemp != -1){//An appropriate partner has been selected. Form the bonds and add the energy
-    resj = bead_info[xTemp][BEAD_TYPE];
-    bead_info[curID][BEAD_FACE] = xTemp;
-    bead_info[xTemp][BEAD_FACE] = curID;
-    newEn += fEnergy[resi][resj][E_SC_SC];
+
+    curID = beadID; topIt = 0; yTemp = 0;
+    while (curID != -1){
+        resi = bead_info[curID][BEAD_TYPE];
+        oldEn += energy_cont_and_ovlp(curID);
+    if (TypeCanRot[resi] != 1){//Skip non-interactors
+        curID = topo_info[beadID][topIt++];
+        continue;
     }
-  }
+    if (bead_info[curID][BEAD_FACE] != -1){//I am bonded to something
+        resj = bead_info[bead_info[curID][BEAD_FACE]][BEAD_TYPE];//Type of bead I'm bonded to
+        oldEn += fEnergy[resi][resj][E_SC_SC];
+    }
+
+    ShuffleRotIndecies();
+    BWWeight = CheckRotStatesOld(curID, resi, MyTemp);
+    NormalizeRotState(yTemp, BWWeight);
+    curID = topo_info[beadID][topIt++];
+    yTemp++;
+    }
+
+    BSum = 1.;
+    for(i=0; i<yTemp; i++){
+        BSum += log10(bolt_norm[i]);
+    }
+
+    curID = beadID; topIt = 0;
+    while (curID != -1){
+        move_bead_to_shake(curID, tmpR[topIt]);
+        curID = topo_info[beadID][topIt++];
+    }
+
+    curID = beadID; topIt = 0;
+    while (curID != -1){//Breaking old bonds
+        i = bead_info[curID][BEAD_FACE];
+        if(i != -1){
+            bead_info[i][BEAD_FACE] = -1;
+            bead_info[curID][BEAD_FACE] = -1;
+            }
+        curID = topo_info[beadID][topIt++];
+    }
+
+    curID = beadID; topIt = 0; yTemp = 0;
+    while (curID != -1){
+        resi   = bead_info[curID][BEAD_TYPE];
+        newEn += energy_cont_and_ovlp(curID);
+        if (TypeCanRot[resi] != 1){//Skip non-interactors
+            curID = topo_info[beadID][topIt++];
+            continue;
+        }
+        ShuffleRotIndecies();
+        FWWeight = CheckRotStatesNew(curID, resi, MyTemp);
+        NormalizeRotState(yTemp, FWWeight);
+        if(bead_info[curID][BEAD_FACE] == -1){//Make sure this bead is unbonded!
+            xTemp = PickRotState(FWWeight);
+                if(xTemp != -1){//An appropriate partner has been selected. Form the bonds and add the energy
+                    resj = bead_info[xTemp][BEAD_TYPE];
+                    bead_info[curID][BEAD_FACE] = xTemp;
+                    bead_info[xTemp][BEAD_FACE] = curID;
+                    newEn += fEnergy[resi][resj][E_SC_SC];
+                }
+        }
   curID = topo_info[beadID][topIt++];
   yTemp++;
   }
 
   FSum = 1.;
   for (i = 0; i < yTemp; i++){
-        FSum += log10(bolt_norm[i]);
-    }
+      FSum += log10(bolt_norm[i]);
+  }
 
-    MCProb = (float)rand()/(float)RAND_MAX;
-    if ( MCProb < (FSum/BSum)*expf((oldEn-newEn)/MyTemp) ){//Accept the move. Remember that the bonds were assigned above!
-     bAccept = 1;
-     return bAccept;
-    }
-    else{
+  MCProb = (float)rand()/(float)RAND_MAX;
+  if ( MCProb < (FSum/BSum)*expf((oldEn-newEn)/MyTemp) ){//Accept the move. Remember that the bonds were assigned above
+      bAccept = 1;
+      return bAccept;
+  }
+  else{
       curID = beadID; topIt = 0;
       while (curID != -1){
-        if(bead_info[curID][BEAD_FACE] != -1){
-          bead_info[bead_info[curID][BEAD_FACE]][BEAD_FACE] = -1;
-          bead_info[curID][BEAD_FACE] = -1;
-        }
-        curID = topo_info[beadID][topIt++];
+          i = bead_info[curID][BEAD_FACE];
+          if(i != -1){
+              bead_info[i][BEAD_FACE] = -1;
+              bead_info[curID][BEAD_FACE] = -1;
+          }
+          naTotLattice[LtIndV(bead_info[curID])] = -1;
+          for(j = 0; j < BEADINFO_MAX; j++){
+              bead_info[curID][j] = old_bead[curID][j];
+          }
+          curID = topo_info[beadID][topIt++];
       }
       curID = beadID; topIt = 0;
       while (curID != -1){
-        undo_move_bead_to(curID);
-        curID = topo_info[beadID][topIt++];
+          naTotLattice[LtIndV(bead_info[curID])] = curID;
+          i = bead_info[curID][BEAD_FACE];
+          if(i != -1){
+              bead_info[i][BEAD_FACE] = curID;
+          }
+          curID = topo_info[beadID][topIt++];
       }
         bAccept = 0;
         return bAccept;
@@ -1653,7 +1657,7 @@ int ShakeMove_Equil(int beadID, float MyTemp){
   int tmpR[MAX_VALENCY][POS_MAX]; //Storing temporary locations
   int  bAccept;
   int lRadLow, lRadUp;
-  lRadLow = 1;
+  lRadLow = 2;
   lRadUp  = lRadLow*2 + 1;//2*2+1
   int xTemp = 0;
   int yTemp = 0;
@@ -1665,15 +1669,19 @@ int ShakeMove_Equil(int beadID, float MyTemp){
                 tmpR[topIt][j] = bead_info[curID][j];
             }
         }
-        naTotLattice[LtIndV(tmpR[topIt])] = -1;
         curID = topo_info[beadID][topIt++];
     }
 
     while(yTemp == 0 && xTemp < nMCMaxTrials){
         curID = beadID; topIt = 0;
         while (curID != -1){
+            naTotLattice[LtIndV(bead_info[curID])] = -1;
+            curID = topo_info[beadID][topIt++];
+        }
+        curID = beadID; topIt = 0;
+        while (curID != -1){
             yTemp = 1;
-            for(j=0; j<POS_MAX; j++){
+            for(j = 0; j < POS_MAX; j++){
                 tmpR[topIt][j] = (rand() % lRadUp) - lRadLow;
                 tmpR[topIt][j] = (bead_info[curID][j] + tmpR[topIt][j] + nBoxSize[j]) % nBoxSize[j];
             }
@@ -1687,55 +1695,44 @@ int ShakeMove_Equil(int beadID, float MyTemp){
         if (yTemp == 1){//No steric clash so check for topology constraint
             yTemp = ShakeConstraint(beadID, tmpR);
         }
-        xTemp++;
-        for(i=0; i<topIt; i++){
+        for(i = 0; i < topIt; i++){
             naTotLattice[LtIndV(tmpR[i])] = -1;
         }
+        xTemp++;
     }
-    if(xTemp == nMCMaxTrials || yTemp == 0){//Linker and steric clash didn't work out
-        bAccept = 0;
+
+    if(xTemp == nMCMaxTrials || yTemp == 0){//Linker or steric clash didn't work out
         curID = beadID; topIt = 0;
         while (curID != -1) {
-            for (j=0; j<POS_MAX; j++) {
-                    tmpR[topIt][j] = bead_info[curID][j];
-            }
-            naTotLattice[LtIndV(tmpR[topIt])] = curID;
+            naTotLattice[LtIndV(bead_info[curID])] = curID;
             curID = topo_info[beadID][topIt++];
         }
+        //printf("No space!\n");
+        bAccept = 0;
         return bAccept;
     }
-  //printf("Actually found some spots\n");
-  //int tmpR2[POS_MAX], tmpR3[POS_MAX];
+
   float oldEn = 0.;
   float newEn = 0.;
   float MCProb;
-
-
- curID = beadID; topIt = 0;
-  while (curID != -1){
-    for(j=0; j<BEADINFO_MAX; j++){
-      old_bead[curID][j] = bead_info[curID][j];
-    }
-    curID = topo_info[beadID][topIt++];
-  }
 
   //printf("Starting BW\n");
   curID = beadID; topIt = 0;
   while (curID != -1){
     oldEn += energy_cont_and_ovlp(curID);
-  curID = topo_info[beadID][topIt++];
+    curID = topo_info[beadID][topIt++];
   }
 
   curID = beadID; topIt = 0;
   while (curID != -1){
-    move_bead_to(curID, tmpR[topIt]);
+    move_bead_to_shake(curID, tmpR[topIt]);
     curID = topo_info[beadID][topIt++];
   }
 
   curID = beadID; topIt = 0;
   while (curID != -1){
     newEn += energy_cont_and_ovlp(curID);
-  curID = topo_info[beadID][topIt++];
+    curID = topo_info[beadID][topIt++];
   }
 
     MCProb = (float)rand()/(float)RAND_MAX;
@@ -1745,13 +1742,20 @@ int ShakeMove_Equil(int beadID, float MyTemp){
      return bAccept;
     }
     else{
-      curID = beadID; topIt = 0;
-      while (curID != -1){
-        //printf("%d <-> %d\n", curID, bead_info[curID][BEAD_FACE]);
-        undo_move_bead_to(curID);
-        curID = topo_info[beadID][topIt++];
-      }
-      //printf("fail\n");
+        curID = beadID; topIt = 0;
+        while (curID != -1){
+            naTotLattice[LtIndV(bead_info[curID])] = -1;
+            curID = topo_info[beadID][topIt++];
+        }
+        curID = beadID; topIt = 0;
+        while (curID != -1){
+            for(i = 0; i < BEADINFO_MAX; i++){
+                bead_info[curID][i] = old_bead[curID][i];
+            }
+              naTotLattice[LtIndV(bead_info[curID])] = curID;
+              curID = topo_info[beadID][topIt++];
+        }
+        //printf("fail\n");
         bAccept = 0;
         return bAccept;
     }
@@ -2074,14 +2078,13 @@ void move_bead_to(int beadID, const int newPos[]){//Updates position to new one 
   for (i=0;i<BEADINFO_MAX;i++){
     old_bead[beadID][i]  = bead_info[beadID][i];
     if(i<POS_MAX){
-    tmpR[i] = old_bead[beadID][i];
-    bead_info[beadID][i] = newPos[i];
-    tmpR2[i] = bead_info[beadID][i];
-  }
+        tmpR[i] = old_bead[beadID][i];
+        bead_info[beadID][i] = newPos[i];
+        tmpR2[i] = bead_info[beadID][i];
+    }
   }
     naTotLattice[LtIndV(tmpR)] = -1;//Removing from old place
     naTotLattice[LtIndV(tmpR2)] = beadID;
-
 }
 
 void undo_move_bead_to(int beadID){//Undoes what the above function does
@@ -2095,12 +2098,27 @@ void undo_move_bead_to(int beadID){//Undoes what the above function does
     bead_info[beadID][i] = old_bead[beadID][i];
   }
 
-    naTotLattice[LtIndV(tmpR)] = -1;
-    naTotLattice[LtIndV(tmpR2)] = beadID;
+    naTotLattice[LtIndV(tmpR)] = -1;//Removing from old place
+    naTotLattice[LtIndV(tmpR2)] = beadID;//Restoring
 
   if(bead_info[beadID][BEAD_FACE] != -1){
     bead_info[bead_info[beadID][BEAD_FACE]][BEAD_FACE] = beadID;
   }
+}
+
+void move_bead_to_shake(int beadID, const int newPos[]){//Updates position to new one and handles lattice specifically for shake move
+    int i;
+    int tmpR2[POS_MAX];
+    for (i=0;i<POS_MAX;i++){
+        bead_info[beadID][i] = newPos[i];
+        tmpR2[i] = bead_info[beadID][i];
+    }
+    naTotLattice[LtIndV(tmpR2)] = beadID;
+    i = bead_info[beadID][BEAD_FACE];
+    if (i != -1){
+        bead_info[i][BEAD_FACE] = -1;
+        bead_info[beadID][BEAD_FACE] = -1;
+    }
 }
 
 inline int check_disp_bead(int beadID, const int movR[]){//Checks if bead can be displaced by tmpR

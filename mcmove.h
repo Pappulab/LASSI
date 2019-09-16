@@ -34,6 +34,7 @@ void trans_restore_chain(int chainID);
 int check_disp_chain(int chainID, const int tR[]);
 void move_bead_to(int beadID, const int newPos[]);
 void undo_move_bead_to(int beadID);
+void move_bead_to_shake(int beadID, const int newPos[]);
 int check_move_bead_to(int newPos[]);
 void swap_beads(int bead1, int bead2);
 
