@@ -1114,7 +1114,7 @@ int PivotMCMove(int chainID, float MyTemp){
   */
   int bAccept = 0;
   //Check if the chain is longer than 3 or if it is linear
-  if( chain_info[chainID][CHAIN_LENGTH] <=3 || TypeIsLinear[chain_info[chainID][CHAIN_TYPE]] != 1){
+  if(chain_info[chainID][CHAIN_LENGTH] <=3 || TypeIsLinear[chain_info[chainID][CHAIN_TYPE]] != 1){
     bAccept = 0;
     return bAccept;
   }

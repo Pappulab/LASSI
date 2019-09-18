@@ -101,6 +101,9 @@ float energy_cont_and_ovlp(int beadID){//Calculate Contact and Overlap energy of
             //}//This way contact and overlap do overlap
           }*/
           }
+          else{
+              totEn += fCuTemp;
+          }
         }
       }
     }

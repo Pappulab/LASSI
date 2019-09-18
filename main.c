@@ -37,7 +37,7 @@ int main(int argc, char* argv[]) {
   MemoryAndBookkeepingInit();
 
   if (bReadConf == 0) {
-      Initialize_Dilute();
+      Initialize_Dilute_SM();
   } else if (bReadConf == -1) {
     printf("ERROR: no structure information.\n");
     exit(1);

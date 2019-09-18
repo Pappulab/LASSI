@@ -6,7 +6,9 @@
 #include <math.h>
 
 int MC_Step(float fMCTemp);
+int MC_Step_SM(float fMCTemp);
 int MC_Step_Equil(float fMCTemp);
+int MC_Step_Equil_SM(float fMCTemp);
 
 int RotMCMove(int beadID, float MyTemp);
 int LocalMCMove(int beadID, float MyTemp);
