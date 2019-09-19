@@ -245,7 +245,7 @@ int LocalMCMove(int beadID, float MyTemp){//Performs a local translation MC-move
   int tmpR[POS_MAX], tmpR2[POS_MAX];//Vectors to stores coordinates.
   int FWWeight, BWWeight;//Used to perform orientational bias MC
   float FWRos, BWRos;//Forwards and backwards Rosenbluth Factors
-
+  FWRos = 1; BWRos = 1;
   for(j=0; j<POS_MAX; j++){//Initializing the vectors to where this bead is.
     tmpR[j]  = bead_info[beadID][j];
   }
@@ -272,7 +272,6 @@ int LocalMCMove(int beadID, float MyTemp){//Performs a local translation MC-move
     return bAccept;
   }
   else{//Have successfully found a good lattice spot. Let's perform the usual Metropolis-Hastings shenanigans.
-
     resi = bead_info[beadID][BEAD_TYPE];//I want to treat linker beads differently always because they have no rotational states
     oldEn = energy_cont_and_ovlp(beadID);
     if (TypeCanRot[resi] == 1){//Only non linkers can bond
@@ -307,7 +306,6 @@ int LocalMCMove(int beadID, float MyTemp){//Performs a local translation MC-move
     //Now let's calculate the energy of the new state. SC-SC energy is already done.
     newEn += energy_cont_and_ovlp(beadID);
     MCProb = (float)rand()/(float)RAND_MAX;
-
     if (MCProb < (FWRos/BWRos)*expf((oldEn-newEn)/MyTemp)){//Accept this state
       if (bead_info[beadID][BEAD_FACE] != -1){//Breaking old bond
         bead_info[bead_info[beadID][BEAD_FACE]][BEAD_FACE] = -1;
@@ -1152,7 +1150,7 @@ int PivotMCMove(int chainID, float MyTemp){
 
   xTemp = 0; yTemp = 0;
   while (xTemp < nMCMaxTrials && yTemp == 0){
-    for(i=anchorBead+1; i<lastB; i++){
+    for(i = anchorBead+1; i < lastB; i++){
       RotOperation(PivotM, i, anchorPos);
       yTemp = check_move_bead_to(naTempR);
       if(yTemp == 0){
@@ -1176,7 +1174,7 @@ int PivotMCMove(int chainID, float MyTemp){
   float MCProb;
 
   yTemp = 0;
-  for (i=anchorBead+1; i<lastB; i++){
+  for (i = anchorBead+1; i < lastB; i++){
       resi = bead_info[i][BEAD_TYPE];
       oldEn += energy_cont_and_ovlp(i);
       if (TypeCanRot[resi] != 1){//Skip beads that cannot bond.
@@ -1196,12 +1194,12 @@ int PivotMCMove(int chainID, float MyTemp){
       BSum += log10(bolt_norm[i]);
     }
 
-    for(i=anchorBead+1; i<lastB; i++){
+    for(i = anchorBead+1; i < lastB; i++){
       RotOperation(PivotM, i, anchorPos);
       move_bead_to(i, naTempR);
     }
 
-    for(i=anchorBead+1; i<lastB; i++){
+    for(i = anchorBead+1; i < lastB; i++){
       if(bead_info[i][BEAD_FACE] != -1){
         bead_info[bead_info[i][BEAD_FACE]][BEAD_FACE] = -1;
         bead_info[i][BEAD_FACE] = -1;
@@ -1209,7 +1207,7 @@ int PivotMCMove(int chainID, float MyTemp){
     }
 
     yTemp = 0;
-     for (i=anchorBead+1; i < lastB; i++){//Counting states in the new location
+     for (i = anchorBead+1; i < lastB; i++){//Counting states in the new location
          resi = bead_info[i][BEAD_TYPE];
          newEn += energy_cont_and_ovlp(i);
          if (TypeCanRot[resi] != 1){//Because linkers don't have rotational states
@@ -1221,7 +1219,6 @@ int PivotMCMove(int chainID, float MyTemp){
       //Note that the bonds need to be formed in this loop so that we don't overcount!
       if(bead_info[i][BEAD_FACE] == -1){//Make sure this bead is unbonded!
       //Let's assign a rotational state to this bead
-
         xTemp = PickRotState(FWWeight);
         if(xTemp != -1){//An appropriate partner has been selected. Form the bonds and add the energy
           resj = bead_info[xTemp][BEAD_TYPE];
@@ -1238,20 +1235,20 @@ int PivotMCMove(int chainID, float MyTemp){
           FSum += log10(bolt_norm[i]);
       }
 
-
+//printf("%f\n", (FSum/BSum)*expf((oldEn-newEn)/MyTemp));
   MCProb = (float)rand()/(float)RAND_MAX;
   if ( MCProb < (FSum/BSum)*expf((oldEn-newEn)/MyTemp)){//Accept the move. Remember that the bonds were assigned above!
    bAccept = 1;
    return bAccept;
   }
   else{//Rejecting move
-    for(i=anchorBead+1; i<lastB; i++){
+    for(i = anchorBead+1; i < lastB; i++){
       if(bead_info[i][BEAD_FACE] != -1){
         bead_info[bead_info[i][BEAD_FACE]][BEAD_FACE] = -1;
         bead_info[i][BEAD_FACE] = -1;
       }
     }
-    for(i=anchorBead+1; i<lastB; i++){
+    for(i = anchorBead+1; i < lastB; i++){
       undo_move_bead_to(i);
     }
       bAccept = 0;
