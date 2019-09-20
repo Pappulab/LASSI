@@ -88,22 +88,23 @@ float energy_cont_and_ovlp(int beadID){//Calculate Contact and Overlap energy of
           if (secBi != -1 && secBi != beadID){
             resj  = bead_info[secBi][BEAD_TYPE];
             xDis  = dist(beadID, secBi);
-            totEn += fEnergy[resi][resj][E_OVLP]/xDis/xDis;
-            /*if (xDis <= 1.0) {
+            //totEn += fEnergy[resi][resj][E_OVLP]/xDis/xDis;
+            if (xDis <= 1.0) {
               totEn += fEnergy[resi][resj][E_OVLP] / 2.0;
             } else if (xDis <= 1.42) { // sqrt(2)
               totEn += fEnergy[resi][resj][E_OVLP] / 4.0;
             } else if (xDis <= 1.74) { // sqrt(3)
               totEn += fEnergy[resi][resj][E_OVLP] / 8.0;
-            }*/
+            }
             /*else if (xDis <= fEnRad[resi][resj][E_CONT]*1.74){
               totEn += fEnergy[resi][resj][E_CONT];
             //}//This way contact and overlap do overlap
           }*/
           }
-          else if (secBi == -1){
-              totEn += 0.;//(fCuTemp-1.2);
-          }
+          //TODO: Add option for solvent interactions in the parfile
+          /*if (secBi == -1 && fSolEnergy != 0.){
+              totEn += fSolEnergy*(fCuTemp-fThetaTemp);
+          }*/
         }
       }
     }

@@ -1112,35 +1112,29 @@ int PivotMCMove(int chainID, float MyTemp){
   */
   int bAccept = 0;
   //Check if the chain is longer than 3 or if it is linear
-  if(chain_info[chainID][CHAIN_LENGTH] <=3 || TypeIsLinear[chain_info[chainID][CHAIN_TYPE]] != 1){
+  int chainLength = chain_info[chainID][CHAIN_LENGTH];
+  if(chainLength <=3 || TypeIsLinear[chain_info[chainID][CHAIN_TYPE]] != 1){
     bAccept = 0;
     return bAccept;
   }
   int firstB, lastB;
   //Get the beadID's for the first and last bead
   firstB = chain_info[chainID][CHAIN_START];
-  lastB  = firstB + chain_info[chainID][CHAIN_LENGTH];
-  //This chain is long enough
-  int chainLength = chain_info[chainID][CHAIN_LENGTH];
-  //Randomly select a bead
+  lastB  = firstB + chainLength;
+
+  //Randomly select a bead that is neither the first nor last
   int anchorBead  = chainLength-2;
   anchorBead      = 2 + (rand() % anchorBead);
 
-  int PivotDir = 0; //-1 Means backwards, +1 means forwards. Always Pivot the smaller portion
+  int PivotDir; //-1 Means backwards, +1 means forwards. Always Pivot the smaller portion
   PivotDir   = anchorBead > chainLength/2 ? 1 : -1;
   anchorBead = firstB + anchorBead;
   //printf("Bead: %d\n", anchorBead);
-  //Checking if bead is first or last. If so, reject move.
-  if(anchorBead == firstB || anchorBead > lastB-2){
-    bAccept = 0;
-    //printf("P Bad Bead\n");
-    return bAccept;
-  }
 
   int PivotM;
   PivotM = rand() % 10;
   //printf("Move: %d\n", PivotM);
-  if(PivotM == 0){
+  if(PivotM == 0){//Null move
     bAccept = 1;
     return bAccept;
   }
@@ -1150,9 +1144,7 @@ int PivotMCMove(int chainID, float MyTemp){
   int anchorPos[POS_MAX];
   int tmpList[MAX_CHAINLEN];
   int listLen = 0;
-  for(j=0; j<POS_MAX; j++){
-    anchorPos[j] = bead_info[anchorBead][j];
-  }
+
   if(PivotDir == 1){
       for (i = anchorBead + 1; i < lastB; i++) {
           tmpList[listLen++] = i;
@@ -1164,9 +1156,12 @@ int PivotMCMove(int chainID, float MyTemp){
       }
   }
 
+  for(j=0; j<POS_MAX; j++){
+      anchorPos[j] = bead_info[anchorBead][j];
+  }
+
   xTemp = 0; yTemp = 0;
   while (xTemp < nMCMaxTrials && yTemp == 0) {
-      //for (i = anchorBead + 1; i < lastB; i++) {
       for (j = 0; j < listLen; j++){
           i  = tmpList[j];
           RotOperation(PivotM, i, anchorPos);
@@ -1193,47 +1188,44 @@ int PivotMCMove(int chainID, float MyTemp){
   float MCProb;
 
   yTemp = 0;
-    //for (i = anchorBead + 1; i < lastB; i++) {
-    for (j = 0; j < listLen; j++){
-      i  = tmpList[j];
-      resi = bead_info[i][BEAD_TYPE];
+  for (j = 0; j < listLen; j++){
+      i      = tmpList[j];
+      resi   = bead_info[i][BEAD_TYPE];
       oldEn += energy_cont_and_ovlp(i);
       if (TypeCanRot[resi] != 1){//Skip beads that cannot bond.
-        continue;
+          continue;
       }
   if (bead_info[i][BEAD_FACE] != -1){//I am bonded to something
       resj = bead_info[bead_info[i][BEAD_FACE]][BEAD_TYPE];//Type of bead I am bonded to
       oldEn += fEnergy[resi][resj][E_SC_SC];//Adding the energy.
     }
-    ShuffleRotIndecies();
-    BWWeight = CheckRotStatesOld(i, resi, MyTemp);
-    NormalizeRotState(yTemp, BWWeight);
-    yTemp++;
+  ShuffleRotIndecies();
+  BWWeight = CheckRotStatesOld(i, resi, MyTemp);
+  NormalizeRotState(yTemp, BWWeight);
+  yTemp++;
   }
+
   BSum = 1.;
   for (i = 0; i < yTemp; i++){
       BSum += log10(bolt_norm[i]);
   }
 
-    //for (i = anchorBead + 1; i < lastB; i++) {
-    for (j = 0; j < listLen; j++){
+  for (j = 0; j < listLen; j++){
       i  = tmpList[j];
       RotOperation(PivotM, i, anchorPos);
       move_bead_to(i, naTempR);
   }
 
-    //for (i = anchorBead + 1; i < lastB; i++) {
-    for (j = 0; j < listLen; j++){
+  for (j = 0; j < listLen; j++){
       i  = tmpList[j];
       if(bead_info[i][BEAD_FACE] != -1){
           bead_info[bead_info[i][BEAD_FACE]][BEAD_FACE] = -1;
-            bead_info[i][BEAD_FACE] = -1;
+          bead_info[i][BEAD_FACE] = -1;
       }
   }
 
   yTemp = 0;
-    //for (i = anchorBead + 1; i < lastB; i++) {
-    for (j = 0; j < listLen; j++){
+  for (j = 0; j < listLen; j++){
       i  = tmpList[j];
       resi = bead_info[i][BEAD_TYPE];
       newEn += energy_cont_and_ovlp(i);
@@ -1248,12 +1240,12 @@ int PivotMCMove(int chainID, float MyTemp){
       //Let's assign a rotational state to this bead
         xTemp = PickRotState(FWWeight);
         if(xTemp != -1){//An appropriate partner has been selected. Form the bonds and add the energy
-          resj = bead_info[xTemp][BEAD_TYPE];
-          bead_info[i][BEAD_FACE] = xTemp;
-          bead_info[xTemp][BEAD_FACE] = i;
-          newEn += fEnergy[resi][resj][E_SC_SC];
+            resj = bead_info[xTemp][BEAD_TYPE];
+            bead_info[i][BEAD_FACE] = xTemp;
+            bead_info[xTemp][BEAD_FACE] = i;
+            newEn += fEnergy[resi][resj][E_SC_SC];
           }
-        }
+      }
       yTemp++;
   }
 
@@ -1269,19 +1261,17 @@ int PivotMCMove(int chainID, float MyTemp){
    return bAccept;
   }
   else{//Rejecting move
-      //for (i = anchorBead + 1; i < lastB; i++) {
       for (j = 0; j < listLen; j++){
-        i  = tmpList[j];
-      if(bead_info[i][BEAD_FACE] != -1){
-        bead_info[bead_info[i][BEAD_FACE]][BEAD_FACE] = -1;
-        bead_info[i][BEAD_FACE] = -1;
+          i  = tmpList[j];
+          if(bead_info[i][BEAD_FACE] != -1){
+              bead_info[bead_info[i][BEAD_FACE]][BEAD_FACE] = -1;
+              bead_info[i][BEAD_FACE] = -1;
+          }
       }
-    }
-      //for (i = anchorBead + 1; i < lastB; i++) {
       for (j = 0; j < listLen; j++){
-        i  = tmpList[j];
-      undo_move_bead_to(i);
-    }
+          i  = tmpList[j];
+          undo_move_bead_to(i);
+      }
       bAccept = 0;
       return bAccept;
   }
@@ -1792,103 +1782,117 @@ int ShakeMove_Equil(int beadID, float MyTemp){
 }
 
 int PivotMCMove_Equil(int chainID, float MyTemp){
-  //Performs a pivot move on chainID
-  /*
-  Randomly pick a bead in this chain (anchorBead), and perform a symmetry operation on the beads after the anchorBead. Note that if anchorBead is the second-to-last, or last, bead, the move is rejected. Local and slither moves would be better for those.
-  Obviously the protein must be linear and the move is rejected if the chain is branched.
-  It is assumed that a linear chain has been passed!
-  */
-  int bAccept = 0;
-  //Check if the chain is longer than 3 or if it is linear
-  if( chain_info[chainID][CHAIN_LENGTH] <=3 || TypeIsLinear[chain_info[chainID][CHAIN_TYPE]] != 1){
-    bAccept = 0;
-    return bAccept;
-  }
-  int firstB, lastB;
-  //Get the beadID's for the first and last bead
-  firstB = chain_info[chainID][CHAIN_START];
-  lastB  = firstB + chain_info[chainID][CHAIN_LENGTH];
-  //This chain is long enough
-  int chainLength = chain_info[chainID][CHAIN_LENGTH];
-  //Randomly select a bead
-  int anchorBead  = rand() % chainLength;
-  anchorBead = firstB + anchorBead;
-  //printf("Bead: %d\n", anchorBead);
-  //Checking if bead is first or last. If so, reject move.
-  if(anchorBead == firstB || anchorBead > lastB-2){
-    bAccept = 0;
-    //printf("P Bad Bead\n");
-    return bAccept;
-  }
-
-  int PivotM;
-  PivotM = rand() % 10;
-  //printf("Move: %d\n", PivotM);
-  if(PivotM == 0){
-    //printf("P Accept\n");
-    bAccept = 1;
-    return bAccept;
-  }
-
-  int i,j;
-  int xTemp, yTemp;
-  int anchorPos[POS_MAX];
-  for(j=0; j<POS_MAX; j++){
-    anchorPos[j] = bead_info[anchorBead][j];
-  }
-
-  xTemp = 0; yTemp = 0;
-  while (xTemp < nMCMaxTrials && yTemp == 0){
-    for(i=anchorBead+1; i<lastB; i++){
-      RotOperation(PivotM, i, anchorPos);
-      yTemp = check_move_bead_to(naTempR);
-      if(yTemp == 0){
-        xTemp++;
-        break;
-      }
+    //Performs a pivot move on chainID
+    /*
+    Randomly pick a bead in this chain (anchorBead), and perform a symmetry operation on the beads after the anchorBead. Note that if anchorBead is the second-to-last, or last, bead, the move is rejected. Local and slither moves would be better for those.
+    The protein must be linear and the move is rejected if the chain is branched.
+    It is assumed that a linear chain has been passed!
+    */
+    int bAccept = 0;
+    //Check if the chain is longer than 3 or if it is linear
+    int chainLength = chain_info[chainID][CHAIN_LENGTH];
+    if(chainLength <=3 || TypeIsLinear[chain_info[chainID][CHAIN_TYPE]] != 1){
+        bAccept = 0;
+        return bAccept;
     }
-    xTemp++;
-  }
-  if(xTemp == nMCMaxTrials || yTemp == 0){
-    bAccept = 0;
-    //printf("P Clashout\n");
-    return bAccept;
-  }
+    int firstB, lastB;
+    //Get the beadID's for the first and last bead
+    firstB = chain_info[chainID][CHAIN_START];
+    lastB  = firstB + chainLength;
 
-  float oldEn = 0.;
-  float newEn = 0.;
-  float MCProb;
+    //Randomly select a bead that is neither the first nor last
+    int anchorBead  = chainLength-2;
+    anchorBead      = 2 + (rand() % anchorBead);
 
-  yTemp = 0;
-  for (i = anchorBead+1; i < lastB; i++){
-      oldEn += energy_cont_and_ovlp(i);
-  }
-    for(i=anchorBead+1; i<lastB; i++){
-      RotOperation(PivotM, i, anchorPos);
-      move_bead_to(i, naTempR);
+    int PivotDir; //-1 Means backwards, +1 means forwards. Always Pivot the smaller portion
+    PivotDir   = anchorBead > chainLength/2 ? 1 : -1;
+    anchorBead = firstB + anchorBead;
+    //printf("Bead: %d\n", anchorBead);
+
+    int PivotM;
+    PivotM = rand() % 10;
+    //printf("Move: %d\n", PivotM);
+    if(PivotM == 0){//Null move
+        bAccept = 1;
+        return bAccept;
+    }
+
+    int i,j;
+    int xTemp, yTemp;
+    int anchorPos[POS_MAX];
+    int tmpList[MAX_CHAINLEN];
+    int listLen = 0;
+
+    if(PivotDir == 1){
+        for (i = anchorBead + 1; i < lastB; i++) {
+            tmpList[listLen++] = i;
+        }
+    }
+    else{
+        for (i = firstB; i < anchorBead; i++) {
+            tmpList[listLen++] = i;
+        }
+    }
+
+    for(j=0; j<POS_MAX; j++){
+        anchorPos[j] = bead_info[anchorBead][j];
+    }
+
+    xTemp = 0; yTemp = 0;
+    while (xTemp < nMCMaxTrials && yTemp == 0) {
+        for (j = 0; j < listLen; j++){
+            i  = tmpList[j];
+            RotOperation(PivotM, i, anchorPos);
+            yTemp = check_move_bead_to(naTempR);
+            if (yTemp == 0) {
+                xTemp++;
+                break;
+            }
+        }
+        xTemp++;
+    }
+
+    if(xTemp == nMCMaxTrials || yTemp == 0){
+        bAccept = 0;
+        //printf("P Clashout\n");
+        return bAccept;
+    }
+
+    float oldEn = 0.;
+    float newEn = 0.;
+    float MCProb;
+
+    yTemp = 0;
+    for (j = 0; j < listLen; j++){
+        i      = tmpList[j];
+        oldEn += energy_cont_and_ovlp(i);
+    }
+
+    for (j = 0; j < listLen; j++){
+        i  = tmpList[j];
+        RotOperation(PivotM, i, anchorPos);
+        move_bead_to(i, naTempR);
     }
 
     yTemp = 0;
-     for (i = anchorBead+1; i < lastB; i++){//Counting states in the new location
-         newEn += energy_cont_and_ovlp(i);
+    for (j = 0; j < listLen; j++){
+        i  = tmpList[j];
+        newEn += energy_cont_and_ovlp(i);
     }
 
-  MCProb = (float)rand()/(float)RAND_MAX;
-  if ( MCProb < expf((oldEn-newEn)/MyTemp)){//Accept the move. Remember that the bonds were assigned above!
-   bAccept = 1;
-   //printf("P Win\n");
-   return bAccept;
-  }
-  else{
-    for(i=anchorBead+1; i<lastB; i++){
-      undo_move_bead_to(i);
+    MCProb = (float)rand()/(float)RAND_MAX;
+    if ( MCProb < expf((oldEn-newEn)/MyTemp)){//Accept the move. Remember that the bonds were assigned above!
+        bAccept = 1;
+        return bAccept;
     }
-    //printf("P Fail\n");
-      bAccept = 0;
-      return bAccept;
-  }
-
-
+    else{//Rejecting move
+        for (j = 0; j < listLen; j++){
+            i  = tmpList[j];
+            undo_move_bead_to(i);
+        }
+        bAccept = 0;
+        return bAccept;
+    }
 }
 
 int BranchedRotMCMove_Equil(int chainID, float MyTemp){

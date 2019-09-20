@@ -6,9 +6,7 @@
 #include <math.h>
 
 int MC_Step(float fMCTemp);
-int MC_Step_SM(float fMCTemp);
 int MC_Step_Equil(float fMCTemp);
-int MC_Step_Equil_SM(float fMCTemp);
 
 int RotMCMove(int beadID, float MyTemp);
 int LocalMCMove(int beadID, float MyTemp);
@@ -27,6 +25,7 @@ int SlitherMCMove_Equil(int chainID, float MyTemp);
 int TransMCMove_Equil(int chainID, float MyTemp);
 int ShakeMove_Equil(int beadID, float MyTemp);
 int PivotMCMove_Equil(int chainID, float MyTemp);
+int PivotMCMove_Equil2(int chainID, float MyTemp);
 int BranchedRotMCMove_Equil(int chainID, float MyTemp);
 
 void disp_chain(int chainID, const int movR[]);
