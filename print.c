@@ -114,10 +114,8 @@ void print_log(long nGen, int run_it) {
   int i, j;
     printf("Acceptance Ratios:\n");
     for(i=1;i<MAX_MV;i++){
-        if (fMCFreq[i] != 0.) {
-            printf("%.3f\t", 100. * (float) MCAccepMat[1][i] / ((float) MCAccepMat[0][i] + 1. + (float)
+            printf("%.2f\t",  100. * (float) MCAccepMat[1][i] / ((float) MCAccepMat[0][i] + 0.00001 + (float)
                     MCAccepMat[1][i]));
-        }
     }
   printf("\n\n");
 }

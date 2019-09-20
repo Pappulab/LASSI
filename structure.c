@@ -198,7 +198,7 @@ void radial_distribution_split(void){//Only g(r) is normalized.
 }
 
 float vectorMag(const int MyVec[]){//Outputs the magnitude of the vector
-  return (float)sqrtf((float)(MyVec[0]*MyVec[0]+MyVec[1]*MyVec[1]+MyVec[2]*MyVec[2]));
+  return sqrtf((float)(MyVec[0]*MyVec[0]+MyVec[1]*MyVec[1]+MyVec[2]*MyVec[2]));
 }
 
 void CalcGyrTensor(int ClusSize, int ClusIndex){

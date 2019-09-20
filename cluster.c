@@ -172,7 +172,7 @@ int clus_network_analysis(int naList[MAX_CHAINS], int naCluster[MAX_CHAINS][MAX_
         naList[i]           = -1;
     }
     curID = 0;//Start with the 0th chain
-    currentLargest = 0;
+    currentLargest = 0; j = 0;
     while(curID < tot_chains && IsUnique == 1){
         Cluster_length = chain_network_for_tot(curID, naList);//This is the length of curID cluster
         if(Cluster_length > currentLargest) {

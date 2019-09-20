@@ -60,9 +60,9 @@ float energy_cont_and_ovlp(int beadID){//Calculate Contact and Overlap energy of
               totEn = fKT * ((float) tot_beads + 1. / (totEn + 0.02));
           }
       }
-          else{
-              totEn = 0.;
-          }
+      else{
+          totEn = 0.;
+      }
   }
 
   int resi  = bead_info[beadID][BEAD_TYPE];
@@ -72,7 +72,7 @@ float energy_cont_and_ovlp(int beadID){//Calculate Contact and Overlap energy of
   int x, y, z; //Lattice indecies
   int BoxRad = 1;
   int secBi, resj;//Second bead index
-  float xDis;//Distance between beads.
+  float xDis = 0.;//Distance between beads.
 
 //Going through possible neighbors For now going through (-1,1) neighbors so CONT is a small window
   for (j=0;j<POS_MAX;j++){
@@ -102,7 +102,7 @@ float energy_cont_and_ovlp(int beadID){//Calculate Contact and Overlap energy of
           }*/
           }
           else if (secBi == -1){
-              totEn += 10.*(fCuTemp-0.5);
+              totEn += 0.;//(fCuTemp-1.2);
           }
         }
       }
