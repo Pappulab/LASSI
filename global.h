@@ -38,7 +38,7 @@
 #define MV_PIVOT    9
 #define MV_BRROT   10
 #define MV_DBPVT   11
-#define MAX_MV     12 // just for counting; must be the last number of this list
+#define MAX_MV     12// just for counting; must be the last number of this list
 
 // report parameters
 #define REPORT_NULL    0 // index zero

@@ -96,7 +96,7 @@ void MemoryAndBookkeepingInit(void){
     fSysGyrRad=0.;
     nTotGyrRadCounter=0;
     nrdfCounter=0;
-    nClusListCounter=0;
+    nTotClusCounter=0;
     nLargestClusterRightNow=0;
 
       //Checking which bead types interact rotationally and via overlap, separately.

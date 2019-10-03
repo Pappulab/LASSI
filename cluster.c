@@ -104,7 +104,7 @@ void avg_clus_dist(int naList[MAX_CHAINS]){
     }
     }
   }
-  nClusListCounter++;
+  nTotClusCounter++;
   nLargestClusterRightNow += currentLargest;
 }
 
