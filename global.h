@@ -13,9 +13,9 @@
 #define MAX_AA         6
 #define MAX_CHAINTYPES 6
 #define MAX_CHAINS     10000
-#define MAX_CHAINLEN   100
+#define MAX_CHAINLEN   1000
 #define MAX_BONDS      15
-#define MAX_VALENCY    50
+#define MAX_VALENCY    1000
 
 // energy parameters
 #define E_TOT   0 // index zero must be assigned for total energy
@@ -66,15 +66,18 @@
 #define CHAIN_START    2
 #define CHAININFO_MAX  3
 
-#define RDF_MAXBINS    5000
-#define RDF_COMPS 22
-#define MAX_ROTSTATES  27
+#define RDF_MAXBINS     3000
+#define TEMP_CYCLES_MAX 30
+#define RDF_COMPS       22
+#define MAX_ROTSTATES   27
 
 
 
 // configurations
 typedef int lInt;
 typedef long lLong;
+typedef double lDub;
+typedef  long double lLDub;
 lInt   bead_info[MAX_BEADS][BEADINFO_MAX];
 lInt   old_bead[MAX_BEADS][BEADINFO_MAX]; //Redundant copy for MCSteps
 lInt   linker_len[MAX_BEADS][MAX_BONDS];//Remember that this one is an INT, not float
@@ -89,16 +92,16 @@ lInt   Indent_Mode, RotBias_Mode;
 lInt   nBoxSize[POS_MAX];
 lInt   LocalArr[MAX_ROTSTATES-1][3];//Used to quickly iterate over nearby points in a R-cube
 lInt   Rot_IndArr[MAX_ROTSTATES-1];
-char  bReadConf;
+char   bReadConf;
 
 // energy matrices for stickers
 lInt   nSeqEn;
 float fEnergy[MAX_AA][MAX_AA][MAX_E];
 float fEnRad[MAX_AA][MAX_AA][MAX_E];
 lInt   rot_trial[MAX_VALENCY][MAX_ROTSTATES];//Used in orientational-bias MC moves
-double  bolt_fac[MAX_ROTSTATES - 1];//Used in orientational-bias
-double  bolt_norm[MAX_VALENCY];
-double  dbias_bolt_fac[MAX_AA][MAX_AA];//For pre-calculating the factors.
+lDub  bolt_fac[MAX_ROTSTATES - 1];//Used in orientational-bias
+lDub  bolt_norm[MAX_VALENCY];
+lDub  dbias_bolt_fac[MAX_AA][MAX_AA];//For pre-calculating the factors.
 float   faCurrEn[MAX_E]; //Vector for current energy
 
 //Arrays to track certain topology and interaction information
@@ -111,10 +114,10 @@ float fLinkerSprCon;
 float fLinkerEqLen;
 
 // MC setup
-float fKT, fPreKT, fCuTemp, fRot_Bias;
+float fKT, fPreKT, fCuTemp, fRot_Bias, f_globRotBias, fdelta_temp;
 lLong  nSteps, nPreSteps;
 float fMCFreq[MAX_MV];
-lInt   nMCMaxTrials;
+lInt   nMCMaxTrials, nTot_CycleNum;
 
 // random number generator seed
 lInt   seed;
@@ -133,7 +136,7 @@ lLong   MCAccepMat[2][MAX_MV];
 // Cluster analysis and MCMoves
 lInt naCluster[MAX_CHAINS][MAX_CHAINS];
 lInt naList[MAX_CHAINS];
-lInt *naClusHistList;
+lLong *naClusHistList;
 lInt *naChainCheckList;
 lInt *naChainCheckList2;
 lInt nClusListCounter;
@@ -142,12 +145,13 @@ lInt nLargestClusterRightNow;
 
 //Radial Distribution Function
 float fRDF_TOT[RDF_MAXBINS];
-long double ldRDF_ARR[RDF_COMPS][RDF_MAXBINS];
-long double ldSRDF_ARR[26][RDF_COMPS][RDF_MAXBINS];
+lLDub ldRDF_ARR[RDF_COMPS][RDF_MAXBINS];
+lLDub ld_TOTRDF_ARR[TEMP_CYCLES_MAX][RDF_COMPS][RDF_MAXBINS];
 lInt nrdfCounter;//This counts how many times the RDF has been calculated for averaging at the end.
 lInt nBins_RDF;
 float fGyrTensor[7];//Gyration tensor
 float fSysGyrRad;//Gyration radius of the system.
+lLDub ld_TOTGYRRAD_ARR[TEMP_CYCLES_MAX][2];
 lInt nTotGyrRadCounter;//Counter for total averaging
 
 //Lattice To Remember Things

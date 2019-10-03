@@ -37,8 +37,8 @@ void write_cluster(char* filename, long nGen) {
     fprintf(fp, "#Step followed by histogram\n");
   } else {
     fprintf(fp, "#%ld\n",nGen);
-    for(i = 0; i < tot_chains; i++){
-        fprintf(fp, "%d\t", naClusHistList[i]);
+    for(i = 0; i <= tot_chains; i++){
+        fprintf(fp, "%ld\t", naClusHistList[i]);
     }
     fprintf(fp, "\n");
   }
@@ -46,7 +46,7 @@ void write_cluster(char* filename, long nGen) {
   fclose(fp);
 }
 
-void write_GyrTen(char* filename, long nGen){
+void write_GyrTen(char* filename, long nGen) {
     FILE *fp;
     int i;
   if (nGen == -1) {
@@ -86,14 +86,18 @@ void write_mcmove(char* filename, long nGen, float fMCTemp) {
               //This way the print function will initialize the matrix at startup!
             }
       } else{
+        printf("Acceptance Ratios:\n");
         fprintf(fp, "%ld\t%.2f\t", nGen, fMCTemp);//Step and Temp
       for(i=1;i<MAX_MV;i++){
         fprintf(fp, "%ld\t%ld\t", MCAccepMat[0][i], MCAccepMat[1][i]);
+            printf("%.3f\t", 100.*(float)MCAccepMat[1][i]/((float)MCAccepMat[0][i]+1.+(float)
+            MCAccepMat[1][i]));
           MCAccepMat[0][i]=0;
           MCAccepMat[1][i]=0;
         //This way the print function will zero out the matrix every time we print to a file!
       }
         fprintf(fp,"\n");
+        printf("\n");
       }
 
 
@@ -190,14 +194,15 @@ void print_key(void) { // should be output-dependent (stdout, stderr, other file
   printf("\n");
 
   printf("%s MC Setup %s\n", lBrace, rBrace);
-  printf("MC Temperature               = %.2f\n", fKT);
-  printf("Temperature Mode             = %d\n", Temp_Mode);
-  printf("Indent Mode                  = %d\n", Indent_Mode);
-  printf("Rotational Bias Mode         = %d\n", RotBias_Mode);
-  printf("Number of MC Steps           = %e\n", (float)nSteps);
-  printf("Thermalizing Temperature     = %.2f\n", fPreKT);
-  printf("Number of Thermalizing Steps = %e\n", (float)nPreSteps);
-  printf("RNG Seed                     = %d\n", seed);
+  printf("MC Temperatures: (First, Last) = (%.2f, %.2f)\n", fKT, fKT+(float)(nTot_CycleNum-1)*fdelta_temp);
+  printf("Temperature Mode               = %d\n", Temp_Mode);
+  printf("Indent Mode                    = %d\n", Indent_Mode);
+  printf("Rotational Bias Mode           = %d\n", RotBias_Mode);
+  printf("Number of MC Cycles            = %e\n", (float)nTot_CycleNum);
+  printf("Number of MC Steps/Cycle       = %e\n", (float)nSteps);
+  printf("Thermalizing Temperature       = %.2f\n", fPreKT);
+  printf("Number of Thermalizing Steps   = %e\n", (float)nPreSteps);
+  printf("RNG Seed                       = %d\n", seed);
   char *MoveName[MAX_MV];
   MoveName[MV_PIVOT]   = "Pivot           ";
   MoveName[MV_DBPVT]   = "Double Pivot    ";
@@ -359,7 +364,7 @@ void write_topofile(char* filename){
   fclose(fp);
 }
 
-void write_SysProp(char* filename){
+void Write_SysProp(char* filename){
 
   FILE *fp;
   int i, j;
@@ -383,6 +388,57 @@ void write_SysProp(char* filename){
   fprintf(fp, "\n#Done");
 
   fclose(fp);
+
+}
+
+void Write_TotalSysProp(char* filename, int run_it){
+    /* This function writes one large file with all the averaged values from each run_cycle. run_it let's the function
+     * know how many cycles to write.
+     * As opposed to Write_SysProp, each of the relevant averaged parameters will be in their appropriately named files.
+     * The naming convention shall be: filename_*.dat where * will be GR, CLUS and RDF for the different measured
+     * quantities. Within each file, each run_cycle shall be written one-by-one in the style of Write_SysProp
+     */
+    FILE *fp;
+    int i,j,k;
+    sprintf(filename, "%s_RDF.dat", strReportPrefix);//Name Of the RDF Files
+    fp = fopen(filename, "w");
+    fprintf(fp, "#Split RDFs. ALL-ALL; DIAGONALS and then from 0-0, 0-1, and onwards \n");
+    for (i = 0; i < run_it; i++){
+        fprintf(fp, "#Run_Cycle = %d\n", i);
+        for (j = 0; j < RDF_COMPS ; j++){
+            for (k = 0; k < nBins_RDF; k++){
+                fprintf(fp, "%LE\t", ld_TOTRDF_ARR[i][j][k]);
+            }
+            fprintf(fp, "\n");
+        }
+    }
+    fprintf(fp, "#Done");
+    fclose(fp);
+
+    sprintf(filename, "%s_CLUS.dat", strReportPrefix);//Name Of the ClusterHistogram Files
+    fp = fopen(filename, "w");
+    fprintf(fp, "#Cluster Histograms: 1st column is largest cluster, and then clusters of size 1, 2, and so on\n");
+    for (i = 0; i < run_it; i++){
+        fprintf(fp, "#Run_Cycle = %d\n", i);
+            for (k = 0; k <= tot_chains; k++){
+                fprintf(fp, "%LE\t", ld_TOTCLUS_ARR[i][k]);
+            }
+            fprintf(fp, "\n");
+    }
+    fprintf(fp, "#Done");
+    fclose(fp);
+
+
+    sprintf(filename, "%s_GR.dat", strReportPrefix);//Name Of the ClusterHistogram Files
+    fp = fopen(filename, "w");
+    fprintf(fp, "#Cluster Histograms: 1st column is largest cluster, and then clusters of size 1, 2, and so on\n");
+    for (i = 0; i < run_it; i++){
+        fprintf(fp, "#Run_Cycle = %d\n", i);
+        fprintf(fp, "%LE\t", ld_TOTGYRRAD_ARR[i][0]);
+        fprintf(fp, "%LE\n", ld_TOTGYRRAD_ARR[i][1]);
+    }
+    fprintf(fp, "#Done");
+    fclose(fp);
 
 }
 
@@ -422,7 +478,7 @@ void Print_Data(long nGen, int run_it){
                         exit(1);
                     }
                     Calc_Tot_Energy(); nFlagForEnCalc = 1;
-                    print_log(nGen);
+                    print_log(nGen, run_it);
                 }
             }
             if (nReport[REPORT_CONFIG] != 0){
@@ -457,7 +513,7 @@ void Print_Data(long nGen, int run_it){
                     exit(1);
                 }
                 Calc_Tot_Energy(); nFlagForEnCalc = 1;
-                print_log(nGen);
+                print_log(nGen, run_it);
             }
         }
         if (nReport[REPORT_CONFIG] != 0){
@@ -497,6 +553,7 @@ void Print_Data(long nGen, int run_it){
                 sprintf(fileStruct, "%s_%d_trj.lammpstrj", strReportPrefix, run_it);//Naming convention for trajectory files.
                 write_trajectory(fileStruct, -1);//This opens a new trajectory file; each run_it will have its own
                 write_trajectory(fileStruct, 0);//End of previous run_it is initial conditions for this one!
+                sprintf(fileStruct, "%s_trj.lammpstrj", strReportPrefix);//Returning back
             }
             if (nReport[REPORT_ENERGY] != 0) {
                 sprintf(fileEnergy, "%s_%d_energy.dat", strReportPrefix, run_it);
@@ -522,12 +579,12 @@ void Print_Data(long nGen, int run_it){
                         exit(1);
                     }
                     Calc_Tot_Energy(); nFlagForEnCalc = 1;
-                    print_log(nGen);
+                    print_log(nGen, run_it);
                 }
             }
             if (nReport[REPORT_CONFIG] != 0){
                 if (nGen % nReport[REPORT_CONFIG] == 0){
-                    write_trajectory(fileStruct, nGen);
+                    write_trajectory(fileStruct, nGen+(run_it*nSteps));
                 }
             }
             if (nReport[REPORT_ENERGY] != 0){
