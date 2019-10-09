@@ -139,7 +139,7 @@ lInt naList[MAX_CHAINS];
 lLong *naClusHistList;
 lInt *naChainCheckList;
 lInt *naChainCheckList2;
-lInt nClusListCounter;
+lInt nTotClusCounter;
 lLDub **ld_TOTCLUS_ARR;
 lInt naTempR[POS_MAX];
 lInt nLargestClusterRightNow;

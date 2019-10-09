@@ -382,9 +382,9 @@ void Write_SysProp(char* filename){
   //Gyration Radius
   fprintf(fp, "#Total Rg\n%f\t%f\n#Cluster Hist\n", fSysGyrRad / (float)nTotGyrRadCounter, (float)nBoxSize[0] / 2.);
   //Cluster Histogram
-  fprintf(fp, "%f\t", (float)nLargestClusterRightNow / (float)nClusListCounter );
+  fprintf(fp, "%f\t", (float)nLargestClusterRightNow / (float)nTotClusCounter );
   for(i=1; i <= tot_chains; i++){
-    fprintf(fp, "%f\t", (float)naClusHistList[i] / (float)nClusListCounter);
+    fprintf(fp, "%f\t", (float)naClusHistList[i] / (float)nTotClusCounter);
   }
   //Split RDFs
   fprintf(fp, "\n#Split RDFs. ALL-ALL; DIAGONALS and then from 0 onwards \n");
@@ -632,9 +632,9 @@ void Copy_Data(int run_it){
             ld_TOTRDF_ARR[run_it][i][j] = ldRDF_ARR[i][j] / (long double)nrdfCounter;
         }
     }
-    ld_TOTCLUS_ARR[run_it][0] = (long double)nLargestClusterRightNow / (long double)nClusListCounter;
+    ld_TOTCLUS_ARR[run_it][0] = (long double)nLargestClusterRightNow / (long double)nTotClusCounter;
     for(i=1; i<=tot_chains; i++){
-        ld_TOTCLUS_ARR[run_it][i] = (long double)naClusHistList[i] / (long double)nClusListCounter;
+        ld_TOTCLUS_ARR[run_it][i] = (long double)naClusHistList[i] / (long double)nTotClusCounter;
     }
     ld_TOTGYRRAD_ARR[run_it][0] = (long double)fSysGyrRad / (long double)nTotGyrRadCounter;
     ld_TOTGYRRAD_ARR[run_it][1] = (long double)nBoxSize[0]/2.;
