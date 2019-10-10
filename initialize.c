@@ -9,7 +9,7 @@ void MemoryAndBookkeepingInit(void){
   naTotLattice      = malloc(nBoxSize[0] * nBoxSize[1] * nBoxSize[2] * sizeof(lInt));
   naClusHistList    = malloc((1 + tot_chains) * sizeof(lLong));
   naChainCheckList  = malloc((1 + tot_chains) * sizeof(lInt));
-  naChainCheckList2 = malloc((1 + tot_chains) * sizeof(lInt));
+  malloc((1 + tot_chains) * sizeof(lInt));
   ld_TOTCLUS_ARR    = (lLDub **)malloc((nTot_CycleNum) * sizeof(lLDub));
   for(i = 0; i < nTot_CycleNum; i++){
       ld_TOTCLUS_ARR[i] = (lLDub *)malloc((1 + tot_chains) * sizeof(lLDub));
@@ -28,7 +28,7 @@ void MemoryAndBookkeepingInit(void){
     exit(1);*/
 
   if (naTotLattice == NULL || naClusHistList == NULL ||
-    naChainCheckList == NULL || naChainCheckList2 == NULL) {
+    naChainCheckList == NULL) {
       printf( "Malloc Failed! Crashing. Probably ran out of memory.\n");
       exit(1);
     }
@@ -66,7 +66,6 @@ void MemoryAndBookkeepingInit(void){
         //Initializing arrays required for cluster analyses.
     for(i = 0; i <= tot_chains; i++){
         naChainCheckList[i]  =  0;
-        naChainCheckList2[i] =  0;
         naClusHistList[i]    =  0;
       for(j = 0; j <= tot_chains; j++){
         naCluster[i][j]=-1;
@@ -129,7 +128,6 @@ void Reset_Global_Arrays(void){
     int i,j,k;
     for(i = 0; i <= tot_chains; i++){
         naChainCheckList[i]  =  0;
-        naChainCheckList2[i] =  0;
         naClusHistList[i]    =  0;
         for(j = 0; j <= tot_chains; j++){
             naCluster[i][j] = -1;
