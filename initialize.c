@@ -126,7 +126,7 @@ void GlobalArrayInitialization(void){
 
 void Reset_Global_Arrays(void){
     //Zero-ing out all the arrays used for data tracking!
-    int i,j,k;
+    int i,j;
     for(i = 0; i <= tot_chains; i++){
         naChainCheckList[i]  =  0;
         naClusHistList[i]    =  0;
@@ -158,7 +158,7 @@ void Initial_Conditions_Simple(void){
   thus a temporary list is used.
   */
 
-  int idx, idy, idz;//Just internal counters for various things.
+  int idx, idy;//Just internal counters for various things.
   int i, j, k;//Iterators for loops
   int bondPart;//Used to track the bond partner for a particular bead.
   int fB, lB;//Used to track the first and last bead of a particular chain for looping.
@@ -343,7 +343,7 @@ float Temperature_Function(int mode, long nGen){
       x_val   = x_val/1250./fPreKT;
       x_val   = fPreKT*(tanhf(x_val)+1.);
       end_val = fKT + x_val;
-      //fCuTemp = end_val;
+
       break;
 
       case 1:
@@ -352,7 +352,7 @@ float Temperature_Function(int mode, long nGen){
       x_val   = fabsf(sinf(x_val));
       y_val   = expf(y_val/4.);
       end_val = fKT + 5.*fKT*x_val*y_val;
-      //fCuTemp = end_val;
+
       break;
 
       case 2:
@@ -360,7 +360,7 @@ float Temperature_Function(int mode, long nGen){
       x_val   = x_val*x_val;
       y_val   = (float)(nPreSteps*nPreSteps)*10.;
       end_val = fKT + expf(-x_val/y_val)/fKT/10.;
-      //fCuTemp = end_val;
+
       break;
 
       case 3:
@@ -368,11 +368,11 @@ float Temperature_Function(int mode, long nGen){
       x_val   = 4.*x_val;
       x_val   = x_val/(float)(nPreSteps);
       end_val = fKT + expf(x_val);
-      //fCuTemp = end_val;
+
       break;
 
     default:
-      //fCuTemp = fKT;
+
       end_val = fKT;
       break;
   }
