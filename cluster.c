@@ -2,7 +2,7 @@
 #include "cluster.h"
 #include "structure.h"
 
-int chain_network(int chainID, int naList[MAX_CHAINS]){
+int Clus_ChainNetwork_General(int chainID, int *naList){
   //Updates naList to have all proteins bound to  chainID and it's cluster
   //The idea is to check every bead and see if there is a unique bonded chain, and to add it to naList
 
@@ -41,7 +41,7 @@ int chain_network(int chainID, int naList[MAX_CHAINS]){
   return clusSize;
 }
 
-int chain_network_for_tot(int chainID, int *naList){
+int Clus_ChainNetwork_ForTotal(int chainID, int *naList){
   //Updates naList to have all proteins bound to  chainID and it's cluster
   //The idea is to check every bead and see if there is a unique bonded chain, and to add it to naList
   //This one is specifically made to be used in total system network analyses, so naList and naChainCheckList aren't
@@ -75,7 +75,7 @@ int chain_network_for_tot(int chainID, int *naList){
   return clusSize;
 }
 
-void avg_clus_dist(int naList[MAX_CHAINS]){
+void Clus_Distribution_Avg(int *naList){
   /*
   Calculates the cluster distribution using total_network_analysis framework, but keeps adding to
   naClusHistList for total averaging at the end. Read total_network_analysis() for what's happening here LOL
@@ -89,7 +89,7 @@ void avg_clus_dist(int naList[MAX_CHAINS]){
   curID = 0;//Start with the 0th chain
   currentLargest = 0;
   while(curID < tot_chains && IsUnique == 1){
-    Cluster_length = chain_network_for_tot(curID, naList);//This is the length of curID cluster
+    Cluster_length = Clus_ChainNetwork_ForTotal(curID, naList);//This is the length of curID cluster
     //printf("Clus Len: %d\n", Cluster_length);
     naClusHistList[Cluster_length]++; //Adding to that cluster-size bin
     if(Cluster_length > currentLargest){
@@ -108,7 +108,7 @@ void avg_clus_dist(int naList[MAX_CHAINS]){
   nLargestClusterRightNow += currentLargest;
 }
 
-int chain_network_small(int chainID, int naList[MAX_CHAINS]){
+int Clus_LimitedCluster(int chainID, int *naList){
   //Updates naList to have all proteins bound to  chainID and it's cluster
   //The idea is to check every bead and see if there is a unique bonded chain, and to add it to naList
   //If Cluster becomes larger than 5, exit and return -1
@@ -158,7 +158,7 @@ int chain_network_small(int chainID, int naList[MAX_CHAINS]){
   return clusSize;
 }
 
-int clus_network_analysis(int naList[MAX_CHAINS], int naCluster[MAX_CHAINS][MAX_CHAINS]){
+int Clus_SecondLargestCluster(int *naList, int **naCluster){
     /*
     Calculates the complete networking for the system and returns naList which contains the chainIDs
     for the second largest cluster, if it exists.
@@ -174,7 +174,7 @@ int clus_network_analysis(int naList[MAX_CHAINS], int naCluster[MAX_CHAINS][MAX_
     curID = 0;//Start with the 0th chain
     currentLargest = 0; j = 0;
     while(curID < tot_chains && IsUnique == 1){
-        Cluster_length = chain_network_for_tot(curID, naList);//This is the length of curID cluster
+        Cluster_length = Clus_ChainNetwork_ForTotal(curID, naList);//This is the length of curID cluster
         if(Cluster_length > currentLargest) {
             currentLargest = Cluster_length;
             j = ClusNum;
@@ -216,4 +216,37 @@ int clus_network_analysis(int naList[MAX_CHAINS], int naCluster[MAX_CHAINS][MAX_
         naList[i] = naCluster[curID][i+1];
     }
     return naCluster[curID][0];
+}
+
+void Clus_TotalAnalysis(int *naList, int **naCluster){
+    int curID, Cluster_length, currentLargest, i, j;
+    int ClusNum = 0;
+    int IsUnique = 1;
+    for(i=0;i<=tot_chains;i++){
+        naChainCheckList[i] = -1;
+        naList[i]           = -1;
+    }
+    curID = 0;//Start with the 0th chain
+    currentLargest = 0; j = 0;
+    while(curID < tot_chains && IsUnique == 1){
+        Cluster_length = Clus_ChainNetwork_ForTotal(curID, naList);//This is the length of curID cluster
+        if(Cluster_length > currentLargest) {
+            currentLargest = Cluster_length;
+            j = ClusNum;
+        }
+
+        for(i=0; i<Cluster_length; i++){//Recording the chains in this cluster
+            naCluster[ClusNum][i+1] = naList[i];
+            naList[i] = -1;
+        }
+        naCluster[ClusNum++][0] = Cluster_length;
+        IsUnique = 0;//Assume not unique -- just got analyzed.
+        while (curID<tot_chains && IsUnique == 0){//Finding the next chainID that hasn't been analyzed.
+            curID++;
+            IsUnique = 0;//Assume not unique.
+            if (naChainCheckList[curID] == -1){
+                IsUnique = 1;
+            }
+        }
+    }
 }

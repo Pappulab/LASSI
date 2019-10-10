@@ -15,7 +15,6 @@ float distf(float f1[POS_MAX], float f2[POS_MAX]) {
   for (i=0; i<POS_MAX; i++) {
     d[i] = fabsf(f1[i] - f2[i]);
     d[i] = d[i] > (float)nBoxSize[i]/2. ? (float)nBoxSize[i] - d[i] : d[i];
-    //f[i] = (fabsf(f1[i] - f2[i]) < nBoxSize[i] - fabsf(f1[i] - f2[i])) ? fabsf(f1[i] - f2[i]) : (nBoxSize[i] - fabsf(f1[i] - f2[i]));
   }
 
   return sqrtf(d[POS_X]*d[POS_X] + d[POS_Y]*d[POS_Y] + d[POS_Z]*d[POS_Z]);
@@ -27,8 +26,7 @@ float distInt(int f1[POS_MAX], int f2[POS_MAX]) {
   for (i=0; i<POS_MAX; i++) {
     d[i] = abs(f1[i] - f2[i]);
     d[i] = d[i] > nBoxSize[i]/2 ? nBoxSize[i] - d[i] : d[i];
-    //f[i] = (abs(f1[i] - f2[i]) < nBoxSize[i] - abs(f1[i] - f2[i])) ? abs(f1[i] - f2[i]) : (nBoxSize[i] - abs(f1[i] - f2[i]));
-    //f[i] = f[i];
+
   }
 
   return sqrtf((float)(d[POS_X]*d[POS_X] + d[POS_Y]*d[POS_Y] + d[POS_Z]*d[POS_Z]));
@@ -40,7 +38,6 @@ float distBeadToVec(int beadID, int f1[POS_MAX]) {
     for(i=0; i<POS_MAX;i++) {
         d[i] = abs(bead_info[beadID][i] - f1[i]);
         d[i] = d[i] > nBoxSize[i]/2 ? nBoxSize[i] - d[i] : d[i];
-        //d[i] = (abs(bead_info[beadID][i] - f1[i]) < nBoxSize[i] - abs(bead_info[beadID][i] - f1[i])) ? abs(bead_info[beadID][i] - f1[i]) : (nBoxSize[i] - abs(bead_info[beadID][i] - f1[i]));
     }
     return sqrtf((float)(d[POS_X]*d[POS_X] + d[POS_Y]*d[POS_Y] + d[POS_Z]*d[POS_Z]));
 }
@@ -52,15 +49,14 @@ float dist(int n1, int n2) {
   for (i=0; i<POS_MAX; i++) {
     d[i] = abs(bead_info[n1][i] - bead_info[n2][i]);
     d[i] = d[i] > nBoxSize[i]/2 ? nBoxSize[i] - d[i] : d[i];
-    //d[i] = (abs(bead_info[n1][i] - bead_info[n2][i]) < nBoxSize[i] - abs(bead_info[n1][i] - bead_info[n2][i])) ? abs(bead_info[n1][i] - bead_info[n2][i]) : (nBoxSize[i] - abs(bead_info[n1][i] - bead_info[n2][i]));
   }
 
   return sqrtf((float)(d[POS_X]*d[POS_X] + d[POS_Y]*d[POS_Y] + d[POS_Z]*d[POS_Z]));
 }
 
 int Check_System_Structure(void){
-  int i, j, k;//Looping variables
-  int idx, idy;//Internal iterators for covalent bonds.
+  int i, j;//Looping variables
+  int idx;//Internal iterators for covalent bonds.
   int tmpR[POS_MAX];//Just a vector to store coordinates
   int bondPart;
   for(i=0; i < tot_beads; i++){
@@ -429,50 +425,3 @@ int ShakeConstraint(int beadID, int tmpR[MAX_VALENCY][POS_MAX]){
   return canI;
 }
 
-void CenterMySystem(void){
-  /*
-  This function finds the geometric center of mass of the system, and then displaces the entire system such that the new COM is nBoxSize/2. Note that this function does't care about the periodic boundaries
-  and just centers the system. This makes looking at droplets easier in VMD, and will be used in ascertaining structural quantities later.
-  */
-
-  int com_sys[POS_MAX];//Storing the COM of the system.
-  int d_vct[POS_MAX];//The vector to move the system.
-  int i, j ,k;//Looping iterators!
-
-  //Initialize the vectors!
-  for(j=0; j<POS_MAX; j++){
-    com_sys[j] = 0;
-    d_vct[j] = 0;
-  }
-  //Finding the center of mass.
-  for(i=0; i < tot_beads; i++){
-    for(j=0; j<POS_MAX; j++){
-      com_sys[j]+=bead_info[i][j];
-    }
-  }
-  //Dividing by the number of beads!
-  for(j=0; j<POS_MAX; j++){
-    com_sys[j]=floorf((float)com_sys[j]/(float)tot_beads);
-  }
-  //Finding the displacemement vector
-  for(j=0; j<POS_MAX; j++){
-    d_vct[j] = nBoxSize[j]/2 - com_sys[j];
-  }
-  int tmpR[POS_MAX];//Vectors to store coordinates before and after.
-  //Firstly let's move all the beads, and empty the lattice out.
-  for(i=0; i < tot_beads; i++){
-    for(j=0; j<POS_MAX; j++){
-      tmpR[j] = bead_info[i][j];
-      bead_info[i][j] = (tmpR[j] + d_vct[j] + nBoxSize[j]) % nBoxSize[j];
-    }
-      naTotLattice[LtIndV(tmpR)] = -1;//Removing every bead from where it was.
-  }
-  //Now that all the beads are in the right place. Fill the lattice.
-  for(i=0; i < tot_beads; i++){
-    for(j=0; j<POS_MAX; j++){
-      tmpR[j] = bead_info[i][j];
-    }
-      naTotLattice[LtIndV(tmpR)] = i;//Placing everything back.
-  }
-
-}

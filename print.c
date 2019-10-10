@@ -551,7 +551,7 @@ void Print_Data(long nGen, int run_it){
         }
         if (nReport[REPORT_NETWORK] != 0){//SysProp is printed outside of this function in main.c, lol
             if (nGen % nReport[REPORT_NETWORK] == 0 && nGen > nSteps/2){
-                avg_clus_dist(naList);
+                Clus_Distribution_Avg(naList);
                 CalcTotGyrRad();
             }
         }
@@ -617,7 +617,7 @@ void Print_Data(long nGen, int run_it){
             }
             if (nReport[REPORT_NETWORK] != 0){//SysProp is printed outside of this function in main.c, lol
                 if (nGen % nReport[REPORT_NETWORK] == 0 && nGen > nSteps/2){
-                    avg_clus_dist(naList);
+                    Clus_Distribution_Avg(naList);
                     CalcTotGyrRad();
                 }
             }

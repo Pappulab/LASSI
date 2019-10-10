@@ -636,7 +636,7 @@ int Move_Clus(float MyTemp){
   float oldEn, newEn, MCProb;
   oldEn = 0.0; newEn = 0.0;
 
-  ClusSize = clus_network_analysis(naList, naCluster);//Second largest cluster;
+  ClusSize = Clus_SecondLargestCluster(naList, naCluster);//Second largest cluster;
 
   if(ClusSize != -1){
     //Radii for translation moves. All moves are L/2 radius
@@ -691,7 +691,7 @@ int Move_SmallClus(int chainID, float MyTemp){
   float oldEn, newEn, MCProb;
   oldEn = 0.0; newEn = 0.0;
   //printf("Beginning CLUS\n");
-  ClusSize = chain_network_small(chainID, naList);//Looking at everything that is connected to chainID
+  ClusSize = Clus_LimitedCluster(chainID, naList);//Looking at everything that is connected to chainID
   //Remember that naList[] contains the chainID's of the network chainID is part of from 0 - ClusSize-1.
   //printf("Done with network\t %d\n", ClusSize);
   if(ClusSize >= 1){

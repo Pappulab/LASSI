@@ -3,10 +3,11 @@
 
 #include "global.h"
 
-int chain_network(int chainID, int naList[MAX_CHAINS]);
-int chain_network_for_tot(int chainID, int *naList);
-int chain_network_small(int chainID, int naList[MAX_CHAINS]);
-void avg_clus_dist(int naList[MAX_CHAINS]);
-int clus_network_analysis(int naList[MAX_CHAINS], int naCluster[MAX_CHAINS][MAX_CHAINS]);
+int Clus_ChainNetwork_General(int chainID, int *naList);
+int Clus_ChainNetwork_ForTotal(int chainID, int *naList);
+int Clus_LimitedCluster(int chainID, int *naList);
+void Clus_Distribution_Avg(int *naList);
+int Clus_SecondLargestCluster(int *naList, int **naCluster);
+void Clus_TotalAnalysis(int *naList, int **naCluster);
 
 #endif // _CLUSTER_H_

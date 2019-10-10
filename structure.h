@@ -14,5 +14,5 @@ int ShakeConstraint(int beadID, int tmpR[MAX_VALENCY][POS_MAX]);
 int Check_System_Structure(void);
 void avg_rdf_split(void);
 void CalcTotGyrRad(void);
-void CenterMySystem(void);
+
 #endif // _STRUCTURE_H_
