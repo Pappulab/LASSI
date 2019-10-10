@@ -8,25 +8,25 @@
 int MC_Step(float fMCTemp);
 int MC_Step_Equil(float fMCTemp);
 
-int RotMCMove(int beadID, float MyTemp);
-int LocalMCMove(int beadID, float MyTemp);
-int SlitherMCMove(int chainID, float MyTemp);
-int TransMCMove(int chainID, float MyTemp);
-int ClusMCMove(float MyTemp);
-int SmallClusMCMove(int chainID, float MyTemp);
-int DbPvtMCMove(int beadID, float MyTemp);
-int CoLocalMove(int beadID, float MyTemp);
-int ShakeMove(int beadID, float MyTemp);
-int PivotMCMove(int chainID, float MyTemp);
-int BranchedRotMCMove(int chainID, float MyTemp);
+int Move_Rot(int beadID, float MyTemp);
+int Move_Local(int beadID, float MyTemp);
+int Move_Snake(int chainID, float MyTemp);
+int Move_Trans(int chainID, float MyTemp);
+int Move_Clus(float MyTemp);
+int Move_SmallClus(int chainID, float MyTemp);
+int Move_DbPvt(int beadID, float MyTemp);
+int Move_CoLocal(int beadID, float MyTemp);
+int Move_MultiLocal(int beadID, float MyTemp);
+int Move_Pivot(int chainID, float MyTemp);
+int Move_BranchedRot(int chainID, float MyTemp);
 
-int LocalMCMove_Equil(int beadID, float MyTemp);
-int SlitherMCMove_Equil(int chainID, float MyTemp);
-int TransMCMove_Equil(int chainID, float MyTemp);
-int ShakeMove_Equil(int beadID, float MyTemp);
-int PivotMCMove_Equil(int chainID, float MyTemp);
+int Move_Local_Equil(int beadID, float MyTemp);
+int Move_Snake_Equil(int chainID, float MyTemp);
+int Move_Trans_Equil(int chainID, float MyTemp);
+int Move_MultiLocal_Equil(int beadID, float MyTemp);
+int Move_Pivot_Equil(int chainID, float MyTemp);
 int PivotMCMove_Equil2(int chainID, float MyTemp);
-int BranchedRotMCMove_Equil(int chainID, float MyTemp);
+int Move_BranchedRot_Equil(int chainID, float MyTemp);
 
 void disp_chain(int chainID, const int movR[]);
 void trans_disp_chain(int chainID, const int movR[]);

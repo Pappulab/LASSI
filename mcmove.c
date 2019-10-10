@@ -22,66 +22,66 @@ int MC_Step(float fMCTemp) {
     //Translation
     case MV_TRANS:
       i = rand() % tot_chains; //Pick random chain
-      nAccept = TransMCMove(i, fMCTemp);
+      nAccept = Move_Trans(i, fMCTemp);
       break;
 
     //Cluster translation
     case MV_CLSTR:
-        nAccept = ClusMCMove(fMCTemp);
+        nAccept = Move_Clus(fMCTemp);
       break;
 
     //Cluster translation iff ClusSize <= 5
     case MV_SMCLSTR:
       i = rand() % tot_chains;//Pick a random chain
-      nAccept = SmallClusMCMove(i, fMCTemp);
+      nAccept = Move_SmallClus(i, fMCTemp);
       break;
 
     //Change Rotational State
     case MV_STROT:
       i = rand() % tot_beads;
-      nAccept = RotMCMove(i, fMCTemp);
+      nAccept = Move_Rot(i, fMCTemp);
       break;
 
     //Local Move
     case MV_LOCAL:
       i = rand() % tot_beads;
-      nAccept = LocalMCMove(i, fMCTemp);
+      nAccept = Move_Local(i, fMCTemp);
       break;
 
     //Slithering Snake
     case MV_SNAKE:
       i = rand() % tot_chains;
-      nAccept = SlitherMCMove(i, fMCTemp);
+      nAccept = Move_Snake(i, fMCTemp);
       break;
 
     //Double Pivot
     case MV_DBPVT:
       i = rand() % tot_beads;//Pick a random bead
-      nAccept = DbPvtMCMove(i, fMCTemp);
+      nAccept = Move_DbPvt(i, fMCTemp);
       break;
 
     //Co-Local
     case MV_COLOCAL:
       i = rand() % tot_beads;//Pick a random bead
-      nAccept = CoLocalMove(i, fMCTemp);
+      nAccept = Move_CoLocal(i, fMCTemp);
       break;
 
     //Shake Move
     case MV_MTLOCAL:
       i = rand() % tot_beads;
-      nAccept = ShakeMove(i, fMCTemp);
+      nAccept = Move_MultiLocal(i, fMCTemp);
       break;
 
     //Pivot
     case MV_PIVOT:
       i = rand() % tot_chains;
-      nAccept = PivotMCMove(i, fMCTemp);
+      nAccept = Move_Pivot(i, fMCTemp);
       break;
 
     //Branched Rotation
     case MV_BRROT:
       i = rand() % tot_chains;
-      nAccept = BranchedRotMCMove(i, fMCTemp);
+      nAccept = Move_BranchedRot(i, fMCTemp);
       break;
 
     default:
@@ -112,17 +112,17 @@ int MC_Step_Equil(float fMCTemp) {
     // translation of a random chain
     case MV_TRANS:
       i = rand() % tot_chains; //Pick random chain
-      nAccept = TransMCMove_Equil(i, fMCTemp);
+      nAccept = Move_Trans_Equil(i, fMCTemp);
       break;
 
     // cluster translation: moves largest cluster to another spot.
     case MV_CLSTR:
-        nAccept = ClusMCMove(fMCTemp);
+        nAccept = Move_Clus(fMCTemp);
       break;
 
     case MV_SMCLSTR:
       i = rand() % tot_chains;//Pick a random chain
-      nAccept = SmallClusMCMove(i, fMCTemp);
+      nAccept = Move_SmallClus(i, fMCTemp);
       break;
 
     // face change
@@ -134,19 +134,19 @@ int MC_Step_Equil(float fMCTemp) {
     // local moves
     case MV_LOCAL:
       i = rand() % tot_beads;
-          nAccept = LocalMCMove_Equil(i, fMCTemp);
+          nAccept = Move_Local_Equil(i, fMCTemp);
       break;
 
     // slithering snake
     case MV_SNAKE:
         i = rand() % tot_chains;
-          nAccept = SlitherMCMove_Equil(i, fMCTemp);
+          nAccept = Move_Snake_Equil(i, fMCTemp);
         break;
 
     // double pivot
     case MV_DBPVT:
       i = rand() % tot_beads;//Pick a random bead
-      nAccept = DbPvtMCMove(i, fMCTemp);
+      nAccept = Move_DbPvt(i, fMCTemp);
       break;
 
     // co-local
@@ -157,19 +157,19 @@ int MC_Step_Equil(float fMCTemp) {
     // shake
     case MV_MTLOCAL:
       i = rand() % tot_beads;
-          nAccept = ShakeMove_Equil(i, fMCTemp);
+          nAccept = Move_MultiLocal_Equil(i, fMCTemp);
       break;
 
     // pivot
     case MV_PIVOT:
     i = rand() % tot_chains;
-          nAccept = PivotMCMove_Equil(i, fMCTemp);
+          nAccept = Move_Pivot_Equil(i, fMCTemp);
     break;
 
     // branched rotate
     case MV_BRROT:
         i = rand() % tot_chains;
-          nAccept = BranchedRotMCMove_Equil(i, fMCTemp);
+          nAccept = Move_BranchedRot_Equil(i, fMCTemp);
         break;
 
     default:
@@ -181,7 +181,7 @@ int MC_Step_Equil(float fMCTemp) {
   return mode*12+nAccept;
 }
 
-int RotMCMove(int beadID, float MyTemp){
+int Move_Rot(int beadID, float MyTemp){
   //Performs a rotational MC-Move on beadID
   int bAccept; //Used in MC steps
   int resi, resj; //To track bead types.
@@ -233,7 +233,7 @@ int RotMCMove(int beadID, float MyTemp){
     }
 }
 
-int LocalMCMove(int beadID, float MyTemp){//Performs a local translation MC-move on beadID
+int Move_Local(int beadID, float MyTemp){//Performs a local translation MC-move on beadID
 
   int bAccept = 0; //Used in MC steps
   float MCProb, oldEn, newEn; //For Metropolis Hastings
@@ -251,8 +251,8 @@ int LocalMCMove(int beadID, float MyTemp){//Performs a local translation MC-move
   }
   //Initialize the radii for the search of next trial location
   //For now just +-2
-  lRadLow = linker_len[beadID][0];
-  //lRadLow = 2;
+  //lRadLow = linker_len[beadID][0];
+  lRadLow = 2;
   lRadUp  = lRadLow*2 + 1;//2*2+1
 
   xTemp = 0; yTemp = 0;//Initialize these guys.
@@ -326,7 +326,7 @@ int LocalMCMove(int beadID, float MyTemp){//Performs a local translation MC-move
   }
 }
 
-int SlitherMCMove(int chainID, float MyTemp){//Performs a slither MC-move on chainID
+int Move_Snake(int chainID, float MyTemp){//Performs a slither MC-move on chainID
 
   int firstB, lastB;//Track first and last+1 bead of chainID. Makes reading easier.
   int bAccept = 0; //Used in MC steps
@@ -524,7 +524,7 @@ int SlitherMCMove(int chainID, float MyTemp){//Performs a slither MC-move on cha
         }
 }
 
-int TransMCMove(int chainID, float MyTemp){//Performs a translation move with orientational bias
+int Move_Trans(int chainID, float MyTemp){//Performs a translation move with orientational bias
   int bAccept = 0; //Used in MC steps
   float MCProb, oldEn, newEn; //For Metropolis Hastings
   oldEn = 0.; newEn = 0.;
@@ -625,7 +625,7 @@ int TransMCMove(int chainID, float MyTemp){//Performs a translation move with or
 
 }
 
-int ClusMCMove(float MyTemp){
+int Move_Clus(float MyTemp){
   //Attempts to move the second largest cluster
 
   int bAccept = 0; //Used in MC steps, assume that move fails initially.
@@ -680,7 +680,7 @@ int ClusMCMove(float MyTemp){
   return bAccept;
 }
 
-int SmallClusMCMove(int chainID, float MyTemp){
+int Move_SmallClus(int chainID, float MyTemp){
   //Performs a cluster move where a given chain and it's cluster are moved. No new 'bonds' are made so the move is reversible....
 
   int bAccept = 0; //Used in MC steps, assume that move fails initially.
@@ -738,7 +738,7 @@ int SmallClusMCMove(int chainID, float MyTemp){
   return bAccept;
 }
 
-int DbPvtMCMove(int beadID, float MyTemp){//Performs a double-pivot move.
+int Move_DbPvt(int beadID, float MyTemp){//Performs a double-pivot move.
   /* Molecule MUST be LINEAR
   The move requires selecting a random bead, which is beadID. Then, we'll search the lattice in +-2 sites around beadID.
   Let i be the position of beadID along it's chain. Let i' denote same position along another chain of the same type. We want
@@ -867,7 +867,7 @@ int DbPvtMCMove(int beadID, float MyTemp){//Performs a double-pivot move.
     }//*/
 }
 
-int CoLocalMove(int beadID, float MyTemp){
+int Move_CoLocal(int beadID, float MyTemp){
   /*
   Translate a bead and its partner in tandem. If no partner, reject move.
   */
@@ -928,7 +928,7 @@ int CoLocalMove(int beadID, float MyTemp){
   }
 }
 
-int ShakeMove(int beadID, float MyTemp){
+int Move_MultiLocal(int beadID, float MyTemp){
     int topIt; //Iterator for topo_info
     int i,j; //Loop iterators
     int curID; //current bead being looked at
@@ -1103,7 +1103,7 @@ int ShakeMove(int beadID, float MyTemp){
     }
 }
 
-int PivotMCMove(int chainID, float MyTemp){
+int Move_Pivot(int chainID, float MyTemp){
   //Performs a pivot move on chainID
   /*
   Randomly pick a bead in this chain (anchorBead), and perform a symmetry operation on the beads after the anchorBead. Note that if anchorBead is the second-to-last, or last, bead, the move is rejected. Local and slither moves would be better for those.
@@ -1277,9 +1277,9 @@ int PivotMCMove(int chainID, float MyTemp){
   }
 }
 
-int BranchedRotMCMove(int chainID, float MyTemp){
+int Move_BranchedRot(int chainID, float MyTemp){
       //Rotates a branched molecule about the branching, which is assumed to be the firstB of chainID
-      //Performs a PivotMCMove() on molecule where the rotation occurs around firstB
+      //Performs a Move_Pivot() on molecule where the rotation occurs around firstB
       /*
       Set the first bead as anchorBead, and perform a symmetry operation on the beads after the anchorBead (the whole molecule). Note that if the molecule is linear, the move is outright rejected. Again, it is assumed that the first bead in that molecule is the 'node'.
       */
@@ -1419,7 +1419,7 @@ int BranchedRotMCMove(int chainID, float MyTemp){
       }
 }
 
-int LocalMCMove_Equil(int beadID, float MyTemp){//Performs a local translation MC-move on beadID
+int Move_Local_Equil(int beadID, float MyTemp){//Performs a local translation MC-move on beadID
 
   int bAccept = 0; //Used in MC steps
   float MCProb, oldEn, newEn; //For Metropolis Hastings
@@ -1474,7 +1474,7 @@ int LocalMCMove_Equil(int beadID, float MyTemp){//Performs a local translation M
     }
 }
 
-int SlitherMCMove_Equil(int chainID, float MyTemp){//Performs a slither MC-move on chainID
+int Move_Snake_Equil(int chainID, float MyTemp){//Performs a slither MC-move on chainID
 
   int firstB, lastB;//Track first and last+1 bead of chainID. Makes reading easier.
   int bAccept = 0; //Used in MC steps
@@ -1615,7 +1615,7 @@ int SlitherMCMove_Equil(int chainID, float MyTemp){//Performs a slither MC-move 
       }
 }
 
-int TransMCMove_Equil(int chainID, float MyTemp){//Performs a translation move with orientational bias
+int Move_Trans_Equil(int chainID, float MyTemp){//Performs a translation move with orientational bias
   int bAccept = 0; //Used in MC steps
   float MCProb, oldEn, newEn; //For Metropolis Hastings
   oldEn = 0.; newEn = 0.;
@@ -1667,7 +1667,7 @@ int TransMCMove_Equil(int chainID, float MyTemp){//Performs a translation move w
 
 }
 
-int ShakeMove_Equil(int beadID, float MyTemp){
+int Move_MultiLocal_Equil(int beadID, float MyTemp){
 
   int topIt; //Iterator for topo_info
   int i,j; //Loop iterators
@@ -1781,7 +1781,7 @@ int ShakeMove_Equil(int beadID, float MyTemp){
 
 }
 
-int PivotMCMove_Equil(int chainID, float MyTemp){
+int Move_Pivot_Equil(int chainID, float MyTemp){
     //Performs a pivot move on chainID
     /*
     Randomly pick a bead in this chain (anchorBead), and perform a symmetry operation on the beads after the anchorBead. Note that if anchorBead is the second-to-last, or last, bead, the move is rejected. Local and slither moves would be better for those.
@@ -1895,9 +1895,9 @@ int PivotMCMove_Equil(int chainID, float MyTemp){
     }
 }
 
-int BranchedRotMCMove_Equil(int chainID, float MyTemp){
+int Move_BranchedRot_Equil(int chainID, float MyTemp){
       //Rotates a branched molecule about the branching, which is assumed to be the firstB of chainID
-      //Performs a PivotMCMove() on molecule where the rotation occurs around firstB
+      //Performs a Move_Pivot() on molecule where the rotation occurs around firstB
       /*
       Set the first bead as anchorBead, and perform a symmetry operation on the beads after the anchorBead (the whole molecule). Note that if the molecule is linear, the move is outright rejected. Again, it is assumed that the first bead in that molecule is the 'node'.
       */
@@ -2020,7 +2020,7 @@ void disp_chain(int chainID, const int movR[]){
 
 void trans_disp_chain(int chainID, const int movR[]){
   //Displaces current chain by movR and handles lattice
-  //Specific for TransMCMove because it breaks old bonds!
+  //Specific for Move_Trans because it breaks old bonds!
   //Also remembers where everything was moved and saves into old_bead
 
   int i, l;
@@ -2151,19 +2151,6 @@ void move_bead_to_shake(int beadID, const int newPos[]){//Updates position to ne
         bead_info[i][BEAD_FACE] = -1;
         bead_info[beadID][BEAD_FACE] = -1;
     }
-}
-
-inline int check_disp_bead(int beadID, const int movR[]){//Checks if bead can be displaced by tmpR
-  int l;
-  int canI = 1;
-  int tmpR[POS_MAX];
-  for (l=0; l<POS_MAX; l++){
-  tmpR[l] = (bead_info[beadID][l] + movR[l] + nBoxSize[l]) % nBoxSize[l];//Where we want to go
-  }
-  if (naTotLattice[LtIndV(tmpR)] != -1){
-    canI = 0;//There's something here already, brah
-  }
-  return canI;
 }
 
 void swap_beads(int bead1, int bead2){

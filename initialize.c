@@ -301,7 +301,7 @@ void Initial_Conditions_Simple(void){
         for(j=0; j<POS_MAX; j++){//Placing bead
           bead_info[bondPart][j] = tmpR2[j];
         }
-        //printf("\tFor chain %d. Placed bead %d while working on %d.\t%d\t%d\n", k, bondPart, i, list_it, linker_len[i][idx] );
+
         naTotLattice[LtIndV(tmpR2)] = bondPart;//Putting on lattice
         temp_list[list_it] = bondPart; list_it++;//Remembering in hash list.
         SkipThisPartner:
@@ -314,7 +314,7 @@ void Initial_Conditions_Simple(void){
   }
     //Initializing all beads with no physical bonds.
     for (i=0; i < tot_beads; i++){
-      bead_info[i][BEAD_FACE] = -1;//rand() % 6;
+      bead_info[i][BEAD_FACE] = -1;
     }
 }
 
@@ -326,7 +326,7 @@ void Calculate_Rot_Bias(float CurrentTemp){
             dbias_bolt_fac[i][j] = expf(-fEnergy[i][j][E_SC_SC] / CurrentTemp);
         }
     }
-    //TODO: Make sure that fRot_Bias can be used in the future to set a solvent anisotropy
+    //TODO: Make sure that fRot_Bias can be used in the future to set a solvent 'anisotropy'
     fRot_Bias = expf(-f_globRotBias / CurrentTemp);
 
 }
