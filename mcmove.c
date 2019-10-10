@@ -188,7 +188,7 @@ int RotMCMove(int beadID, float MyTemp){
   //Firstly -- make sure that bead i can even have rotational states.
   resi = bead_info[beadID][BEAD_TYPE];
   //printf("Beginning ROT\n");
-  if(TypeCanRot[resi] == 0){//Skip beads that cannot rotate!
+  if(nBeadTypeIsSticker[resi] == 0){//Skip beads that cannot rotate!
     bAccept = 0;
     return bAccept;
     }
@@ -274,7 +274,7 @@ int LocalMCMove(int beadID, float MyTemp){//Performs a local translation MC-move
   else{//Have successfully found a good lattice spot. Let's perform the usual Metropolis-Hastings shenanigans.
     resi = bead_info[beadID][BEAD_TYPE];//I want to treat linker beads differently always because they have no rotational states
     oldEn = energy_cont_and_ovlp(beadID);
-    if (TypeCanRot[resi] == 1){//Only non linkers can bond
+    if (nBeadTypeIsSticker[resi] == 1){//Only non linkers can bond
       if (bead_info[beadID][BEAD_FACE] != -1){
         resj = bead_info[bead_info[beadID][BEAD_FACE]][BEAD_TYPE];//This is type of who I'm currently bonded to
         oldEn += fEnergy[resi][resj][E_SC_SC];
@@ -339,7 +339,7 @@ int SlitherMCMove(int chainID, float MyTemp){//Performs a slither MC-move on cha
     return bAccept;
   }
   else{
-    if(TypeIsLinear[chain_info[chainID][CHAIN_TYPE]] != 1){//If chain is not linear. Reject move because slithering will not work!
+    if(nChainTypeIsLinear[chain_info[chainID][CHAIN_TYPE]] != 1){//If chain is not linear. Reject move because slithering will not work!
       bAccept = 0;
       return bAccept;
     }
@@ -399,7 +399,7 @@ int SlitherMCMove(int chainID, float MyTemp){//Performs a slither MC-move on cha
     for (i=firstB; i<lastB; i++){
       resi = bead_info[i][BEAD_TYPE];
       oldEn += energy_cont_and_ovlp(i);
-    if (TypeCanRot[resi] == 0){//Skip beads that don't interact
+    if (nBeadTypeIsSticker[resi] == 0){//Skip beads that don't interact
       continue;
     }
     if (bead_info[i][BEAD_FACE] != -1){//I am bonded to something
@@ -469,7 +469,7 @@ int SlitherMCMove(int chainID, float MyTemp){//Performs a slither MC-move on cha
      for (i=firstB; i<lastB; i++){//Counting states in the new location
          resi = bead_info[i][BEAD_TYPE];
          newEn += energy_cont_and_ovlp(i);
-         if (TypeCanRot[resi] == 0){//Skip non-bonders
+         if (nBeadTypeIsSticker[resi] == 0){//Skip non-bonders
          continue;
          }
         ShuffleRotIndecies();
@@ -561,7 +561,7 @@ int TransMCMove(int chainID, float MyTemp){//Performs a translation move with or
   for (i = firstB; i < lastB; i++){//Rosenbluth in old location.
     resi = bead_info[i][BEAD_TYPE];
     oldEn += energy_cont_and_ovlp(i);
-    if (TypeCanRot[resi] != 1){//Skip beads that cannot bond.
+    if (nBeadTypeIsSticker[resi] != 1){//Skip beads that cannot bond.
       continue;
       }
 
@@ -587,7 +587,7 @@ int TransMCMove(int chainID, float MyTemp){//Performs a translation move with or
   for (i = firstB; i < lastB; i++){//Rosenbluth in new location
     resi = bead_info[i][BEAD_TYPE];
     newEn += energy_cont_and_ovlp(i);
-    if (TypeCanRot[resi] != 1){//Because linkers don't have rotational states
+    if (nBeadTypeIsSticker[resi] != 1){//Because linkers don't have rotational states
       continue;
       }
 
@@ -751,7 +751,7 @@ int DbPvtMCMove(int beadID, float MyTemp){//Performs a double-pivot move.
     int PType  = chain_info[PChainID][CHAIN_TYPE];//Type of chain.
     int PStart = chain_info[PChainID][CHAIN_START];//Start of this chain.
     int PEnd   = PStart + chain_info[PChainID][CHAIN_LENGTH];//LastBead+1 for this chain.
-    if(TypeIsLinear[PType] == 0){
+    if(nChainTypeIsLinear[PType] == 0){
       //Reject the move because the chain is not linear.
       return bAccept;
     }
@@ -1004,7 +1004,7 @@ int ShakeMove(int beadID, float MyTemp){
     while (curID != -1){
         resi = bead_info[curID][BEAD_TYPE];
         oldEn += energy_cont_and_ovlp(curID);
-    if (TypeCanRot[resi] != 1){//Skip non-interactors
+    if (nBeadTypeIsSticker[resi] != 1){//Skip non-interactors
         curID = topo_info[beadID][topIt++];
         continue;
     }
@@ -1045,7 +1045,7 @@ int ShakeMove(int beadID, float MyTemp){
     while (curID != -1){
         resi   = bead_info[curID][BEAD_TYPE];
         newEn += energy_cont_and_ovlp(curID);
-        if (TypeCanRot[resi] != 1){//Skip non-interactors
+        if (nBeadTypeIsSticker[resi] != 1){//Skip non-interactors
             curID = topo_info[beadID][topIt++];
             continue;
         }
@@ -1113,7 +1113,7 @@ int PivotMCMove(int chainID, float MyTemp){
   int bAccept = 0;
   //Check if the chain is longer than 3 or if it is linear
   int chainLength = chain_info[chainID][CHAIN_LENGTH];
-  if(chainLength <=3 || TypeIsLinear[chain_info[chainID][CHAIN_TYPE]] != 1){
+  if(chainLength <=3 || nChainTypeIsLinear[chain_info[chainID][CHAIN_TYPE]] != 1){
     bAccept = 0;
     return bAccept;
   }
@@ -1192,7 +1192,7 @@ int PivotMCMove(int chainID, float MyTemp){
       i      = tmpList[j];
       resi   = bead_info[i][BEAD_TYPE];
       oldEn += energy_cont_and_ovlp(i);
-      if (TypeCanRot[resi] != 1){//Skip beads that cannot bond.
+      if (nBeadTypeIsSticker[resi] != 1){//Skip beads that cannot bond.
           continue;
       }
   if (bead_info[i][BEAD_FACE] != -1){//I am bonded to something
@@ -1229,7 +1229,7 @@ int PivotMCMove(int chainID, float MyTemp){
       i  = tmpList[j];
       resi = bead_info[i][BEAD_TYPE];
       newEn += energy_cont_and_ovlp(i);
-      if (TypeCanRot[resi] != 1){//Because linkers don't have rotational states
+      if (nBeadTypeIsSticker[resi] != 1){//Because linkers don't have rotational states
           continue;
       }
       ShuffleRotIndecies();
@@ -1285,7 +1285,7 @@ int BranchedRotMCMove(int chainID, float MyTemp){
       */
       int bAccept = 0;
       //Reject if the molecule is linear
-      if(TypeIsLinear[chain_info[chainID][CHAIN_TYPE]] == 1){
+      if(nChainTypeIsLinear[chain_info[chainID][CHAIN_TYPE]] == 1){
         bAccept = 0;
         return bAccept;
       }
@@ -1341,7 +1341,7 @@ int BranchedRotMCMove(int chainID, float MyTemp){
       for (i=anchorBead+1; i<lastB; i++){
           resi = bead_info[i][BEAD_TYPE];
           oldEn += energy_cont_and_ovlp(i);
-          if (TypeCanRot[resi] != 1){//Skip beads that cannot bond.
+          if (nBeadTypeIsSticker[resi] != 1){//Skip beads that cannot bond.
             continue;
           }
       if (bead_info[i][BEAD_FACE] != -1){//I am bonded to something
@@ -1374,7 +1374,7 @@ int BranchedRotMCMove(int chainID, float MyTemp){
          for (i=anchorBead+1; i < lastB; i++){//Counting states in the new location
              resi = bead_info[i][BEAD_TYPE];
              newEn += energy_cont_and_ovlp(i);
-             if (TypeCanRot[resi] != 1){//Because linkers don't have rotational states
+             if (nBeadTypeIsSticker[resi] != 1){//Because linkers don't have rotational states
               continue;
              }
           ShuffleRotIndecies();
@@ -1487,7 +1487,7 @@ int SlitherMCMove_Equil(int chainID, float MyTemp){//Performs a slither MC-move 
     return bAccept;
   }
   else{
-    if(TypeIsLinear[chain_info[chainID][CHAIN_TYPE]] != 1){//If chain is not linear. Reject move because slithering will not werk!
+    if(nChainTypeIsLinear[chain_info[chainID][CHAIN_TYPE]] != 1){//If chain is not linear. Reject move because slithering will not werk!
       bAccept = 0;
       return bAccept;
     }
@@ -1791,7 +1791,7 @@ int PivotMCMove_Equil(int chainID, float MyTemp){
     int bAccept = 0;
     //Check if the chain is longer than 3 or if it is linear
     int chainLength = chain_info[chainID][CHAIN_LENGTH];
-    if(chainLength <=3 || TypeIsLinear[chain_info[chainID][CHAIN_TYPE]] != 1){
+    if(chainLength <=3 || nChainTypeIsLinear[chain_info[chainID][CHAIN_TYPE]] != 1){
         bAccept = 0;
         return bAccept;
     }
@@ -1903,7 +1903,7 @@ int BranchedRotMCMove_Equil(int chainID, float MyTemp){
       */
       int bAccept = 0;
       //Reject if the molecule is linear
-      if(TypeIsLinear[chain_info[chainID][CHAIN_TYPE]] == 1){
+      if(nChainTypeIsLinear[chain_info[chainID][CHAIN_TYPE]] == 1){
         bAccept = 0;
         return bAccept;
       }

@@ -101,17 +101,17 @@ void MemoryAndBookkeepingInit(void){
 
       //Checking which bead types interact rotationally and via overlap, separately.
   for(i = 0;i<MAX_AA;i++){
-      TypeCanRot[i] = 0;//Assume beads don't rotationally interact.
-      TypeCanOvlp[i] = 0;//Assume beads don't have an overlap cost
+      nBeadTypeIsSticker[i] = 0;//Assume beads don't rotationally interact.
+      nBeadTypeCanOvlp[i] = 0;//Assume beads don't have an overlap cost
   }
 
   for(i = 0; i < MAX_AA;i++){
     for(j = 0; j < MAX_AA;j++){
       if (fEnergy[i][j][E_SC_SC] != 0.0){//Seeing if this beadType rotationally interacts.
-        TypeCanRot[i] = 1;
+        nBeadTypeIsSticker[i] = 1;
       }
       if (fEnergy[i][j][E_OVLP] != 0.0){//Seeing if this beadType rotationally interacts.
-        TypeCanOvlp[i] = 1;
+        nBeadTypeCanOvlp[i] = 1;
       }
     }
   }

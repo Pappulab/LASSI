@@ -405,7 +405,7 @@ void parse_strucfile(char* filename){
 
   if (nFlag == 1){//This signifies that a new molecule has started
     //It's assumed that the next line contains the number of copies for this molecule.
-      nChainType++; TypeIsLinear[nChainType] = 1;//Assume all chains are linear to begin with.
+      nChainType++; nChainTypeIsLinear[nChainType] = 1;//Assume all chains are linear to begin with.
       nChainStart+=nBEADS;
       nChainID++;
       tot_chains++;
@@ -429,7 +429,7 @@ void parse_strucfile(char* filename){
 
         if(curPartner != -1){//This bead has a bonded partner
           if(nCursor > 1){//This signifies that the chain is not linear because a bead has more than two bonds because indecies start at 0
-            TypeIsLinear[nChainType] = 0;
+            nChainTypeIsLinear[nChainType] = 0;
           }
           curPartner += nChainStart;//Accounts for all beads before, like above.
           topo_info[curID][nCursor] = curPartner;//Adding the ID of the partner

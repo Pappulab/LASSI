@@ -66,23 +66,25 @@
 #define CHAIN_START    2
 #define CHAININFO_MAX  3
 
-#define RDF_MAXBINS     3000
+#define RDF_MAXBINS     5000
 #define TEMP_CYCLES_MAX 30
 #define RDF_COMPS       22
 #define MAX_ROTSTATES   27
 
 
 
-// configurations
 typedef int lInt;
 typedef long lLong;
 typedef double lDub;
 typedef  long double lLDub;
+
+// configurations and structural info
 lInt   bead_info[MAX_BEADS][BEADINFO_MAX];
 lInt   old_bead[MAX_BEADS][BEADINFO_MAX]; //Redundant copy for MCSteps
 lInt   linker_len[MAX_BEADS][MAX_BONDS];//Remember that this one is an INT, not float
 lInt   topo_info[MAX_BEADS][MAX_BONDS];
 lInt   chain_info[MAX_CHAINS][CHAININFO_MAX];
+
 lInt   tot_beads;
 lInt   tot_chains;
 lInt   Temp_Mode;
@@ -105,9 +107,9 @@ lDub  dbias_bolt_fac[MAX_AA][MAX_AA];//For pre-calculating the factors.
 float   faCurrEn[MAX_E]; //Vector for current energy
 
 //Arrays to track certain topology and interaction information
-lInt TypeCanRot[MAX_AA];//Used to track if that beadType interacts via rotations.
-lInt TypeIsLinear[MAX_CHAINTYPES];//Used to track if this chainType is linear.
-lInt TypeCanOvlp[MAX_AA];//Used to track if a certain beadType has an overlap cost.
+lInt nBeadTypeIsSticker[MAX_AA];//Used to track if that beadType interacts via rotations.
+lInt nChainTypeIsLinear[MAX_CHAINTYPES];//Used to track if this chainType is linear.
+lInt nBeadTypeCanOvlp[MAX_AA];//Used to track if a certain beadType has an overlap cost.
 
 float fLinkerLength;
 float fLinkerSprCon;

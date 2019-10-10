@@ -66,7 +66,7 @@ float energy_cont_and_ovlp(int beadID){//Calculate Contact and Overlap energy of
   }
 
   int resi  = bead_info[beadID][BEAD_TYPE];
-  if (TypeCanOvlp[resi] == 0){
+  if (nBeadTypeCanOvlp[resi] == 0){
     return totEn;
   }//No need to do antying if there's no overlap cost.
   int x, y, z; //Lattice indecies
