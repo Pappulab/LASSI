@@ -217,10 +217,10 @@ void print_key(void) { // should be output-dependent (stdout, stderr, other file
   MoveName[MV_DBPVT]   = "Double Pivot    ";
   MoveName[MV_CLSTR]   = "Larger Cluster  ";
   MoveName[MV_SMCLSTR] = "Smaller Cluster ";
-  MoveName[MV_FACEC]   = "Face Change     ";
+  MoveName[MV_STROT]   = "Face Change     ";
   MoveName[MV_LOCAL]   = "Local           ";
   MoveName[MV_COLOCAL] = "Co-local        ";
-  MoveName[MV_SHAKE]   = "Shake           ";
+  MoveName[MV_MTLOCAL]   = "Shake           ";
   MoveName[MV_BRROT]   = "Rotate Branched ";
   MoveName[MV_SNAKE]   = "Slithering Snake";
   MoveName[MV_TRANS]   = "Translation     ";
@@ -390,7 +390,7 @@ void Write_SysProp(char* filename){
   fprintf(fp, "\n#Split RDFs. ALL-ALL; DIAGONALS and then from 0 onwards \n");
   for (j=0; j<RDF_COMPS; j++){
     for (i=0; i<nBins_RDF; i++){
-      fprintf(fp, "%LE\t", ldRDF_ARR[j][i] / (float)nrdfCounter);
+      fprintf(fp, "%LE\t", ldRDF_ARR[j][i] / (float)nRDFCounter);
     }
     fprintf(fp, "\n");
   }
@@ -479,7 +479,7 @@ void Print_Data(long nGen, int run_it){
         else{
             if (nReport[REPORT_LOG] != 0){
                 if (nGen % nReport[REPORT_LOG] == 0){
-                    if(check_structure_topo() == 0){
+                    if(Check_System_Structure() == 0){
                         printf("Structure is still a-okay!\n");
                     }
                     else{
@@ -514,7 +514,7 @@ void Print_Data(long nGen, int run_it){
     if (run_it == 0 && nGen > 0){
         if (nReport[REPORT_LOG] != 0){
             if (nGen % nReport[REPORT_LOG] == 0){
-                if(check_structure_topo() == 0){
+                if(Check_System_Structure() == 0){
                     printf("Structure is still a-okay!\n");
                 }
                 else{
@@ -580,7 +580,7 @@ void Print_Data(long nGen, int run_it){
         else{
             if (nReport[REPORT_LOG] != 0){
                 if (nGen % nReport[REPORT_LOG] == 0){
-                    if(check_structure_topo() == 0){
+                    if(Check_System_Structure() == 0){
                         printf("Structure is still a-okay!\n");
                     }
                     else{
@@ -629,7 +629,7 @@ void Copy_Data(int run_it){
     int i, j;
     for(i = 0; i < RDF_COMPS; i++){
         for (j = 0; j < RDF_MAXBINS; j++) {
-            ld_TOTRDF_ARR[run_it][i][j] = ldRDF_ARR[i][j] / (long double)nrdfCounter;
+            ld_TOTRDF_ARR[run_it][i][j] = ldRDF_ARR[i][j] / (long double)nRDFCounter;
         }
     }
     ld_TOTCLUS_ARR[run_it][0] = (long double)nLargestClusterRightNow / (long double)nTotClusCounter;

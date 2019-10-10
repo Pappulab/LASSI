@@ -89,7 +89,7 @@ int parse_key(char filename[]) {
       } else if (strcmp(strKeyword, "MV_SMALLCLSTR_FREQ") == 0) {
         sscanf(strLine, "%*s %f", &fMCFreq[MV_SMCLSTR]);
       } else if (strcmp(strKeyword, "MV_FACEC_FREQ") == 0) {
-        sscanf(strLine, "%*s %f", &fMCFreq[MV_FACEC]);
+        sscanf(strLine, "%*s %f", &fMCFreq[MV_STROT]);
       } else if (strcmp(strKeyword, "MV_LOCAL_FREQ") == 0) {
         sscanf(strLine, "%*s %f", &fMCFreq[MV_LOCAL]);
       } else if (strcmp(strKeyword, "MV_SNAKE_FREQ") == 0) {
@@ -99,7 +99,7 @@ int parse_key(char filename[]) {
       } else if (strcmp(strKeyword, "MV_COLOCAL_FREQ") == 0) {
         sscanf(strLine, "%*s %f", &fMCFreq[MV_COLOCAL]);
       } else if (strcmp(strKeyword, "MV_SHAKE_FREQ") == 0) {
-        sscanf(strLine, "%*s %f", &fMCFreq[MV_SHAKE]);
+        sscanf(strLine, "%*s %f", &fMCFreq[MV_MTLOCAL]);
       } else if (strcmp(strKeyword, "MV_PIVOT_FREQ") == 0) {
         sscanf(strLine, "%*s %f", &fMCFreq[MV_PIVOT]);
       } else if (strcmp(strKeyword, "MV_BRROT_FREQ") == 0) {
@@ -151,10 +151,6 @@ int parse_key(char filename[]) {
         fMCFreq[i] /= freq_tot;
       }
     }
-    /*
-    for (i=MV_NULL+2; i<MAX_MV; i++) {
-      fMCFreq[i] += fMCFreq[i-1]; // cumulative
-    }*/
 
     if (strEnergyFile[0] != '\0') {
       nErr = parse_en(strEnergyFile);

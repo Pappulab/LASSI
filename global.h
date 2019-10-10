@@ -27,10 +27,10 @@
 
 // MC move parameters
 #define MV_NULL     0 // index zero indicates null move
-#define MV_FACEC    1
+#define MV_STROT    1
 #define MV_LOCAL    2
 #define MV_COLOCAL  3
-#define MV_SHAKE    4
+#define MV_MTLOCAL  4
 #define MV_SNAKE    5
 #define MV_TRANS    6
 #define MV_SMCLSTR  7
@@ -117,6 +117,7 @@ float fLinkerEqLen;
 
 // MC setup
 float fKT, fPreKT, fCuTemp, fRot_Bias, f_globRotBias, fdelta_temp;
+float *fKT_Cycle;
 lLong  nSteps, nPreSteps;
 float fMCFreq[MAX_MV];
 lInt   nMCMaxTrials, nTot_CycleNum;
@@ -149,7 +150,7 @@ lInt nLargestClusterRightNow;
 float fRDF_TOT[RDF_MAXBINS];
 lLDub ldRDF_ARR[RDF_COMPS][RDF_MAXBINS];
 lLDub ld_TOTRDF_ARR[TEMP_CYCLES_MAX][RDF_COMPS][RDF_MAXBINS];
-lInt nrdfCounter;//This counts how many times the RDF has been calculated for averaging at the end.
+lInt nRDFCounter;//This counts how many times the RDF has been calculated for averaging at the end.
 lInt nBins_RDF;
 float fGyrTensor[7];//Gyration tensor
 float fSysGyrRad;//Gyration radius of the system.
@@ -158,7 +159,6 @@ lInt nTotGyrRadCounter;//Counter for total averaging
 
 //Lattice To Remember Things
 lInt *naTotLattice;
-//Random bookkeeping to reduce function overhead
 
 
 #endif // _GLOBAL_H_

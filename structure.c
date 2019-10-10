@@ -58,7 +58,7 @@ float dist(int n1, int n2) {
   return sqrtf((float)(d[POS_X]*d[POS_X] + d[POS_Y]*d[POS_Y] + d[POS_Z]*d[POS_Z]));
 }
 
-int check_structure_topo(void){
+int Check_System_Structure(void){
   int i, j, k;//Looping variables
   int idx, idy;//Internal iterators for covalent bonds.
   int tmpR[POS_MAX];//Just a vector to store coordinates
@@ -372,7 +372,7 @@ void avg_rdf_split(void){
       ldRDF_ARR[array_pos][myBin] += 2.0;
     }
   }
-  nrdfCounter++;
+  nRDFCounter++;
   }
 
 int check_linker_constraint(int beadID, int tmpR[]){

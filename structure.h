@@ -11,7 +11,7 @@ float distInt(int f1[], int f2[]);
 float vectorMag(const int f1[]);
 int check_linker_constraint(int beadID, int tmpR[]);
 int ShakeConstraint(int beadID, int tmpR[MAX_VALENCY][POS_MAX]);
-int check_structure_topo(void);
+int Check_System_Structure(void);
 void avg_rdf_split(void);
 void CalcTotGyrRad(void);
 void CenterMySystem(void);

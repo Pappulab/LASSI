@@ -34,16 +34,17 @@ int main(int argc, char* argv[]) {
 
   clock_t tStart = clock();
 
-  MemoryAndBookkeepingInit();
+  MemoryInitialization();
+  GlobalArrayInitialization();
 
   if (bReadConf == 0) {
-      Initialize_Dilute();
+      Initial_Conditions_Simple();
   } else if (bReadConf == -1) {
     printf("ERROR: no structure information.\n");
     exit(1);
   }
 
-  if (check_structure_topo() == 0) {
+  if (Check_System_Structure() == 0) {
     printf("Check structure sanity: OK\n");
   } else {
     printf("ERROR: wrong structure.\n");
@@ -69,7 +70,6 @@ int main(int argc, char* argv[]) {
   Print_Data(-1,-1);//Initialization of files
   for (nGen = 0; nGen < nPreSteps; nGen++) {//Intentionally not performing any data acquisition in the thermalizing phase
       nMCInfo = MC_Step_Equil(fCuTemp);
-      //printf("Move:\t%d;\tState:\t%d\n", nMCInfo/12, nMCInfo % 12);
       Print_Data(nGen,-1);
   }
 
@@ -80,25 +80,18 @@ printf("----------------------------\n\n");
 The system has thermalized!
 */
   int run_cycle;
-  float temp_cycle[TEMP_CYCLES_MAX];
-  for(run_cycle = 0; run_cycle < nTot_CycleNum; run_cycle++){
-      temp_cycle[run_cycle] = fKT + (float)run_cycle*fdelta_temp;
-  }
-
 
   for(run_cycle = 0; run_cycle < nTot_CycleNum; run_cycle++){
-    fKT = temp_cycle[run_cycle];
-    Calculate_Rot_Bias(temp_cycle[run_cycle]);
+    fKT = fKT_Cycle[run_cycle];//temp_cycle[run_cycle];
+    Calculate_Rot_Bias(fKT_Cycle[run_cycle]);
     Print_Data(-1, run_cycle);
   for(nGen = 0; nGen <= nSteps; nGen++){
     fCuTemp = Temperature_Function(Temp_Mode, nGen);
     nMCInfo = MC_Step(fCuTemp);
-    //printf("Move:\t%d;\tState:\t%d\n", nMCInfo/12, nMCInfo % 12);
     Print_Data(nGen, run_cycle);
   }
   Temp_Mode = -1;
   Copy_Data(run_cycle);
-  //Write_SysProp(fileSysProp);
   Reset_Global_Arrays();
   }
 

@@ -2,39 +2,35 @@
 #include "initialize.h"
 #include "structure.h"
 
-void MemoryAndBookkeepingInit(void){
+void MemoryInitialization(void){
+    int i;
+    naTotLattice      = malloc(nBoxSize[0] * nBoxSize[1] * nBoxSize[2] * sizeof(lInt));
+    naClusHistList    = malloc((1 + tot_chains) * sizeof(lLong));
+    naChainCheckList  = malloc((1 + tot_chains) * sizeof(lInt));
+    fKT_Cycle         = malloc((1+nTot_CycleNum) * sizeof(float));
+    ld_TOTCLUS_ARR    = (lLDub **)malloc((nTot_CycleNum) * sizeof(lLDub));
+    for(i = 0; i < nTot_CycleNum; i++){
+        ld_TOTCLUS_ARR[i] = (lLDub *)malloc((1 + tot_chains) * sizeof(lLDub));
+        if (ld_TOTCLUS_ARR[i] == NULL){
+            printf( "Malloc Failed! Crashing. Probably ran out of memory.\n");
+            exit(1);
+        }
+    }
+
+    if (naTotLattice == NULL || naClusHistList == NULL ||
+        naChainCheckList == NULL) {
+        printf( "Malloc Failed! Crashing. Probably ran out of memory.\n");
+        exit(1);
+    }
+    else {
+        printf("Successfully allocated memory! Arrays initialized.\n");
+    }
+}
+
+void GlobalArrayInitialization(void){
   int i, j, k, xTemp, yTemp, zTemp;//Indecies
   int myCubeLen = 3;
 
-  naTotLattice      = malloc(nBoxSize[0] * nBoxSize[1] * nBoxSize[2] * sizeof(lInt));
-  naClusHistList    = malloc((1 + tot_chains) * sizeof(lLong));
-  naChainCheckList  = malloc((1 + tot_chains) * sizeof(lInt));
-  malloc((1 + tot_chains) * sizeof(lInt));
-  ld_TOTCLUS_ARR    = (lLDub **)malloc((nTot_CycleNum) * sizeof(lLDub));
-  for(i = 0; i < nTot_CycleNum; i++){
-      ld_TOTCLUS_ARR[i] = (lLDub *)malloc((1 + tot_chains) * sizeof(lLDub));
-      if (ld_TOTCLUS_ARR[i] == NULL){
-          printf( "Malloc Failed! Crashing. Probably ran out of memory.\n");
-          exit(1);
-      }
-  }
-  /*k = 0;
-    for(i = 0; i < nTot_CycleNum; i++){
-        for (j = 0; j < tot_chains; j++){
-            ld_TOTCLUS_ARR[i][j] = k++;
-            printf("%d %d %Lf\n", i, j, ld_TOTCLUS_ARR[i][j]);
-        }
-    }
-    exit(1);*/
-
-  if (naTotLattice == NULL || naClusHistList == NULL ||
-    naChainCheckList == NULL) {
-      printf( "Malloc Failed! Crashing. Probably ran out of memory.\n");
-      exit(1);
-    }
-  else {
-      printf("Successfully allocated memory! Arrays initialized.\n");
-  }
   for(i=0; i<nBoxSize[0]*nBoxSize[1]*nBoxSize[2]; i++){//Initializing the lattice
       naTotLattice[i] = -1; //If -1, then there is no bead there.
     }
@@ -94,7 +90,7 @@ void MemoryAndBookkeepingInit(void){
       //Setting counters
     fSysGyrRad=0.;
     nTotGyrRadCounter=0;
-    nrdfCounter=0;
+    nRDFCounter=0;
     nTotClusCounter=0;
     nLargestClusterRightNow=0;
 
@@ -120,6 +116,11 @@ void MemoryAndBookkeepingInit(void){
     if (RotBias_Mode == 1){
         fRot_Bias = expf(-fRot_Bias/fKT);
     }
+
+    for(i = 0; i < nTot_CycleNum; i++){
+        fKT_Cycle[i] = fKT + (float)i*fdelta_temp;
+    }
+
  printf("All setup has been completed!\n");
 }
 
@@ -142,12 +143,12 @@ void Reset_Global_Arrays(void){
     //Setting counters
     fSysGyrRad=0.;
     nTotGyrRadCounter=0;
-    nrdfCounter=0;
+    nRDFCounter=0;
     nTotClusCounter=0;
     nLargestClusterRightNow=0;
 }
 
-void Initialize_Dilute(void){
+void Initial_Conditions_Simple(void){
   /*
   Generates initial conditions for a system with topology information. The idea is to see if the selected bead has been placed or not.
   If it has been placed, we move on to sequentially placing all of it's bonded beads within linker constraints.

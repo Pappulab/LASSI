@@ -37,7 +37,7 @@ int MC_Step(float fMCTemp) {
       break;
 
     //Change Rotational State
-    case MV_FACEC:
+    case MV_STROT:
       i = rand() % tot_beads;
       nAccept = RotMCMove(i, fMCTemp);
       break;
@@ -67,7 +67,7 @@ int MC_Step(float fMCTemp) {
       break;
 
     //Shake Move
-    case MV_SHAKE:
+    case MV_MTLOCAL:
       i = rand() % tot_beads;
       nAccept = ShakeMove(i, fMCTemp);
       break;
@@ -126,7 +126,7 @@ int MC_Step_Equil(float fMCTemp) {
       break;
 
     // face change
-    case MV_FACEC:
+    case MV_STROT:
       //  printf("FACE MOVE\n");
       nAccept = 0;
       break;
@@ -155,7 +155,7 @@ int MC_Step_Equil(float fMCTemp) {
       break;
 
     // shake
-    case MV_SHAKE:
+    case MV_MTLOCAL:
       i = rand() % tot_beads;
           nAccept = ShakeMove_Equil(i, fMCTemp);
       break;
