@@ -12,7 +12,7 @@ float Dist_PointToPoint(int *f1, int *f2);
 float Dist_VecMag(const int *f1);
 
 int Check_LinkerConstraint(int beadID, int *tmpR);
-int Check_MTLinkerConstraint(int beadID, int **tmpR);
+int Check_MTLinkerConstraint(int beadID, int (*tmpR)[POS_MAX]);
 int Check_System_Structure(void);
 
 void RDF_ComponentWise_Avg(void);

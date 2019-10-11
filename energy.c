@@ -20,7 +20,7 @@ void Energy_Total_System() {
   }
 }
 
-float Energy_Anisotropic(int i){//Calculates the SC-SC energy of the bead in question.
+float Energy_Anisotropic(int beadID){//Calculates the SC-SC energy of the bead in question.
   float totEn = 0.0; //Storing total overlap energy
     if (bead_info[beadID][BEAD_FACE] != -1){
         totEn += fEnergy[bead_info[beadID][BEAD_TYPE]][bead_info[bead_info[beadID][BEAD_FACE]][BEAD_TYPE]][E_SC_SC];

@@ -388,7 +388,7 @@ int Check_LinkerConstraint(int beadID, int *tmpR){
   return 1;//This means that all linker constraints are satisfied.
 }
 
-int Check_MTLinkerConstraint(int beadID, int **tmpR){
+int Check_MTLinkerConstraint(int beadID, int (*tmpR)[POS_MAX]){
 
   int curID = beadID;
   int idx, bPart;

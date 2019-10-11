@@ -4,7 +4,7 @@
 #include "structure.h"
 #include "energy.h"
 
-void Print_Matrix(char* strTitle, int nSeqEn, float ***fArray, int param);
+void Print_Matrix(char* strTitle, int nSeqEn, float fArray[MAX_AA][MAX_AA][MAX_E], int param);
 
 void Write_ClusterDist(char* filename, long nGen) {
   FILE *fp;
@@ -217,7 +217,7 @@ void Print_Key(void) { // should be output-dependent (stdout, stderr, other file
   printf("\n");
 }
 
-void Print_Matrix(char* strTitle, int nSeqEn, float ***fArray, int param) {
+void Print_Matrix(char* strTitle, int nSeqEn, float fArray[MAX_AA][MAX_AA][MAX_E], int param) {
   int nLen;
   nLen = nSeqEn;
   int i, j;
@@ -328,7 +328,7 @@ void Write_TopFile(char* filename){
   fprintf(fp, "\n");//Empty line.
   fprintf(fp, "Masses\n");//These don't really mean anything
   fprintf(fp, "\n");//Empty line.
-  fprintf(fp, "0\t1.0\n1\t1.0\n2\t1.0\t3\t1.0\n4\t1.0\n5\t1.0\n");//Dummy masses for the 6 types.
+  fprintf(fp, "1\t1.0\n2\t1.0\n3\t1.0\n4\t1.0\n5\t1.0\n6\t1.0\n");//Dummy masses for the 6 types.
   fprintf(fp, "\n");//Empty line.
   fprintf(fp, "Atoms\n");//Signifying the beginning of atom coordinates.
   fprintf(fp, "\n");//Empty line.
