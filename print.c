@@ -86,18 +86,15 @@ void write_mcmove(char* filename, long nGen, float fMCTemp) {
               //This way the print function will initialize the matrix at startup!
             }
       } else{
-        printf("Acceptance Ratios:\n");
         fprintf(fp, "%ld\t%.2f\t", nGen, fMCTemp);//Step and Temp
       for(i=1;i<MAX_MV;i++){
         fprintf(fp, "%ld\t%ld\t", MCAccepMat[0][i], MCAccepMat[1][i]);
-            printf("%.3f\t", 100.*(float)MCAccepMat[1][i]/((float)MCAccepMat[0][i]+1.+(float)
             MCAccepMat[1][i]));
-          MCAccepMat[0][i]=0;
-          MCAccepMat[1][i]=0;
+            MCAccepMat[0][i]=0;
+            MCAccepMat[1][i]=0;
         //This way the print function will zero out the matrix every time we print to a file!
       }
         fprintf(fp,"\n");
-        printf("\n");
       }
 
 

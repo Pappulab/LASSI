@@ -86,9 +86,9 @@ int parse_key(char filename[]) {
         sscanf(strLine, "%*s %f", &fMCFreq[MV_TRANS]);
       } else if (strcmp(strKeyword, "MV_CLSTR_FREQ") == 0) {
         sscanf(strLine, "%*s %f", &fMCFreq[MV_CLSTR]);
-      } else if (strcmp(strKeyword, "MV_SMALLCLSTR_FREQ") == 0) {
+      } else if (strcmp(strKeyword, "MV_SMCLSTR_FREQ") == 0) {
         sscanf(strLine, "%*s %f", &fMCFreq[MV_SMCLSTR]);
-      } else if (strcmp(strKeyword, "MV_FACEC_FREQ") == 0) {
+      } else if (strcmp(strKeyword, "MV_STROT_FREQ") == 0) {
         sscanf(strLine, "%*s %f", &fMCFreq[MV_STROT]);
       } else if (strcmp(strKeyword, "MV_LOCAL_FREQ") == 0) {
         sscanf(strLine, "%*s %f", &fMCFreq[MV_LOCAL]);
@@ -98,7 +98,7 @@ int parse_key(char filename[]) {
         sscanf(strLine, "%*s %f", &fMCFreq[MV_DBPVT]);
       } else if (strcmp(strKeyword, "MV_COLOCAL_FREQ") == 0) {
         sscanf(strLine, "%*s %f", &fMCFreq[MV_COLOCAL]);
-      } else if (strcmp(strKeyword, "MV_SHAKE_FREQ") == 0) {
+      } else if (strcmp(strKeyword, "MV_MTLOCAL_FREQ") == 0) {
         sscanf(strLine, "%*s %f", &fMCFreq[MV_MTLOCAL]);
       } else if (strcmp(strKeyword, "MV_PIVOT_FREQ") == 0) {
         sscanf(strLine, "%*s %f", &fMCFreq[MV_PIVOT]);
