@@ -4,15 +4,15 @@
 #include "global.h"
 
 int LtInd(int i, int j, int k);
-int LtIndV(int xArr[POS_MAX]);
-float dist(int bead1, int bead2);
-float distf(float f1[], float f2[]);
-float distInt(int f1[], int f2[]);
+int Lat_Ind_FromVec(int *xArr);
+float Dist_BeadToBead(int bead1, int bead2);
+float Dist_PointTotPoint_Float(float *f1, float *f2);
+float Dist_PointToPoint(int *f1, int *f2);
 float vectorMag(const int f1[]);
 int check_linker_constraint(int beadID, int tmpR[]);
 int ShakeConstraint(int beadID, int tmpR[MAX_VALENCY][POS_MAX]);
 int Check_System_Structure(void);
-void avg_rdf_split(void);
-void CalcTotGyrRad(void);
+void RDF_ComponentWise_Avg(void);
+void GyrTensor_GyrRad_Avg(void);
 
 #endif // _STRUCTURE_H_

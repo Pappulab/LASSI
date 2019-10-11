@@ -220,7 +220,7 @@ void Initial_Conditions_Simple(void){
         tmpR2[j] = tmpR[j];
       }
       TlCnt = 0;//Reset this counter.
-      while(naTotLattice[LtIndV(tmpR2)] != -1 && TlCnt < 500000){
+      while(naTotLattice[Lat_Ind_FromVec(tmpR2)] != -1 && TlCnt < 500000){
         for(j = 0; j < POS_MAX; j++){
           tmpR2[j] = (rand() % radUp) - radLow;
           tmpR2[j] = (tmpR[j] + tmpR2[j] + nBoxSize[j]) % nBoxSize[j];
@@ -234,7 +234,7 @@ void Initial_Conditions_Simple(void){
       for(j = 0; j < POS_MAX; j++){
         bead_info[i][j] = tmpR2[j];
       }//Placing bead
-      naTotLattice[LtIndV(tmpR2)] = i;//Putting on lattice
+      naTotLattice[Lat_Ind_FromVec(tmpR2)] = i;//Putting on lattice
       temp_list[list_it] = i; list_it++;//Remembering in hash list.
       //The bead has been placed around an appropriate anchor.
       }
@@ -244,7 +244,7 @@ void Initial_Conditions_Simple(void){
         }
         //This usually means this is the first bead in the chain.
         TlCnt = 0;
-        while(naTotLattice[LtIndV(tmpR)] != -1 && TlCnt < 500000){//Keep looping till we find an empty lattice site.
+        while(naTotLattice[Lat_Ind_FromVec(tmpR)] != -1 && TlCnt < 500000){//Keep looping till we find an empty lattice site.
           TlCnt++;
           for(j=0; j<POS_MAX; j++){//Generate a random point in the lattice.
             tmpR[j] = rand() % nBoxSize[j];
@@ -259,7 +259,7 @@ void Initial_Conditions_Simple(void){
         for(j=0;j<POS_MAX;j++){
           bead_info[i][j] = tmpR[j];
         }
-          naTotLattice[LtIndV(tmpR)] = i;//Placing on lattice!
+          naTotLattice[Lat_Ind_FromVec(tmpR)] = i;//Placing on lattice!
         temp_list[list_it] = i; list_it++;//Remembering that this bead has been placed.
     }
     SproutForth:
@@ -285,7 +285,7 @@ void Initial_Conditions_Simple(void){
           tmpR2[j] = tmpR[j];
         }
         TlCnt = 0;//Reset this counter.
-        while(naTotLattice[LtIndV(tmpR2)] != -1 && TlCnt < 500000){
+        while(naTotLattice[Lat_Ind_FromVec(tmpR2)] != -1 && TlCnt < 500000){
           for(j=0;j<POS_MAX;j++){
             tmpR2[j] = (rand() % radUp) - radLow;
             tmpR2[j] = (tmpR[j] + tmpR2[j] + nBoxSize[j]) % nBoxSize[j];
@@ -295,14 +295,15 @@ void Initial_Conditions_Simple(void){
         }
         if (TlCnt == 500000){
             printf("\n\nNot enough space in the lattice. Crashing. Maybe try increasing max trials, "
-                                    "or make the box bigger!\t %d\t%d %d\n\n", TlCnt, i, naTotLattice[LtIndV(tmpR2)]);
+                                    "or make the box bigger!\t %d\t%d %d\n\n", TlCnt, i, naTotLattice[Lat_Ind_FromVec(
+                    tmpR2)]);
             exit(1);
         }
         for(j=0; j<POS_MAX; j++){//Placing bead
           bead_info[bondPart][j] = tmpR2[j];
         }
 
-        naTotLattice[LtIndV(tmpR2)] = bondPart;//Putting on lattice
+        naTotLattice[Lat_Ind_FromVec(tmpR2)] = bondPart;//Putting on lattice
         temp_list[list_it] = bondPart; list_it++;//Remembering in hash list.
         SkipThisPartner:
         idx++;

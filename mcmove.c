@@ -426,16 +426,16 @@ int Move_Snake(int chainID, float MyTemp){//Performs a slither MC-move on chainI
       tmpR3[j] = bead_info[i][j];
     }
     if(i==firstB){//Only the firstB's location is empty
-      naTotLattice[LtIndV(tmpR2)] = -1;
+      naTotLattice[Lat_Ind_FromVec(tmpR2)] = -1;
     }
-      naTotLattice[LtIndV(tmpR3)] = i;
+      naTotLattice[Lat_Ind_FromVec(tmpR3)] = i;
   }
   //Moving the last bead, and it has to be done independently because lastB-1 -> tmpR
   i = lastB-1;
   for(j=0;j<POS_MAX;j++){
     bead_info[i][j] = tmpR[j];
   }
-      naTotLattice[LtIndV(tmpR)]   = i;
+      naTotLattice[Lat_Ind_FromVec(tmpR)]   = i;
   }
   else{//Slithering backwards in ID-space
     for (i=firstB+1; i<lastB; i++){
@@ -445,16 +445,16 @@ int Move_Snake(int chainID, float MyTemp){//Performs a slither MC-move on chainI
         tmpR3[j] = bead_info[i][j];
       }
       if(i==lastB-1){//Only the lastB-1's location is empty
-        naTotLattice[LtIndV(tmpR2)] = -1;
+        naTotLattice[Lat_Ind_FromVec(tmpR2)] = -1;
       }
-        naTotLattice[LtIndV(tmpR3)] = i;
+        naTotLattice[Lat_Ind_FromVec(tmpR3)] = i;
     }
     //Moving the first bead, and it has to be done independently because firstB -> tmpR
     i = firstB;
     for(j=0; j<POS_MAX; j++){
       bead_info[i][j] = tmpR[j];
     }
-      naTotLattice[LtIndV(tmpR)]    = i;
+      naTotLattice[Lat_Ind_FromVec(tmpR)]    = i;
   }
 
   //Have slithered the chain whichever way, so let's check rotational states in the new location
@@ -506,7 +506,7 @@ int Move_Snake(int chainID, float MyTemp){//Performs a slither MC-move on chainI
          for(j=0; j<POS_MAX; j++){//This is where I am
           tmpR2[j] = bead_info[i][j];
         }
-           naTotLattice[LtIndV(tmpR2)]  = -1;
+           naTotLattice[Lat_Ind_FromVec(tmpR2)]  = -1;
          }
        for(i=firstB; i<lastB; i++){
          for(j=0;j<BEADINFO_MAX; j++){
@@ -517,7 +517,7 @@ int Move_Snake(int chainID, float MyTemp){//Performs a slither MC-move on chainI
          }
          if(bead_info[i][BEAD_FACE] != -1){//I was bonded so restore the bond
            bead_info[bead_info[i][BEAD_FACE]][BEAD_FACE] = i;}
-           naTotLattice[LtIndV(tmpR2)]  = i;
+           naTotLattice[Lat_Ind_FromVec(tmpR2)]  = i;
          }
          bAccept = 0;
          return bAccept;
@@ -636,7 +636,7 @@ int Move_Clus(float MyTemp){
   float oldEn, newEn, MCProb;
   oldEn = 0.0; newEn = 0.0;
 
-  ClusSize = Clus_SecondLargestCluster(naList, naCluster);//Second largest cluster;
+  ClusSize = Clus_SecondLargestCluster();//Second largest cluster;
 
   if(ClusSize != -1){
     //Radii for translation moves. All moves are L/2 radius
@@ -691,7 +691,7 @@ int Move_SmallClus(int chainID, float MyTemp){
   float oldEn, newEn, MCProb;
   oldEn = 0.0; newEn = 0.0;
   //printf("Beginning CLUS\n");
-  ClusSize = Clus_LimitedCluster(chainID, naList);//Looking at everything that is connected to chainID
+  ClusSize = Clus_LimitedCluster(chainID);//Looking at everything that is connected to chainID
   //Remember that naList[] contains the chainID's of the network chainID is part of from 0 - ClusSize-1.
   //printf("Done with network\t %d\n", ClusSize);
   if(ClusSize >= 1){
@@ -742,7 +742,7 @@ int Move_DbPvt(int beadID, float MyTemp){//Performs a double-pivot move.
   /* Molecule MUST be LINEAR
   The move requires selecting a random bead, which is beadID. Then, we'll search the lattice in +-2 sites around beadID.
   Let i be the position of beadID along it's chain. Let i' denote same position along another chain of the same type. We want
-  dist(i,i'+1) < linker_len[i] && dist (i',i+1) < linker_len[i']. We'll count however many candidates there are and select one randomly.
+  dist(i,i'+1) < linker_len[i] && Dist_BeadToBead (i',i+1) < linker_len[i']. We'll count however many candidates there are and select one randomly.
   Then we just swap beads from i to then end of the chain. Do a Metropolis thing, and decide.
   In other words, i'+1 becomes i+1, i'+2 becomes i+2 until N, and i+1 become i'+1 and so on.
    */
@@ -776,7 +776,7 @@ int Move_DbPvt(int beadID, float MyTemp){//Performs a double-pivot move.
         nTemp[POS_Y] = (bead_info[beadID][POS_Y] + j + nBoxSize[POS_Y] ) % nBoxSize[POS_Y];
     for (k=-SrchLen; k<=SrchLen;k++){
         nTemp[POS_Z] = (bead_info[beadID][POS_Z] + k + nBoxSize[POS_Z] ) % nBoxSize[POS_Z];
-        thisbead = naTotLattice[LtIndV(nTemp)];//Seeing what is at that location
+        thisbead = naTotLattice[Lat_Ind_FromVec(nTemp)];//Seeing what is at that location
         //thisbead is i'+1 from the above explanation
         if(thisbead != beadID && thisbead != -1 && thisbead != beadID+1){//Different bead from me
         if (PType ==
@@ -785,10 +785,10 @@ int Move_DbPvt(int beadID, float MyTemp){//Performs a double-pivot move.
         if(beadID - PStart + 1 ==
            thisbead - chain_info[bead_info[thisbead][BEAD_CHAINID]][CHAIN_START]){//Remember that we are searching for i'+1, not i'
             //NOW we can see if there is room to make bridges
-            //Remember that linker_len[beadID][0] is the linker dist for beadID-1,
-            //and linker_len[beadID][1] is the linker dist for beadID+1
-               if(dist(beadID, thisbead) < 1.74 * linker_len[beadID][1] &&
-                   dist(beadID+1, thisbead-1 ) < 1.74 * linker_len[thisbead - 1][1] ){//The linker lengths are correct to change connectivity
+            //Remember that linker_len[beadID][0] is the linker Dist_BeadToBead for beadID-1,
+            //and linker_len[beadID][1] is the linker Dist_BeadToBead for beadID+1
+               if(Dist_BeadToBead(beadID, thisbead) < 1.74 * linker_len[beadID][1] &&
+                       Dist_BeadToBead(beadID + 1, thisbead - 1) < 1.74 * linker_len[thisbead - 1][1] ){//The linker lengths are correct to change connectivity
                        candList[nListLen] = thisbead;//Storing which bead it is
                        nListLen++;//Onto the next bead
                        if(nListLen == MAX_ROTSTATES){goto FoundMax;}//MAX_ROTSTATES is the size of candList[]
@@ -823,7 +823,7 @@ int Move_DbPvt(int beadID, float MyTemp){//Performs a double-pivot move.
         nTemp[POS_Y] = (bead_info[thisbead-1][POS_Y] + j + nBoxSize[POS_Y] ) % nBoxSize[POS_Y];
     for (k=-SrchLen; k<=SrchLen;k++){
         nTemp[POS_Z] = (bead_info[thisbead-1][POS_Z] + k + nBoxSize[POS_Z] ) % nBoxSize[POS_Z];
-        otherbead = naTotLattice[LtIndV(nTemp)];//Seeing what is at that location
+        otherbead = naTotLattice[Lat_Ind_FromVec(nTemp)];//Seeing what is at that location
         //otherbead is i'+1 from the above explanation
         if(otherbead != thisbead-1 && otherbead != -1 && otherbead != thisbead){//Different bead from me
         if (thischaintype ==
@@ -832,10 +832,10 @@ int Move_DbPvt(int beadID, float MyTemp){//Performs a double-pivot move.
         if(thisbead - PStart ==
            otherbead - chain_info[bead_info[thisbead][BEAD_CHAINID]][CHAIN_START]){//Remember that we are searching for i'+1, not i'
             //NOW we can see if there is room to make bridges
-            //Remember that linker_len[thisbead][0] is the linker dist for thisbead-1,
-            //and linker_len[thisbead][1] is the linker dist for thisbead+1
-               if(dist(thisbead-1, otherbead) < 1.74 * linker_len[thisbead - 1][1] &&
-                   dist(thisbead, otherbead-1 ) < 1.74 * linker_len[otherbead - 1][1] ){//The linker lengths are correct to change connectivity
+            //Remember that linker_len[thisbead][0] is the linker Dist_BeadToBead for thisbead-1,
+            //and linker_len[thisbead][1] is the linker Dist_BeadToBead for thisbead+1
+               if(Dist_BeadToBead(thisbead - 1, otherbead) < 1.74 * linker_len[thisbead - 1][1] &&
+                       Dist_BeadToBead(thisbead, otherbead - 1) < 1.74 * linker_len[otherbead - 1][1] ){//The linker lengths are correct to change connectivity
                        //candList[nListLen] = thisbead;//Storing which bead it is
                        nListLen_back++;//Onto the next guy
                        if(nListLen_back == MAX_ROTSTATES){goto FoundMax_back;}//MAX_ROTSTATES is the size of candList[]
@@ -954,7 +954,7 @@ int Move_MultiLocal(int beadID, float MyTemp){
     while(yTemp == 0 && xTemp < nMCMaxTrials){
         curID = beadID; topIt = 0;
         while (curID != -1){
-            naTotLattice[LtIndV(bead_info[curID])] = -1;
+            naTotLattice[Lat_Ind_FromVec(bead_info[curID])] = -1;
             curID = topo_info[beadID][topIt++];
         }
         curID = beadID; topIt = 0;
@@ -964,18 +964,18 @@ int Move_MultiLocal(int beadID, float MyTemp){
                 tmpR[topIt][j] = (rand() % lRadUp) - lRadLow;
                 tmpR[topIt][j] = (bead_info[curID][j] + tmpR[topIt][j] + nBoxSize[j]) % nBoxSize[j];
             }
-            if (naTotLattice[LtIndV(tmpR[topIt])] != -1 ){
+            if (naTotLattice[Lat_Ind_FromVec(tmpR[topIt])] != -1 ){
                 yTemp = 0;
                 break;
             }
-            naTotLattice[LtIndV(tmpR[topIt])] = curID;
+            naTotLattice[Lat_Ind_FromVec(tmpR[topIt])] = curID;
             curID = topo_info[beadID][topIt++];
         }
         if (yTemp == 1){//No steric clash so check for topology constraint
             yTemp = ShakeConstraint(beadID, tmpR);
         }
         for(i = 0; i < topIt; i++){
-            naTotLattice[LtIndV(tmpR[i])] = -1;
+            naTotLattice[Lat_Ind_FromVec(tmpR[i])] = -1;
         }
         xTemp++;
     }
@@ -983,7 +983,7 @@ int Move_MultiLocal(int beadID, float MyTemp){
     if(xTemp == nMCMaxTrials || yTemp == 0){//Linker or steric clash didn't work out
         curID = beadID; topIt = 0;
         while (curID != -1) {
-            naTotLattice[LtIndV(bead_info[curID])] = curID;
+            naTotLattice[Lat_Ind_FromVec(bead_info[curID])] = curID;
             curID = topo_info[beadID][topIt++];
         }
         //printf("No space!\n");
@@ -1083,7 +1083,7 @@ int Move_MultiLocal(int beadID, float MyTemp){
               bead_info[i][BEAD_FACE] = -1;
               bead_info[curID][BEAD_FACE] = -1;
           }
-          naTotLattice[LtIndV(bead_info[curID])] = -1;
+          naTotLattice[Lat_Ind_FromVec(bead_info[curID])] = -1;
           for(j = 0; j < BEADINFO_MAX; j++){
               bead_info[curID][j] = old_bead[curID][j];
           }
@@ -1091,7 +1091,7 @@ int Move_MultiLocal(int beadID, float MyTemp){
       }
       curID = beadID; topIt = 0;
       while (curID != -1){
-          naTotLattice[LtIndV(bead_info[curID])] = curID;
+          naTotLattice[Lat_Ind_FromVec(bead_info[curID])] = curID;
           i = bead_info[curID][BEAD_FACE];
           if(i != -1){
               bead_info[i][BEAD_FACE] = curID;
@@ -1554,16 +1554,16 @@ int Move_Snake_Equil(int chainID, float MyTemp){//Performs a slither MC-move on 
       tmpR3[j] = bead_info[i][j];
     }
     if(i==firstB){//Only the firstB's location is empty
-      naTotLattice[LtIndV(tmpR2)] = -1;
+      naTotLattice[Lat_Ind_FromVec(tmpR2)] = -1;
     }
-      naTotLattice[LtIndV(tmpR3)] = i;
+      naTotLattice[Lat_Ind_FromVec(tmpR3)] = i;
   }
   //Moving the last bead, and it has to be done independently because lastB-1 -> tmpR
   i = lastB-1;
   for(j=0;j<POS_MAX;j++){
     bead_info[i][j] = tmpR[j];
   }
-      naTotLattice[LtIndV(tmpR)]    = i;
+      naTotLattice[Lat_Ind_FromVec(tmpR)]    = i;
   }
   else{//Slithering backwards in ID-space
     for (i=firstB+1; i<lastB; i++){
@@ -1573,16 +1573,16 @@ int Move_Snake_Equil(int chainID, float MyTemp){//Performs a slither MC-move on 
         tmpR3[j] = bead_info[i][j];
       }
       if(i==lastB-1){//Only the lastB-1's location is empty
-        naTotLattice[LtIndV(tmpR2)] = -1;
+        naTotLattice[Lat_Ind_FromVec(tmpR2)] = -1;
       }
-        naTotLattice[LtIndV(tmpR3)] = i;
+        naTotLattice[Lat_Ind_FromVec(tmpR3)] = i;
     }
     //Moving the first bead, and it has to be done independently because firstB -> tmpR
     i = firstB;
     for(j=0; j<POS_MAX; j++){
       bead_info[i][j] = tmpR[j];
     }
-      naTotLattice[LtIndV(tmpR)]    = i;
+      naTotLattice[Lat_Ind_FromVec(tmpR)]    = i;
   }
 
      for (i=firstB; i<lastB; i++){//Counting states in the new location
@@ -1599,7 +1599,7 @@ int Move_Snake_Equil(int chainID, float MyTemp){//Performs a slither MC-move on 
          for(j=0;j<POS_MAX; j++){//This is where I am
           tmpR2[j] = bead_info[i][j];
         }
-           naTotLattice[LtIndV(tmpR2)]  = -1;
+           naTotLattice[Lat_Ind_FromVec(tmpR2)]  = -1;
          }
        for(i=firstB; i<lastB; i++){
          for(j=0;j<BEADINFO_MAX; j++){
@@ -1608,7 +1608,7 @@ int Move_Snake_Equil(int chainID, float MyTemp){//Performs a slither MC-move on 
               tmpR2[j] = bead_info[i][j];
             }
          }
-           naTotLattice[LtIndV(tmpR2)]  = i;
+           naTotLattice[Lat_Ind_FromVec(tmpR2)]  = i;
          }
          bAccept = 0;
          return bAccept;
@@ -1693,7 +1693,7 @@ int Move_MultiLocal_Equil(int beadID, float MyTemp){
     while(yTemp == 0 && xTemp < nMCMaxTrials){
         curID = beadID; topIt = 0;
         while (curID != -1){
-            naTotLattice[LtIndV(bead_info[curID])] = -1;
+            naTotLattice[Lat_Ind_FromVec(bead_info[curID])] = -1;
             curID = topo_info[beadID][topIt++];
         }
         curID = beadID; topIt = 0;
@@ -1703,18 +1703,18 @@ int Move_MultiLocal_Equil(int beadID, float MyTemp){
                 tmpR[topIt][j] = (rand() % lRadUp) - lRadLow;
                 tmpR[topIt][j] = (bead_info[curID][j] + tmpR[topIt][j] + nBoxSize[j]) % nBoxSize[j];
             }
-            if (naTotLattice[LtIndV(tmpR[topIt])] != -1 ){
+            if (naTotLattice[Lat_Ind_FromVec(tmpR[topIt])] != -1 ){
                 yTemp = 0;
                 break;
             }
-            naTotLattice[LtIndV(tmpR[topIt])] = curID;
+            naTotLattice[Lat_Ind_FromVec(tmpR[topIt])] = curID;
             curID = topo_info[beadID][topIt++];
         }
         if (yTemp == 1){//No steric clash so check for topology constraint
             yTemp = ShakeConstraint(beadID, tmpR);
         }
         for(i = 0; i < topIt; i++){
-            naTotLattice[LtIndV(tmpR[i])] = -1;
+            naTotLattice[Lat_Ind_FromVec(tmpR[i])] = -1;
         }
         xTemp++;
     }
@@ -1722,7 +1722,7 @@ int Move_MultiLocal_Equil(int beadID, float MyTemp){
     if(xTemp == nMCMaxTrials || yTemp == 0){//Linker or steric clash didn't work out
         curID = beadID; topIt = 0;
         while (curID != -1) {
-            naTotLattice[LtIndV(bead_info[curID])] = curID;
+            naTotLattice[Lat_Ind_FromVec(bead_info[curID])] = curID;
             curID = topo_info[beadID][topIt++];
         }
         //printf("No space!\n");
@@ -1762,7 +1762,7 @@ int Move_MultiLocal_Equil(int beadID, float MyTemp){
     else{
         curID = beadID; topIt = 0;
         while (curID != -1){
-            naTotLattice[LtIndV(bead_info[curID])] = -1;
+            naTotLattice[Lat_Ind_FromVec(bead_info[curID])] = -1;
             curID = topo_info[beadID][topIt++];
         }
         curID = beadID; topIt = 0;
@@ -1770,7 +1770,7 @@ int Move_MultiLocal_Equil(int beadID, float MyTemp){
             for(i = 0; i < BEADINFO_MAX; i++){
                 bead_info[curID][i] = old_bead[curID][i];
             }
-              naTotLattice[LtIndV(bead_info[curID])] = curID;
+              naTotLattice[Lat_Ind_FromVec(bead_info[curID])] = curID;
               curID = topo_info[beadID][topIt++];
         }
         //printf("fail\n");
@@ -1987,7 +1987,7 @@ int check_disp_chain(int chainID, const int tR[]){//Checks if chain can be displ
       for(j=0;j<POS_MAX;j++){
       tmpR[j] = (bead_info[i][j] + tR[j] + nBoxSize[j]) % nBoxSize[j];
     }
-    if (naTotLattice[LtIndV(tmpR)] != -1){
+    if (naTotLattice[Lat_Ind_FromVec(tmpR)] != -1){
      canI = 0;// 0 means steric clash
      return canI;
     }
@@ -2013,8 +2013,8 @@ void disp_chain(int chainID, const int movR[]){
       tmpR2[l] = bead_info[i][l];//Where we are now
     }
     }
-    naTotLattice[LtIndV(tmpR)] = -1;//Removing from old place
-    naTotLattice[LtIndV(tmpR2)] = i;
+    naTotLattice[Lat_Ind_FromVec(tmpR)] = -1;//Removing from old place
+    naTotLattice[Lat_Ind_FromVec(tmpR2)] = i;
   }
 }
 
@@ -2036,8 +2036,8 @@ void trans_disp_chain(int chainID, const int movR[]){
       tmpR2[l] = bead_info[i][l];//Where we are now
     }
     }
-      naTotLattice[LtIndV(tmpR)]  = -1;//Removing from old place
-      naTotLattice[LtIndV(tmpR2)] = i;//Adding to new place
+      naTotLattice[Lat_Ind_FromVec(tmpR)]  = -1;//Removing from old place
+      naTotLattice[Lat_Ind_FromVec(tmpR2)] = i;//Adding to new place
   }
   for(i=fB; i<lB; i++){//Delete bonds AFTER old_bead has remembered things
     if(old_bead[i][BEAD_FACE] != -1){
@@ -2060,8 +2060,8 @@ void restore_chain(int chainID){//Uses old_bead to undo what disp_chain does.
     }
       bead_info[i][l] = old_bead[i][l];//Moving back
     }
-      naTotLattice[LtIndV(tmpR)] = -1;//Removing from old place
-      naTotLattice[LtIndV(tmpR2)] = i;
+      naTotLattice[Lat_Ind_FromVec(tmpR)] = -1;//Removing from old place
+      naTotLattice[Lat_Ind_FromVec(tmpR2)] = i;
   }
 }
 
@@ -2080,8 +2080,8 @@ void trans_restore_chain(int chainID){//Uses old_bead to undo what trans_disp_ch
       tmpR[l]  = bead_info[i][l];//Where we now are and must be removed from
       tmpR2[l] = old_bead[i][l];//This is where we should be
   }
-      naTotLattice[LtIndV(tmpR)] = -1;//Removing from old place
-      naTotLattice[LtIndV(tmpR2)] = i;//Removing from old place
+      naTotLattice[Lat_Ind_FromVec(tmpR)] = -1;//Removing from old place
+      naTotLattice[Lat_Ind_FromVec(tmpR2)] = i;//Removing from old place
   }
   for (i=fB; i<lB; i++){
     for(l=0; l<BEADINFO_MAX; l++){
@@ -2098,7 +2098,7 @@ void trans_restore_chain(int chainID){//Uses old_bead to undo what trans_disp_ch
 
 inline int check_move_bead_to(int newPos[]){//Checks if I can move here
 
-  if (naTotLattice[LtIndV(newPos)] != -1){
+  if (naTotLattice[Lat_Ind_FromVec(newPos)] != -1){
      return 0;//There's something here already, brah
   }
   return 1;
@@ -2115,8 +2115,8 @@ void move_bead_to(int beadID, const int newPos[]){//Updates position to new one 
         tmpR2[i] = bead_info[beadID][i];
     }
   }
-    naTotLattice[LtIndV(tmpR)] = -1;//Removing from old place
-    naTotLattice[LtIndV(tmpR2)] = beadID;
+    naTotLattice[Lat_Ind_FromVec(tmpR)] = -1;//Removing from old place
+    naTotLattice[Lat_Ind_FromVec(tmpR2)] = beadID;
 }
 
 void undo_move_bead_to(int beadID){//Undoes what the above function does
@@ -2130,8 +2130,8 @@ void undo_move_bead_to(int beadID){//Undoes what the above function does
     bead_info[beadID][i] = old_bead[beadID][i];
   }
 
-    naTotLattice[LtIndV(tmpR)] = -1;//Removing from old place
-    naTotLattice[LtIndV(tmpR2)] = beadID;//Restoring
+    naTotLattice[Lat_Ind_FromVec(tmpR)] = -1;//Removing from old place
+    naTotLattice[Lat_Ind_FromVec(tmpR2)] = beadID;//Restoring
 
   if(bead_info[beadID][BEAD_FACE] != -1){
     bead_info[bead_info[beadID][BEAD_FACE]][BEAD_FACE] = beadID;
@@ -2145,7 +2145,7 @@ void move_bead_to_shake(int beadID, const int newPos[]){//Updates position to ne
         bead_info[beadID][i] = newPos[i];
         tmpR2[i] = bead_info[beadID][i];
     }
-    naTotLattice[LtIndV(tmpR2)] = beadID;
+    naTotLattice[Lat_Ind_FromVec(tmpR2)] = beadID;
     i = bead_info[beadID][BEAD_FACE];
     if (i != -1){
         bead_info[i][BEAD_FACE] = -1;
@@ -2181,8 +2181,8 @@ void swap_beads(int bead1, int bead2){
     }
   }
   //Swap them on the lattice
-    naTotLattice[LtIndV(tmpR)]    = bead2;
-    naTotLattice[LtIndV(tmpR2)]   = bead1;
+    naTotLattice[Lat_Ind_FromVec(tmpR)]    = bead2;
+    naTotLattice[Lat_Ind_FromVec(tmpR2)]   = bead1;
 }
 
 void Rot_X_90(int beadID, const int tmpR[POS_MAX]){
@@ -2387,7 +2387,7 @@ void ShuffleRotIndecies(void){
     for(j=0; j<POS_MAX; j++){
       tmpR2[j] = (tmpR[j] + LocalArr[i][j] + nBoxSize[j]) % nBoxSize[j];
       }
-      tmpBead = LtIndV(tmpR2);
+      tmpBead = Lat_Ind_FromVec(tmpR2);
       tmpBead = naTotLattice[tmpBead];
       if (tmpBead != -1){
         j = bead_info[tmpBead][BEAD_TYPE];
@@ -2424,7 +2424,7 @@ int CheckRotStatesOld(int beadID, int resi, float MyTemp){
         for(j=0; j<POS_MAX; j++){
             tmpR2[j] = (tmpR[j] + LocalArr[i][j] + nBoxSize[j]) % nBoxSize[j];
         }
-        tmpBead = LtIndV(tmpR2);
+        tmpBead = Lat_Ind_FromVec(tmpR2);
         tmpBead = naTotLattice[tmpBead];
         if (tmpBead != -1){
             j = bead_info[tmpBead][BEAD_TYPE];
@@ -2452,7 +2452,7 @@ int CheckRotStatesOld(int beadID, int resi, float MyTemp){
     for(j=0; j<POS_MAX; j++){
       tmpR2[j] = (tmpR[j] + LocalArr[i][j] + nBoxSize[j]) % nBoxSize[j];
       }
-      tmpBead = LtIndV(tmpR2);
+      tmpBead = Lat_Ind_FromVec(tmpR2);
       tmpBead = naTotLattice[tmpBead];
       if (tmpBead != -1){
         j = bead_info[tmpBead][BEAD_TYPE];
@@ -2489,7 +2489,7 @@ int CheckRotStatesNew(int beadID, int resi, float MyTemp){
         for(j=0; j<POS_MAX; j++){
             tmpR2[j] = (tmpR[j] + LocalArr[i][j] + nBoxSize[j]) % nBoxSize[j];
         }
-        tmpBead = LtIndV(tmpR2);
+        tmpBead = Lat_Ind_FromVec(tmpR2);
         tmpBead = naTotLattice[tmpBead];
         if (tmpBead != -1){
             j = bead_info[tmpBead][BEAD_TYPE];

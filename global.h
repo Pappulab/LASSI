@@ -88,7 +88,7 @@ lInt   chain_info[MAX_CHAINS][CHAININFO_MAX];
 lInt   tot_beads;
 lInt   tot_chains;
 lInt   Temp_Mode;
-lInt   Indent_Mode, RotBias_Mode;
+lInt   nThermalization_Mode, RotBias_Mode;
 
 // system setup
 lInt   nBoxSize[POS_MAX];

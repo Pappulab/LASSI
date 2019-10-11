@@ -2,7 +2,7 @@
 #include "cluster.h"
 #include "structure.h"
 
-int Clus_ChainNetwork_General(int chainID, int *naList){
+int Clus_ChainNetwork_General(int chainID){
   //Updates naList to have all proteins bound to  chainID and it's cluster
   //The idea is to check every bead and see if there is a unique bonded chain, and to add it to naList
 
@@ -41,7 +41,7 @@ int Clus_ChainNetwork_General(int chainID, int *naList){
   return clusSize;
 }
 
-int Clus_ChainNetwork_ForTotal(int chainID, int *naList){
+int Clus_ChainNetwork_ForTotal(int chainID){
   //Updates naList to have all proteins bound to  chainID and it's cluster
   //The idea is to check every bead and see if there is a unique bonded chain, and to add it to naList
   //This one is specifically made to be used in total system network analyses, so naList and naChainCheckList aren't
@@ -75,7 +75,7 @@ int Clus_ChainNetwork_ForTotal(int chainID, int *naList){
   return clusSize;
 }
 
-void Clus_Distribution_Avg(int *naList){
+void Clus_Distribution_Avg(void){
   /*
   Calculates the cluster distribution using total_network_analysis framework, but keeps adding to
   naClusHistList for total averaging at the end. Read total_network_analysis() for what's happening here LOL
@@ -89,7 +89,7 @@ void Clus_Distribution_Avg(int *naList){
   curID = 0;//Start with the 0th chain
   currentLargest = 0;
   while(curID < tot_chains && IsUnique == 1){
-    Cluster_length = Clus_ChainNetwork_ForTotal(curID, naList);//This is the length of curID cluster
+    Cluster_length = Clus_ChainNetwork_ForTotal(curID);//This is the length of curID cluster
     //printf("Clus Len: %d\n", Cluster_length);
     naClusHistList[Cluster_length]++; //Adding to that cluster-size bin
     if(Cluster_length > currentLargest){
@@ -108,7 +108,7 @@ void Clus_Distribution_Avg(int *naList){
   nLargestClusterRightNow += currentLargest;
 }
 
-int Clus_LimitedCluster(int chainID, int *naList){
+int Clus_LimitedCluster(int chainID){
   //Updates naList to have all proteins bound to  chainID and it's cluster
   //The idea is to check every bead and see if there is a unique bonded chain, and to add it to naList
   //If Cluster becomes larger than 5, exit and return -1
@@ -158,7 +158,7 @@ int Clus_LimitedCluster(int chainID, int *naList){
   return clusSize;
 }
 
-int Clus_SecondLargestCluster(int *naList, int **naCluster){
+int Clus_SecondLargestCluster(void){
     /*
     Calculates the complete networking for the system and returns naList which contains the chainIDs
     for the second largest cluster, if it exists.
@@ -174,7 +174,7 @@ int Clus_SecondLargestCluster(int *naList, int **naCluster){
     curID = 0;//Start with the 0th chain
     currentLargest = 0; j = 0;
     while(curID < tot_chains && IsUnique == 1){
-        Cluster_length = Clus_ChainNetwork_ForTotal(curID, naList);//This is the length of curID cluster
+        Cluster_length = Clus_ChainNetwork_ForTotal(curID);//This is the length of curID cluster
         if(Cluster_length > currentLargest) {
             currentLargest = Cluster_length;
             j = ClusNum;
@@ -218,7 +218,7 @@ int Clus_SecondLargestCluster(int *naList, int **naCluster){
     return naCluster[curID][0];
 }
 
-void Clus_TotalAnalysis(int *naList, int **naCluster){
+void Clus_TotalAnalysis(void){
     int curID, Cluster_length, currentLargest, i, j;
     int ClusNum = 0;
     int IsUnique = 1;
@@ -229,7 +229,7 @@ void Clus_TotalAnalysis(int *naList, int **naCluster){
     curID = 0;//Start with the 0th chain
     currentLargest = 0; j = 0;
     while(curID < tot_chains && IsUnique == 1){
-        Cluster_length = Clus_ChainNetwork_ForTotal(curID, naList);//This is the length of curID cluster
+        Cluster_length = Clus_ChainNetwork_ForTotal(curID);//This is the length of curID cluster
         if(Cluster_length > currentLargest) {
             currentLargest = Cluster_length;
             j = ClusNum;

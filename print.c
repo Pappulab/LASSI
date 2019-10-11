@@ -205,7 +205,7 @@ void print_key(void) { // should be output-dependent (stdout, stderr, other file
   printf("%s MC Setup %s\n", lBrace, rBrace);
   printf("MC Temperatures: (First, Last) = (%.2f, %.2f)\n", fKT, fKT+(float)(nTot_CycleNum-1)*fdelta_temp);
   printf("Temperature Mode               = %d\n", Temp_Mode);
-  printf("Indent Mode                    = %d\n", Indent_Mode);
+  printf("Indent Mode                    = %d\n", nThermalization_Mode);
   printf("Rotational Bias Mode           = %d\n", RotBias_Mode);
   printf("Number of MC Cycles            = %e\n", (float)nTot_CycleNum);
   printf("Number of MC Steps/Cycle       = %e\n", (float)nSteps);
@@ -546,13 +546,13 @@ void Print_Data(long nGen, int run_it){
         }
         if (nReport[REPORT_RDFTOT] != 0){//SysProp is printed outside of this function in main.c, lol
             if (nGen % nReport[REPORT_RDFTOT] == 0 && nGen > nSteps/2){
-                avg_rdf_split();
+                RDF_ComponentWise_Avg();
             }
         }
         if (nReport[REPORT_NETWORK] != 0){//SysProp is printed outside of this function in main.c, lol
             if (nGen % nReport[REPORT_NETWORK] == 0 && nGen > nSteps/2){
-                Clus_Distribution_Avg(naList);
-                CalcTotGyrRad();
+                Clus_Distribution_Avg();
+                GyrTensor_GyrRad_Avg();
             }
         }
     }
@@ -612,13 +612,13 @@ void Print_Data(long nGen, int run_it){
             }
             if (nReport[REPORT_RDFTOT] != 0){//SysProp is printed outside of this function in main.c, lol
                 if (nGen % nReport[REPORT_RDFTOT] == 0 && nGen > nSteps/2){
-                    avg_rdf_split();
+                    RDF_ComponentWise_Avg();
                 }
             }
             if (nReport[REPORT_NETWORK] != 0){//SysProp is printed outside of this function in main.c, lol
                 if (nGen % nReport[REPORT_NETWORK] == 0 && nGen > nSteps/2){
-                    Clus_Distribution_Avg(naList);
-                    CalcTotGyrRad();
+                    Clus_Distribution_Avg();
+                    GyrTensor_GyrRad_Avg();
                 }
             }
         }

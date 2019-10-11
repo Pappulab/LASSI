@@ -29,50 +29,21 @@ float energy_SC(int i){//Calculates the SC-SC energy of the bead in question.
 }
 
 float energy_cont_and_ovlp(int beadID){//Calculate Contact and Overlap energy of bead i
-  float totEn = 0.0; //Storing total overlap energy
-  int i, j;//Indecies
-  int tmpR[POS_MAX], tmpR2[POS_MAX];//
-  //TODO: Make an independent Indent function that does not clutter this function!
-  if (Indent_Mode == 1){
-      if (fCuTemp-fKT > 0.005) {
-          for (j=0; j<POS_MAX; j++) {
-              tmpR[j]  = bead_info[beadID][j];
-              tmpR2[j] = tmpR[j] - nBoxSize[j] / 2;
-              totEn   += (float) (tmpR2[j] * tmpR2[j]);
-          }
-          totEn = (fCuTemp - fKT) * totEn;
-          //return totEn;
-      }
-  }
-  if (Indent_Mode == 2){
-      if (fCuTemp-fKT > 0.005) {
-          for (j = 0; j < POS_MAX; j++) {
-              tmpR[j] = bead_info[beadID][j];
-              tmpR2[j] = tmpR[j] - nBoxSize[j] / 2;
-              totEn += (float) (tmpR2[j] * tmpR2[j]);
-          }
-          if (totEn >= 2500) {
-              //totEn = fKT*totEn;
-              totEn = fKT * ((float) tot_beads + totEn);
-              //return totEn;
-          } else if (totEn <= 2000) {
-              //totEn = fKT*totEn;
-              totEn = fKT * ((float) tot_beads + 1. / (totEn + 0.02));
-          }
-      }
-      else{
-          totEn = 0.;
-      }
-  }
+    float totEn = 0.0; //Storing total overlap energy
+    int i, j;//Indecies
+    int tmpR[POS_MAX], tmpR2[POS_MAX];
+    int x, y, z; //Lattice indecies
+    int BoxRad = 1;
+    int secBi, resj;//Second bead index
+    float xDis = 0.;//Distance between beads.
+    int resi  = bead_info[beadID][BEAD_TYPE];
+    totEn += nThermalization_Mode == 0 ? 0. : Energy_InitPotential(beadID);
 
-  int resi  = bead_info[beadID][BEAD_TYPE];
-  if (nBeadTypeCanOvlp[resi] == 0){
-    return totEn;
-  }//No need to do antying if there's no overlap cost.
-  int x, y, z; //Lattice indecies
-  int BoxRad = 1;
-  int secBi, resj;//Second bead index
-  float xDis = 0.;//Distance between beads.
+
+    if (nBeadTypeCanOvlp[resi] == 0){
+        return totEn;
+    }//No need to do antying if there's no overlap cost.
+
 
 //Going through possible neighbors For now going through (-1,1) neighbors so CONT is a small window
   for (j=0;j<POS_MAX;j++){
@@ -84,10 +55,10 @@ float energy_cont_and_ovlp(int beadID){//Calculate Contact and Overlap energy of
           tmpR2[0] = (tmpR[0] + x + nBoxSize[0]) % nBoxSize[0];
           tmpR2[1] = (tmpR[1] + y + nBoxSize[1]) % nBoxSize[1];
           tmpR2[2] = (tmpR[2] + z + nBoxSize[2]) % nBoxSize[2];
-          secBi = naTotLattice[LtIndV(tmpR2)];
+          secBi = naTotLattice[Lat_Ind_FromVec(tmpR2)];
           if (secBi != -1 && secBi != beadID){
             resj  = bead_info[secBi][BEAD_TYPE];
-            xDis  = dist(beadID, secBi);
+            xDis  = Dist_BeadToBead(beadID, secBi);
             //totEn += fEnergy[resi][resj][E_OVLP]/xDis/xDis;
             if (xDis <= 1.0) {
               totEn += fEnergy[resi][resj][E_OVLP] / 2.0;
@@ -125,3 +96,43 @@ float energy_chain(int chainID){//Calculates the energy of the given chain
   return totEn;
 }
 
+float Energy_InitPotential(int beadID){
+
+    int j;
+    float totEn = 0.;
+    int tmpR[POS_MAX];
+    if (fCuTemp-fKT > 0.005) {
+        switch (nThermalization_Mode) {
+            case 1:
+                    for (j = 0; j < POS_MAX; j++) {
+                        tmpR[j] = bead_info[beadID][j];
+                        tmpR[j] = tmpR[j] - nBoxSize[j] / 2;
+                        totEn += (float) (tmpR[j] * tmpR[j]);
+                    }
+                    totEn = (fCuTemp - fKT) * totEn;
+
+                break;
+
+            case 2:
+                    for (j = 0; j < POS_MAX; j++) {
+                        tmpR[j] = bead_info[beadID][j];
+                        tmpR[j] = tmpR[j] - nBoxSize[j] / 2;
+                        totEn += (float) (tmpR[j] * tmpR[j]);
+                    }
+                    if (totEn >= 2500) {
+                        totEn = fKT * ((float) tot_beads + totEn);
+                    } else if (totEn <= 2000) {
+                        totEn = fKT * ((float) tot_beads + 1. / (totEn + 0.02));
+                    }
+                break;
+            default:
+                totEn = 0.;
+                break;
+        }
+    }
+    else{
+        nThermalization_Mode = 0;
+    }
+
+    return totEn;
+}

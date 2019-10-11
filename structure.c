@@ -5,11 +5,11 @@ int LtInd(int i, int j, int k){//Lattice index from 3D to 1D array
   return i + nBoxSize[0]*(j + nBoxSize[1]*k);
 }
 
-int LtIndV(int xArr[POS_MAX]){//Just the vector form of the above function. Easier to read sometimes.
+int Lat_Ind_FromVec(int *xArr){//Just the vector form of the above function. Easier to read sometimes.
       return xArr[POS_X] + nBoxSize[POS_X]*(xArr[POS_Y] + nBoxSize[POS_Y]*xArr[POS_Z]);
 }
 
-float distf(float f1[POS_MAX], float f2[POS_MAX]) {
+float Dist_PointTotPoint_Float(float *f1, float *f2) {
   float d[POS_MAX];
   int i;
   for (i=0; i<POS_MAX; i++) {
@@ -20,7 +20,7 @@ float distf(float f1[POS_MAX], float f2[POS_MAX]) {
   return sqrtf(d[POS_X]*d[POS_X] + d[POS_Y]*d[POS_Y] + d[POS_Z]*d[POS_Z]);
 }
 
-float distInt(int f1[POS_MAX], int f2[POS_MAX]) {
+float Dist_PointToPoint(int *f1, int *f2) {
   int d[POS_MAX];
   int i;
   for (i=0; i<POS_MAX; i++) {
@@ -32,7 +32,7 @@ float distInt(int f1[POS_MAX], int f2[POS_MAX]) {
   return sqrtf((float)(d[POS_X]*d[POS_X] + d[POS_Y]*d[POS_Y] + d[POS_Z]*d[POS_Z]));
 }
 
-float distBeadToVec(int beadID, int f1[POS_MAX]) {
+float Dist_BeadToPoint(int beadID, int *f1) {
     int d[POS_MAX];
     int i;
     for(i=0; i<POS_MAX;i++) {
@@ -42,7 +42,7 @@ float distBeadToVec(int beadID, int f1[POS_MAX]) {
     return sqrtf((float)(d[POS_X]*d[POS_X] + d[POS_Y]*d[POS_Y] + d[POS_Z]*d[POS_Z]));
 }
 
-float dist(int n1, int n2) {
+float Dist_BeadToBead(int n1, int n2) {
   lInt d[POS_MAX];
   lInt i;
 
@@ -65,20 +65,21 @@ int Check_System_Structure(void){
   for(j=0; j<POS_MAX; j++){
     tmpR[j] = bead_info[i][j];
   }
-  if(naTotLattice[LtIndV(tmpR)] == -1){
+  if(naTotLattice[Lat_Ind_FromVec(tmpR)] == -1){
       printf("Lattice Position for bead %d is empty! Chain: %d\n", i, bead_info[i][BEAD_CHAINID]);
       return i+1;
   }
-  if(i - naTotLattice[LtIndV(tmpR)] != 0){//This means there is a mismatch between where the bead is and where the lattice thinks the bead is
+  if(i - naTotLattice[Lat_Ind_FromVec(tmpR)] != 0){//This means there is a mismatch between where the bead is and where the lattice thinks the bead is
     printf("Bead position and lattice value not the same. Crashing\t\t");
-    printf("B1:%d B2:%d\t C1:%d C2:%d\n", i, naTotLattice[LtIndV(tmpR)], bead_info[i][BEAD_CHAINID], bead_info[naTotLattice[LtIndV(tmpR)]][BEAD_CHAINID]);
+    printf("B1:%d B2:%d\t C1:%d C2:%d\n", i, naTotLattice[Lat_Ind_FromVec(tmpR)], bead_info[i][BEAD_CHAINID], bead_info[naTotLattice[Lat_Ind_FromVec(
+            tmpR)]][BEAD_CHAINID]);
     return i+1;
   }
   while(topo_info[i][idx] != -1 && idx < MAX_BONDS){
     bondPart = topo_info[i][idx];
-    if(dist(i, bondPart) > 1.74 * linker_len[i][idx]){
+    if(Dist_BeadToBead(i, bondPart) > 1.74 * linker_len[i][idx]){
       printf("Bad beads! %d\t(%d %d %d)\t\tTopo:(%d %d %d)\t\tLinkers:(%.5f\t%.5f\t%.5f)\n", i, bead_info[i][0], bead_info[i][1], bead_info[i][2], topo_info[i][0], topo_info[i][1], topo_info[i][2], (float)linker_len[i][0], (float)linker_len[i][1], (float)linker_len[i][2]);
-      printf("\t\t\t\t\t-------------------->\t\t%f\tSHOULD BE\t%f\n", dist(i,bondPart), 1.74*(float)linker_len[i][idx]);
+      printf("\t\t\t\t\t-------------------->\t\t%f\tSHOULD BE\t%f\n", Dist_BeadToBead(i, bondPart), 1.74 * (float)linker_len[i][idx]);
       printf("Bad beads! %d\t(%d %d %d)\t\tTopo:(%d %d %d)\t\tLinkers:(%.5f\t%.5f\t%.5f)\n\n", bondPart, bead_info[bondPart][0], bead_info[bondPart][1], bead_info[bondPart][2], topo_info[bondPart][0], topo_info[bondPart][1], topo_info[bondPart][2], (float)linker_len[bondPart][0], (float)linker_len[bondPart][1], (float)linker_len[bondPart][2]);
       return i+1;
     }
@@ -97,7 +98,7 @@ int Check_System_Structure(void){
       printf("Bad bond!\n\t%d %d %d %f\nCrashing.\n", i , bead_info[i][BEAD_FACE], bead_info[bead_info[i][BEAD_FACE]][BEAD_FACE], fEnergy[bead_info[i][BEAD_TYPE]][bead_info[bead_info[i][BEAD_FACE]][BEAD_TYPE]][E_SC_SC]);
       return i+1;
     }
-    if(dist(i, bead_info[i][BEAD_FACE]) > 1.74){
+    if(Dist_BeadToBead(i, bead_info[i][BEAD_FACE]) > 1.74){
       printf("Bad bond! Distance is wrong\n\t%d %d %d\nCrashing.\n", i , bead_info[i][BEAD_FACE], bead_info[bead_info[i][BEAD_FACE]][BEAD_FACE]);
       return i+1;
     }
@@ -119,7 +120,7 @@ void radial_distribution_tot(void){
   //Calculating where, and how many, pairs exist
   for (i=0; i < tot_beads; i++){
     for (j=i+1; j < tot_beads; j++){
-      x = dist(i,j);
+      x = Dist_BeadToBead(i, j);
       if (x <= (float)nBoxSize[0]/2.0){// Obviously, the maximal radius can be N/2
         fRDF_TOT[(int)x * 4] += 2.0; //Adding a pair to that bin I am assuming for now that dr=1/4
       }
@@ -158,10 +159,10 @@ void radial_distribution_split(void){//Only g(r) is normalized.
         resi = bead_info[i][BEAD_TYPE];
     for (j=i+1; j < tot_beads; j++){
       resj = bead_info[j][BEAD_TYPE];
-      x = dist(i,j);// Calculate distance between beads
+      x = Dist_BeadToBead(i, j);// Calculate distance between beads
       //Calculate which bin:= floor(1/dr * x)
       myBin = (int)floor(4.*x);//I am assuming for now that dr=1/4
-      //Note that the dist(i,j) ensures that no incorrect distances are calculated.
+      //Note that the Dist_BeadToBead(i,j) ensures that no incorrect distances are calculated.
       ldRDF_ARR[0][myBin] += 2.0;  //Adding a pair to that bin
       if (resi == 0 && resj == 0){
           ldRDF_ARR[1][myBin] += 2.0;
@@ -197,7 +198,7 @@ float vectorMag(const int MyVec[]){//Outputs the magnitude of the vector
   return sqrtf((float)(MyVec[0]*MyVec[0]+MyVec[1]*MyVec[1]+MyVec[2]*MyVec[2]));
 }
 
-void CalcGyrTensor(int ClusSize, int ClusIndex){
+void GyrTensor_ClusterSpecific(int ClusSize, int ClusIndex){
   //Calculate the components of the gyration tensor for a given cluster.
   //ClusSize is the size of the cluster -- obviously -- whereas ClusIndex tell us
   //where in naCluster the chain indecies are located. naCluster[ClusIndex][0-ClusSize] is all the chainID's I need
@@ -269,7 +270,7 @@ void CalcGyrTensor(int ClusSize, int ClusIndex){
 
 }
 
-void CalcTotGyrTensor(void){//Calculates the gyration tensor for the whole system
+void GyrTensor_GyrRad(void){//Calculates the gyration tensor for the whole system
     int i, k, j, j2;//Basic indecies for loops
     for(i=0;i<7;i++){ fGyrTensor[i] = 0.;}//Initializing
     float tot_COM[POS_MAX] = {0.};//This is where we shall store the COM of the cluster.
@@ -310,11 +311,11 @@ void CalcTotGyrTensor(void){//Calculates the gyration tensor for the whole syste
     for(i=0;i<7;i++){ fGyrTensor[i] /= (float)tot_beads; }//printf("%f\n",fGyrTensor[i]);}printf("\n");
 }
 
-void CalcTotGyrRad(void){
+void GyrTensor_GyrRad_Avg(void){
   /*
   Only calculates the diagonals of the gyration tensor, and calculates the sum of the
   diagonals. Remember that Rg^2 = Tr(GyrTen) so we only need to calculate the diagonals, and then then sum.
-  I shall borrow most of the code from above, and so read CalcGyrTensor for what's happening here.
+  I shall borrow most of the code from above, and so read GyrTensor_ClusterSpecific for what's happening here.
   */
   int i, j;//Loop indecies
   float tot_COM[POS_MAX] = {0.};
@@ -344,7 +345,7 @@ void CalcTotGyrRad(void){
 
 }
 
-void avg_rdf_split(void){
+void RDF_ComponentWise_Avg(void){
   /*
   Calcutes the RDF and adds it all up so that it can be averaged out at the end of the run.
   */
@@ -360,8 +361,8 @@ void avg_rdf_split(void){
         resi = bead_info[i][BEAD_TYPE];
     for (j=i+1; j < tot_beads; j++){
       resj = bead_info[j][BEAD_TYPE];
-      x = dist(i,j);
-      //Note that dist(i,j) automatically ensures no distance is greater than (L/2)*sqrt(3)
+      x = Dist_BeadToBead(i, j);
+      //Note that Dist_BeadToBead(i,j) automatically ensures no distance is greater than (L/2)*sqrt(3)
       myBin = (int)floor(4.*x);//I am assuming for now that dr=1/4
       ldRDF_ARR[0][myBin] += 2.0;  //Adding a pair to that bin
       array_pos = resi == resj ? 1 + resi : 6 + resj - resi*(resi-9)/2;
@@ -379,7 +380,7 @@ int check_linker_constraint(int beadID, int tmpR[]){
   idx = 0; bondPartner = topo_info[beadID][idx];//Initializing the two.
   while(idx < MAX_BONDS && topo_info[beadID][idx] != -1){//Keep going till we run out of partners
     bondPartner = topo_info[beadID][idx];
-    if(distInt(bead_info[bondPartner], tmpR) > 1.74*(float)linker_len[beadID][idx]){
+    if(Dist_PointToPoint(bead_info[bondPartner], tmpR) > 1.74 * (float)linker_len[beadID][idx]){
       return 0;//This means that we have broken one of the linkers.
     }
     idx++;
@@ -406,7 +407,7 @@ int ShakeConstraint(int beadID, int tmpR[MAX_VALENCY][POS_MAX]){
   while(curID != -1 && canI == 1){
     idx = 0; bPart = topo_info[curID][idx];
     while(bPart != -1 && idx < MAX_BONDS){
-      if(dist(curID, bPart) > 1.74*(float)linker_len[curID][idx]){
+      if(Dist_BeadToBead(curID, bPart) > 1.74 * (float)linker_len[curID][idx]){
               canI = 0;
               break;
       }

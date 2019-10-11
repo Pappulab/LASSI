@@ -26,7 +26,7 @@ int parse_key(char filename[]) {
   for (i=0; i<MAX_MV; i++) {
     fMCFreq[i] = 0.0; // initialization; to be normalized
   }
-    Indent_Mode = 0;
+    nThermalization_Mode = 0;
     Temp_Mode   = -1;
   while (fgets(strLine, sizeof(strLine), infile) != NULL) {
     nLine++;
@@ -77,7 +77,7 @@ int parse_key(char filename[]) {
       } else if (strcmp(strKeyword, "MC_CYCLE_NUM") == 0) {
           sscanf(strLine, "%*s %d", &nTot_CycleNum);
       } else if (strcmp(strKeyword, "MC_INDENT_MODE") == 0) {
-        sscanf(strLine, "%*s %d", &Indent_Mode);
+        sscanf(strLine, "%*s %d", &nThermalization_Mode);
       } else if (strcmp(strKeyword, "ROT_ENERGY_BIAS") == 0) {
         sscanf(strLine, "%*s %f", &f_globRotBias);
       } else if (strcmp(strKeyword, "MC_MAX_TRIALS") == 0) {

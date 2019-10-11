@@ -8,5 +8,5 @@ void Calc_Tot_Energy();
 float energy_SC(int beadID);
 float energy_cont_and_ovlp(int beadID);
 float energy_chain(int chainID);
-
+float Energy_InitPotential(int beadID);
 #endif // _ENERGY_H_
