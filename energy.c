@@ -2,7 +2,7 @@
 #include "energy.h"
 #include "structure.h"
 
-void Calc_Tot_Energy() {
+void Energy_Total_System() {
   int i;//Indecies
   // initialization
   for (i=0; i<MAX_E; i++) {
@@ -10,8 +10,8 @@ void Calc_Tot_Energy() {
   }
 //printf("We have %d beads and %d chains", tot_beads, tot_chains);
   for (i=0; i < tot_beads; i++) {
-    faCurrEn[E_OVLP] += energy_cont_and_ovlp(i)/2.;
-    faCurrEn[E_SC_SC] += energy_SC(i)/2.;
+    faCurrEn[E_OVLP] += Energy_Isotropic(i) / 2.;
+    faCurrEn[E_SC_SC] += Energy_Anisotropic(i) / 2.;
     //printf("Done with bead %d\n", i);
   }
 
@@ -20,15 +20,15 @@ void Calc_Tot_Energy() {
   }
 }
 
-float energy_SC(int i){//Calculates the SC-SC energy of the bead in question.
+float Energy_Anisotropic(int i){//Calculates the SC-SC energy of the bead in question.
   float totEn = 0.0; //Storing total overlap energy
-    if (bead_info[i][BEAD_FACE] != -1){
-        totEn += fEnergy[bead_info[i][BEAD_TYPE]][bead_info[bead_info[i][BEAD_FACE]][BEAD_TYPE]][E_SC_SC];
+    if (bead_info[beadID][BEAD_FACE] != -1){
+        totEn += fEnergy[bead_info[beadID][BEAD_TYPE]][bead_info[bead_info[beadID][BEAD_FACE]][BEAD_TYPE]][E_SC_SC];
         }
   return totEn;
 }
 
-float energy_cont_and_ovlp(int beadID){//Calculate Contact and Overlap energy of bead i
+float Energy_Isotropic(int beadID){//Calculate Contact and Overlap energy of bead i
     float totEn = 0.0; //Storing total overlap energy
     int i, j;//Indecies
     int tmpR[POS_MAX], tmpR2[POS_MAX];
@@ -85,12 +85,12 @@ float energy_cont_and_ovlp(int beadID){//Calculate Contact and Overlap energy of
 
 }
 
-float energy_chain(int chainID){//Calculates the energy of the given chain
+float Energy_Of_Chain(int chainID){//Calculates the energy of the given chain
   float totEn = 0.0;
   int i;//Indecies
 
   for(i=chain_info[chainID][CHAIN_START];i<chain_info[chainID][CHAIN_START]+chain_info[chainID][CHAIN_LENGTH];i++){
-    totEn += energy_SC(i) + energy_cont_and_ovlp(i);
+    totEn += Energy_Anisotropic(i) + Energy_Isotropic(i);
   }
 
   return totEn;

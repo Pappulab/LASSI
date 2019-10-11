@@ -5,7 +5,7 @@
 
 int str2farr(char* strRaw, float fArray[MAX_AA]);
 
-int parse_key(char filename[]) {
+int Parse_Keyfile(char *filename) {
   FILE *infile;
   infile = fopen(filename, "r");
   int i;
@@ -153,12 +153,12 @@ int parse_key(char filename[]) {
     }
 
     if (strEnergyFile[0] != '\0') {
-      nErr = parse_en(strEnergyFile);
+      nErr = Parse_EnergyFile(strEnergyFile);
     }
 
     if (strStructFile[0] != '\0') {
       if (nStructFiletype == 0) {
-          parse_strucfile(strStructFile);
+          Parse_StructureFile(strStructFile);
         bReadConf = 0;
       } else if (nStructFiletype == 1) {
           printf("Cannot do that yet, sorry! Must generate random initial conditions from a general"
@@ -175,7 +175,7 @@ int parse_key(char filename[]) {
     return nErr;
 }
 
-int parse_en(char strEnFile[]) {
+int Parse_EnergyFile(char *strEnFile) {
     int nRes = 0;
 
     FILE *infile;
@@ -306,7 +306,7 @@ int str2farr(char strRaw[], float fArray[MAX_AA]) {
     return i;
   }
 
-void parse_strucfile(char* filename){
+void Parse_StructureFile(char* filename){
   /*
   This function reads in a structure file that also includes topology information. The format is:
   # The '#' is the commenting character.

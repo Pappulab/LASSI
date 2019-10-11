@@ -4,12 +4,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void print_log(long nGen, int run_it);
-void write_mcmove(char* filename, long nGen, float fMCTemp);
-void write_energy(char* filename, long nGen);
-void print_key(void);
-void write_trajectory(char* filename, long nGen);
-void write_topofile(char* filename);
+void Print_LogToScreen(long nGen, int run_it);
+void Write_MCMove(char* filename, long nGen, float fMCTemp);
+void Write_Energy(char* filename, long nGen);
+void Print_Key(void);
+void Write_Trajectory(char* filename, long nGen);
+void Write_TopFile(char* filename);
 void Write_SysProp(char* filename);
 void Write_TotalSysProp(char* filename, int run_it);
 void Print_Data(long nGen, int run_it);

@@ -25,21 +25,21 @@ int Move_Snake_Equil(int chainID, float MyTemp);
 int Move_Trans_Equil(int chainID, float MyTemp);
 int Move_MultiLocal_Equil(int beadID, float MyTemp);
 int Move_Pivot_Equil(int chainID, float MyTemp);
-int PivotMCMove_Equil2(int chainID, float MyTemp);
 int Move_BranchedRot_Equil(int chainID, float MyTemp);
 
-void disp_chain(int chainID, const int movR[]);
-void trans_disp_chain(int chainID, const int movR[]);
-void restore_chain(int chainID);
-void trans_restore_chain(int chainID);
-int check_disp_chain(int chainID, const int tR[]);
-void move_bead_to(int beadID, const int newPos[]);
-void undo_move_bead_to(int beadID);
-void move_bead_to_shake(int beadID, const int newPos[]);
-int check_move_bead_to(int newPos[]);
-void swap_beads(int bead1, int bead2);
+int  Check_ChainDisp(int chainID, const int *tR);
+int  Check_MoveBeadTo(int *newPos);
 
-void RotOperation(int PivotM, int beadID, int tmpR[]);
+void OP_DispChain(int chainID, const int *movR);
+void OP_DispChain_ForTrans(int chainID, const int *movR);
+void OP_RestoreChain(int chainID);
+void OP_RestoreChain_ForTrans(int chainID);
+void OP_MoveBeadTo(int beadID, const int *newPos);
+void OP_Inv_MoveBeadTo(int beadID);
+void OP_MoveBeadTo_ForMTLocal(int beadID, const int *newPos);
+void OP_SwapBeads(int bead1, int bead2);
+
+void OP_Rotation(int PivotM, int beadID, int *tmpR);
 void Rot_X_90(int beadID,  const int tmpR[]);
 void Rot_X_180(int beadID, const int tmpR[]);
 void Rot_X_270(int beadID, const int tmpR[]);
@@ -50,9 +50,9 @@ void Rot_Z_90(int beadID,  const int tmpR[]);
 void Rot_Z_180(int beadID, const int tmpR[]);
 void Rot_Z_270(int beadID, const int tmpR[]);
 
-void ShuffleRotIndecies(void);
-int CheckRotStatesOld(int beadID, int resi, float MyTemp);
-int CheckRotStatesNew(int beadID, int resi, float MyTemp);
-void NormalizeRotState(int beadVal, int CandNums);
-int PickRotState(int CandNums);
+void OP_ShuffleRotIndecies(void);
+int  Check_RotStatesOld(int beadID, int resi, float MyTemp);
+int  Check_RotStatesNew(int beadID, int resi, float MyTemp);
+void OP_NormalizeRotState(int beadVal, int CandNums);
+int  OP_PickRotState(int CandNums);
 #endif // _MCMOVE_H_

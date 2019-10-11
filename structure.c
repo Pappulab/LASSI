@@ -1,7 +1,7 @@
 #include "global.h"
 #include "structure.h"
 
-int LtInd(int i, int j, int k){//Lattice index from 3D to 1D array
+int Lat_Ind_FromCoords(int i, int j, int k){//Lattice index from 3D to 1D array
   return i + nBoxSize[0]*(j + nBoxSize[1]*k);
 }
 
@@ -194,8 +194,8 @@ void radial_distribution_split(void){//Only g(r) is normalized.
 
 }
 
-float vectorMag(const int MyVec[]){//Outputs the magnitude of the vector
-  return sqrtf((float)(MyVec[0]*MyVec[0]+MyVec[1]*MyVec[1]+MyVec[2]*MyVec[2]));
+float Dist_VecMag(const int *f1){//Outputs the magnitude of the vector
+  return sqrtf((float)(f1[0] * f1[0] + f1[1] * f1[1] + f1[2] * f1[2]));
 }
 
 void GyrTensor_ClusterSpecific(int ClusSize, int ClusIndex){
@@ -372,7 +372,7 @@ void RDF_ComponentWise_Avg(void){
   nRDFCounter++;
   }
 
-int check_linker_constraint(int beadID, int tmpR[]){
+int Check_LinkerConstraint(int beadID, int *tmpR){
   //Check if the proposed new location for beadID is such that all the linkers are unbroken.
   int idx;//Iterator to loop over bond Partners
   int bondPartner;//It is what it is.
@@ -388,7 +388,7 @@ int check_linker_constraint(int beadID, int tmpR[]){
   return 1;//This means that all linker constraints are satisfied.
 }
 
-int ShakeConstraint(int beadID, int tmpR[MAX_VALENCY][POS_MAX]){
+int Check_MTLinkerConstraint(int beadID, int **tmpR){
 
   int curID = beadID;
   int idx, bPart;

@@ -4,9 +4,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void Calc_Tot_Energy();
-float energy_SC(int beadID);
-float energy_cont_and_ovlp(int beadID);
-float energy_chain(int chainID);
+void  Energy_Total_System();
+float Energy_Anisotropic(int beadID);
+float Energy_Isotropic(int beadID);
+float Energy_Of_Chain(int chainID);
 float Energy_InitPotential(int beadID);
 #endif // _ENERGY_H_

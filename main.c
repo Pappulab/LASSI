@@ -18,10 +18,10 @@ int main(int argc, char* argv[]) {
   }
 
   int errorcode;
-  errorcode = parse_key(keyfile);
+  errorcode = Parse_Keyfile(keyfile);
   if (errorcode == 0) {
     printf("Key file %s was successfully parsed.\n\n", keyfile);
-    print_key();
+      Print_Key();
   } else {
     printf("ERROR: unable to parse key file %s.\n", keyfile);
     exit(1);

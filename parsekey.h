@@ -4,8 +4,8 @@
 #include <stdio.h>
 #include <string.h>
 
-int parse_key(char filename[]);
-int parse_en(char strEnFile[]);
-void parse_strucfile(char* filename);
+int Parse_Keyfile(char *filename);
+int Parse_EnergyFile(char *strEnFile);
+void Parse_StructureFile(char* filename);
 
 #endif // _PARSEKEY_H_
