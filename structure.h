@@ -1,7 +1,6 @@
 #ifndef _STRUCTURE_H_   // include guard
 #define _STRUCTURE_H_
 
-#include "global.h"
 
 int Lat_Ind_FromCoords(int i, int j, int k);
 int Lat_Ind_FromVec(int *xArr);
