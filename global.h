@@ -97,14 +97,14 @@ lInt   Rot_IndArr[MAX_ROTSTATES-1];
 char   bReadConf;
 
 // energy matrices for stickers
-lInt   nSeqEn;
+lInt  nSeqEn;
 float fEnergy[MAX_AA][MAX_AA][MAX_E];
 float fEnRad[MAX_AA][MAX_AA][MAX_E];
-lInt   rot_trial[MAX_VALENCY][MAX_ROTSTATES];//Used in orientational-bias MC moves
+lInt  rot_trial[MAX_VALENCY][MAX_ROTSTATES];//Used in orientational-bias MC moves
 lDub  bolt_fac[MAX_ROTSTATES - 1];//Used in orientational-bias
 lDub  bolt_norm[MAX_VALENCY];
 lDub  dbias_bolt_fac[MAX_AA][MAX_AA];//For pre-calculating the factors.
-float   faCurrEn[MAX_E]; //Vector for current energy
+float faCurrEn[MAX_E]; //Vector for current energy
 
 //Arrays to track certain topology and interaction information
 lInt nBeadTypeIsSticker[MAX_AA];//Used to track if that beadType interacts via rotations.
