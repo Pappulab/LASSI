@@ -10,7 +10,7 @@
 #define PI 3.14159
 
 #define MAX_BEADS      53000
-#define MAX_AA         6
+#define MAX_AA         10
 #define MAX_CHAINTYPES 6
 #define MAX_CHAINS     10000
 #define MAX_CHAINLEN   1000
