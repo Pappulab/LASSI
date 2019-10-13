@@ -66,12 +66,7 @@
 #define CHAIN_START    2
 #define CHAININFO_MAX  3
 
-#define RDF_MAXBINS     5000
-#define TEMP_CYCLES_MAX 30
-#define RDF_COMPS       22
 #define MAX_ROTSTATES   27
-
-
 
 typedef int lInt;
 typedef long lLong;
@@ -122,8 +117,8 @@ lLong  nSteps, nPreSteps;
 float fMCFreq[MAX_MV];
 lInt   nMCMaxTrials, nTot_CycleNum;
 
-// random number generator seed
-lInt   seed;
+// random number generator RNG_Seed
+lInt   RNG_Seed;
 
 // report-related
 char  strReportPrefix[100];
@@ -146,18 +141,14 @@ lLDub **ld_TOTCLUS_ARR;
 lInt naTempR[POS_MAX];
 lInt nLargestClusterRightNow;
 
-//Radial Distribution Function
-float fRDF_TOT[RDF_MAXBINS];
-lLDub ldRDF_ARR[RDF_COMPS][RDF_MAXBINS];
-lLDub ld_TOTRDF_ARR[TEMP_CYCLES_MAX][RDF_COMPS][RDF_MAXBINS];
-lLDub *ld_TOTRDF_ARR_temp;
-lLDub *ldRDF_ARR_temp;
+lLDub *ld_TOTRDF_Arr;
+lLDub *ldRDF_Arr;
 lInt  nRDF_TotComps;
 lInt nRDFCounter;//This counts how many times the RDF has been calculated for averaging at the end.
 lInt nRDF_TotBins;
 float fGyrTensor[7];//Gyration tensor
 float fSysGyrRad;//Gyration radius of the system.
-lLDub ld_TOTGYRRAD_ARR[TEMP_CYCLES_MAX][2];
+lLDub **ld_TOTGYRRAD_ARR;
 lInt nTotGyrRadCounter;//Counter for total averaging
 
 //Lattice To Remember Things

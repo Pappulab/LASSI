@@ -112,7 +112,7 @@ int Parse_Keyfile(char *filename) {
       } else if (strcmp(strKeyword, "ENERGY_FILE") == 0) {
         sscanf(strLine, "%*s %s", strEnergyFile);
       } else if (strcmp(strKeyword, "RANDOM_SEED") == 0) {
-        sscanf(strLine, "%*s %d", &seed);
+        sscanf(strLine, "%*s %d", &RNG_Seed);
       } else if (strcmp(strKeyword, "REPORT_PREFIX") == 0) {
         sscanf(strLine, "%*s %s", strReportPrefix);
       } else if (strcmp(strKeyword, "REPORT_LOG_FREQ") == 0) {

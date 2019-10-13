@@ -16,13 +16,18 @@ void MemoryInitialization(void){
             exit(1);
         }
     }
+    ld_TOTGYRRAD_ARR = (lLDub **)malloc((nTot_CycleNum) * sizeof(lLDub));
+    for(i = 0; i < nTot_CycleNum; i++){
+        ld_TOTGYRRAD_ARR[i] = (lLDub *)malloc((2) * sizeof(lLDub));
+    }
     nRDF_TotComps = 2 + nBeadTypes + nBeadTypes*nBeadTypes;
     nRDF_TotComps /= 2;
-    ld_TOTRDF_ARR_temp = malloc((nTot_CycleNum*nRDF_TotComps*nRDF_TotBins) * sizeof(lLDub));
-    ldRDF_ARR_temp     = malloc((nRDF_TotComps*nRDF_TotBins) * sizeof(lLDub));
+    ld_TOTRDF_Arr = malloc((nTot_CycleNum * nRDF_TotComps * nRDF_TotBins) * sizeof(lLDub));
+    ldRDF_Arr     = malloc((nRDF_TotComps * nRDF_TotBins) * sizeof(lLDub));
+
     if (naTotLattice == NULL || naClusHistList == NULL ||
-        naChainCheckList == NULL || ldRDF_ARR_temp == NULL ||
-        ld_TOTRDF_ARR_temp == NULL) {
+        naChainCheckList == NULL || ldRDF_Arr == NULL ||
+        ld_TOTRDF_Arr == NULL) {
         printf( "Malloc Failed! Crashing. Probably ran out of memory.\n");
         exit(1);
     }
@@ -72,15 +77,15 @@ void GlobalArrayInitialization(void){
       }
     }
     //Initializing arrays for pair-distribution calculations
-    for (j = 0; j < RDF_COMPS; j++){
-      for (i = 0; i < RDF_MAXBINS; i++){
-          ldRDF_ARR[j][i] = 0.;
+    for (j = 0; j < nRDF_TotComps; j++){
+      for (i = 0; i < nRDF_TotBins; i++){
+          ldRDF_Arr[RDFArr_Index(0, j, i)] = 0.;
       }
     }
-    for (k = 0; k < TEMP_CYCLES_MAX; k++) {
-        for (j = 0; j < RDF_COMPS; j++) {
-            for (i = 0; i < RDF_MAXBINS; i++) {
-                ld_TOTRDF_ARR[k][j][i] = 0.;
+    for (k = 0; k < nTot_CycleNum; k++) {
+        for (j = 0; j < nRDF_TotComps; j++) {
+            for (i = 0; i < nRDF_TotBins; i++) {
+                ld_TOTRDF_Arr[RDFArr_Index(k, j, i)] = 0.;
             }
         }
         ld_TOTGYRRAD_ARR[k][0] = 0.;
@@ -139,9 +144,9 @@ void Reset_Global_Arrays(void){
         }
     }
     //Initializing arrays for pair-distribution calculations
-    for (j = 0; j < RDF_COMPS; j++){
-        for (i = 0; i < RDF_MAXBINS; i++){
-            ldRDF_ARR[j][i] = 0.;
+    for (j = 0; j < nRDF_TotComps; j++){
+        for (i = 0; i < nRDF_TotBins; i++){
+            ldRDF_Arr[RDFArr_Index(0, j, i)] = 0.;
         }
     }
     //Setting counters

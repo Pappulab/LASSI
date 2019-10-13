@@ -189,7 +189,7 @@ void Print_Key(void) { // should be output-dependent (stdout, stderr, other file
   printf("Number of MC Steps/Cycle       = %e\n", (float)nSteps);
   printf("Thermalizing Temperature       = %.2f\n", fPreKT);
   printf("Number of Thermalizing Steps   = %e\n", (float)nPreSteps);
-  printf("RNG Seed                       = %d\n", seed);
+  printf("RNG Seed                       = %d\n", RNG_Seed);
   char *MoveName[MAX_MV];
   MoveName[MV_PIVOT]   = "Pivot           ";
   MoveName[MV_DBPVT]   = "Double Pivot    ";
@@ -243,28 +243,6 @@ void Print_Matrix(char* strTitle, int nSeqEn, float fArray[MAX_AA][MAX_AA][MAX_E
   printf("\n");
 }
 
-void Write_RDF_Tot(char* filename, long nGen){
-  FILE *fp;
-  if (nGen == -1) {
-    fp = fopen(filename, "w"); // overwrite
-  } else {
-    fp = fopen(filename, "a");
-  }
-  int i;
-  if (nGen == -1) { // title
-    fprintf(fp, "#Row-by-row RDF. dr = 1\n");
-  }
-    else{
-      for (i = 0; i < nRDF_TotBins; i++){
-        fprintf(fp, "%.5f\t", fRDF_TOT[i]);
-      }
-      fprintf(fp, "\n");
-    }
-
-    fclose(fp);
-
-}
-
 void Write_RDF_ComponentWise(char* filename, long nGen){
   FILE *fp;
   if (nGen == -1) {
@@ -277,9 +255,9 @@ void Write_RDF_ComponentWise(char* filename, long nGen){
     fprintf(fp, "#Row-by-row split RDF. dr = 1/4\n");
   }
     else{
-      for (k=0; k<1; k++){
+      for (k=0; k<nRDF_TotComps; k++){
         for (i = 0; i < nRDF_TotBins; i++){
-          fprintf(fp, "%.5Lf\t", ldRDF_ARR[k][i]);
+          fprintf(fp, "%.5Lf\t", ldRDF_Arr[RDFArr_Index(0, k, i)]);
         }
         fprintf(fp, "\n");
       }
@@ -367,9 +345,10 @@ void Write_SysProp(char* filename){
   }
   //Split RDFs
   fprintf(fp, "\n#Split RDFs. ALL-ALL; DIAGONALS and then from 0 onwards \n");
-  for (j=0; j<RDF_COMPS; j++){
+  for (j=0; j<nRDF_TotComps; j++){
     for (i=0; i < nRDF_TotBins; i++){
-      fprintf(fp, "%LE\t", ldRDF_ARR[j][i] / (float)nRDFCounter);
+      //fprintf(fp, "%LE\t", ldRDF_ARR[j][i] / (float)nRDFCounter);
+        fprintf(fp, "%LE\t", ldRDF_Arr[RDFArr_Index(0, j, i)] / (float)nRDFCounter);
     }
     fprintf(fp, "\n");
   }
@@ -395,7 +374,7 @@ void Write_TotalSysProp(char* filename, int run_it){
         fprintf(fp, "#Run_Cycle = %d\n", i);
         for (j = 0; j < nRDF_TotComps ; j++){
             for (k = 0; k < nRDF_TotBins; k++){
-                fprintf(fp, "%LE\t", ld_TOTRDF_ARR_temp[RDFArr_Index(i,j,k)]);
+                fprintf(fp, "%LE\t", ld_TOTRDF_Arr[RDFArr_Index(i, j, k)]);
                 //fprintf(fp, "%LE\t", ld_TOTRDF_ARR[i][j][k]);
             }
             fprintf(fp, "\n");
@@ -609,9 +588,8 @@ void Copy_Data(int run_it){
     int i, j;
     for(i = 0; i < nRDF_TotComps; i++){
         for (j = 0; j < nRDF_TotBins; j++) {
-            //ld_TOTRDF_ARR[run_it][i][j] = ldRDF_ARR[i][j] / (long double)nRDFCounter;
-            ld_TOTRDF_ARR_temp[RDFArr_Index(run_it, i, j)] =
-                    ldRDF_ARR_temp[RDFArr_Index(0,i,j)] / (long double)nRDFCounter;
+            ld_TOTRDF_Arr[RDFArr_Index(run_it, i, j)] =
+                    ldRDF_Arr[RDFArr_Index(0, i, j)] / (long double)nRDFCounter;
 
         }
     }

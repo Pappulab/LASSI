@@ -29,7 +29,7 @@ int main(int argc, char* argv[]) {
 
   printf("%s Initializing %s\n", lBrace, rBrace);
 
-  srand(seed == 0 ? time(NULL) : seed);
+  srand(RNG_Seed == 0 ? time(NULL) : RNG_Seed);
 
 
   clock_t tStart = clock();

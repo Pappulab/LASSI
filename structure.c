@@ -107,93 +107,6 @@ int Check_System_Structure(void){
     return 0;
 }
 
-void RDF_Total(void){
-  float x;  //For distance
-  int i, j;
-  float sph_norm = tot_beads * tot_beads * PI * 4.0 / 3.0 / nBoxSize[0] / nBoxSize[1] / nBoxSize[2]; //Volume of sphere constant, and number normalization
-
-  //Initializing
-  for (i=0;i<RDF_MAXBINS; i++){
-      fRDF_TOT[i] = 0.0;
-  }
-
-  //Calculating where, and how many, pairs exist
-  for (i=0; i < tot_beads; i++){
-    for (j=i+1; j < tot_beads; j++){
-      x = Dist_BeadToBead(i, j);
-      if (x <= (float)nBoxSize[0]/2.0){// Obviously, the maximal radius can be N/2
-        fRDF_TOT[(int)x * 4] += 2.0; //Adding a pair to that bin I am assuming for now that dr=1/4
-      }
-    }
-  }
-
-  //Normalization over a sphere
-  for (i = 0; i < nRDF_TotBins; i++){
-    x = 1.0 + (float)i*(3.0 + 3.0*(float)i);//Volume of shell between i and i+1
-    x *= sph_norm;
-    x /= 64.0; // Because (1/4)^(-3) is 64
-    fRDF_TOT[i] /= x;
-  }
-
-}
-
-void RDF_ComponentWise(void){//Only g(r) is normalized.
-
-  float x;  //For distance
-  int i, j, k;
-  int resi, resj;
-  int chaini, chainj;
-  int myBin = 0;
-
-
-  //Initializing
-
-  for (j = 0; j < 7; j++){
-    for (i = 0; i < RDF_MAXBINS; i++){
-        ldRDF_ARR[j][i] = 0.;
-    }
-  }
-
-  //Calculating where, and how many, pairs exist
-  for (i=0; i < tot_beads; i++){
-        resi = bead_info[i][BEAD_TYPE];
-    for (j=i+1; j < tot_beads; j++){
-      resj = bead_info[j][BEAD_TYPE];
-      x = Dist_BeadToBead(i, j);// Calculate distance between beads
-      //Calculate which bin:= floor(1/dr * x)
-      myBin = (int)floor(4.*x);//I am assuming for now that dr=1/4
-      //Note that the Dist_BeadToBead(i,j) ensures that no incorrect distances are calculated.
-      ldRDF_ARR[0][myBin] += 2.0;  //Adding a pair to that bin
-      if (resi == 0 && resj == 0){
-          ldRDF_ARR[1][myBin] += 2.0;
-        continue;
-      }
-      if ((resi == 0 && resj == 1) || (resj == 0 && resi == 1)){
-          ldRDF_ARR[2][myBin] += 2.0;
-        continue;
-      }
-      if ((resi == 0 && resj == 2) || (resj == 0 && resi == 2)){
-          ldRDF_ARR[3][myBin] += 2.0;
-        continue;
-      }
-      if ((resi == 1 && resj == 1)){
-          ldRDF_ARR[4][myBin] += 2.0;
-        continue;
-      }
-      if ((resi == 1 && resj == 2) || (resj == 1 && resi == 2)){
-          ldRDF_ARR[5][myBin] += 2.0;
-        continue;
-      }
-      if ((resi == 2 && resj == 2)){
-          ldRDF_ARR[6][myBin] += 2.0;
-      }
-  }
-  }
-
-
-
-}
-
 float Dist_VecMag(const int *f1){//Outputs the magnitude of the vector
   return sqrtf((float)(f1[0] * f1[0] + f1[1] * f1[1] + f1[2] * f1[2]));
 }
@@ -372,15 +285,9 @@ void RDF_ComponentWise_Avg(void){
       x = Dist_BeadToBead(i, j);
       //Note that Dist_BeadToBead(i,j) automatically ensures no distance is greater than (L/2)*sqrt(3)
       myBin = (int)floor(4.*x);//I am assuming for now that dr=1/4
-      //ldRDF_ARR[0][myBin] += 2.0;
-      ldRDF_ARR_temp[RDFArr_Index(0, 0, myBin)] += 2.0;//Adding a pair to that bin
-
-      //printf("%d\t%d\n", resi == resj ? 1 + resi : 6 + resj - resi*(resi-9)/2,
-      //        RDF_ComponentIndex(resi,resj));
-      //array_pos = resi == resj ? 1 + resi : 6 + resj - resi*(resi-9)/2;
+      ldRDF_Arr[RDFArr_Index(0, 0, myBin)] += 2.0;//Adding a pair to that bin
       array_pos = RDF_ComponentIndex(resi, resj);
-      //ldRDF_ARR[array_pos][myBin] += 2.0;
-      ldRDF_ARR_temp[RDFArr_Index(0, array_pos, myBin)] += 2.0;
+        ldRDF_Arr[RDFArr_Index(0, array_pos, myBin)] += 2.0;
     }
   }
   nRDFCounter++;
