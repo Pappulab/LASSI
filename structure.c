@@ -107,7 +107,7 @@ int Check_System_Structure(void){
     return 0;
 }
 
-void radial_distribution_tot(void){
+void RDF_Total(void){
   float x;  //For distance
   int i, j;
   float sph_norm = tot_beads * tot_beads * PI * 4.0 / 3.0 / nBoxSize[0] / nBoxSize[1] / nBoxSize[2]; //Volume of sphere constant, and number normalization
@@ -128,7 +128,7 @@ void radial_distribution_tot(void){
   }
 
   //Normalization over a sphere
-  for (i = 0; i < nBins_RDF; i++){
+  for (i = 0; i < nRDF_TotBins; i++){
     x = 1.0 + (float)i*(3.0 + 3.0*(float)i);//Volume of shell between i and i+1
     x *= sph_norm;
     x /= 64.0; // Because (1/4)^(-3) is 64
@@ -137,7 +137,7 @@ void radial_distribution_tot(void){
 
 }
 
-void radial_distribution_split(void){//Only g(r) is normalized.
+void RDF_ComponentWise(void){//Only g(r) is normalized.
 
   float x;  //For distance
   int i, j, k;
@@ -345,6 +345,14 @@ void GyrTensor_GyrRad_Avg(void){
 
 }
 
+int RDF_ComponentIndex(const int i, const int j){
+    return i == j ? 1+i : nBeadTypes + j - (i*(3 + i - 2*nBeadTypes))/2;
+}
+
+int RDFArr_Index(const int run_cycle, const int rdf_comp, const int x_pos){
+    return x_pos + nRDF_TotBins*(rdf_comp + nRDF_TotComps*run_cycle);
+}
+
 void RDF_ComponentWise_Avg(void){
   /*
   Calcutes the RDF and adds it all up so that it can be averaged out at the end of the run.
@@ -364,9 +372,15 @@ void RDF_ComponentWise_Avg(void){
       x = Dist_BeadToBead(i, j);
       //Note that Dist_BeadToBead(i,j) automatically ensures no distance is greater than (L/2)*sqrt(3)
       myBin = (int)floor(4.*x);//I am assuming for now that dr=1/4
-      ldRDF_ARR[0][myBin] += 2.0;  //Adding a pair to that bin
-      array_pos = resi == resj ? 1 + resi : 6 + resj - resi*(resi-9)/2;
-      ldRDF_ARR[array_pos][myBin] += 2.0;
+      //ldRDF_ARR[0][myBin] += 2.0;
+      ldRDF_ARR_temp[RDFArr_Index(0, 0, myBin)] += 2.0;//Adding a pair to that bin
+
+      //printf("%d\t%d\n", resi == resj ? 1 + resi : 6 + resj - resi*(resi-9)/2,
+      //        RDF_ComponentIndex(resi,resj));
+      //array_pos = resi == resj ? 1 + resi : 6 + resj - resi*(resi-9)/2;
+      array_pos = RDF_ComponentIndex(resi, resj);
+      //ldRDF_ARR[array_pos][myBin] += 2.0;
+      ldRDF_ARR_temp[RDFArr_Index(0, array_pos, myBin)] += 2.0;
     }
   }
   nRDFCounter++;

@@ -3,7 +3,7 @@
 #include "structure.h"
 
 void MemoryInitialization(void){
-    int i;
+    int i,j;
     naTotLattice      = malloc(nBoxSize[0] * nBoxSize[1] * nBoxSize[2] * sizeof(lInt));
     naClusHistList    = malloc((1 + tot_chains) * sizeof(lLong));
     naChainCheckList  = malloc((1 + tot_chains) * sizeof(lInt));
@@ -12,13 +12,17 @@ void MemoryInitialization(void){
     for(i = 0; i < nTot_CycleNum; i++){
         ld_TOTCLUS_ARR[i] = (lLDub *)malloc((1 + tot_chains) * sizeof(lLDub));
         if (ld_TOTCLUS_ARR[i] == NULL){
-            printf( "Malloc Failed! Crashing. Probably ran out of memory.\n");
+            printf( "Malloc Failed for Cluster! Crashing. Probably ran out of memory. Reduce number of chains.\n");
             exit(1);
         }
     }
-
+    nRDF_TotComps = 2 + nBeadTypes + nBeadTypes*nBeadTypes;
+    nRDF_TotComps /= 2;
+    ld_TOTRDF_ARR_temp = malloc((nTot_CycleNum*nRDF_TotComps*nRDF_TotBins) * sizeof(lLDub));
+    ldRDF_ARR_temp     = malloc((nRDF_TotComps*nRDF_TotBins) * sizeof(lLDub));
     if (naTotLattice == NULL || naClusHistList == NULL ||
-        naChainCheckList == NULL) {
+        naChainCheckList == NULL || ldRDF_ARR_temp == NULL ||
+        ld_TOTRDF_ARR_temp == NULL) {
         printf( "Malloc Failed! Crashing. Probably ran out of memory.\n");
         exit(1);
     }

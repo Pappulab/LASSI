@@ -16,6 +16,10 @@ int Check_MTLinkerConstraint(int beadID, int (*tmpR)[POS_MAX]);
 int Check_System_Structure(void);
 
 void RDF_ComponentWise_Avg(void);
+int RDF_ComponentIndex(const int i, const int j);
+int RDFArr_Index(const int run_cycle, const int rdf_comp, const int x_pos);
+
+
 void GyrTensor_GyrRad_Avg(void);
 
 #endif // _STRUCTURE_H_

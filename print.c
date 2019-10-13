@@ -160,7 +160,7 @@ void Print_Key(void) { // should be output-dependent (stdout, stderr, other file
   char lBrace[] = "<======      ";
   char rBrace[] = "      ======>";
   printf("%s System Settings %s\n", lBrace, rBrace);
-  printf("Number of Components = %d\n", nSeqEn);
+  printf("Number of Components = %d\n", nBeadTypes);
   printf("Number of Beads      = %d\n", tot_beads);
   printf("Number of Chains     = %d\n", tot_chains);
   printf("Box Size             = %d, %d, %d\n", nBoxSize[0], nBoxSize[1], nBoxSize[2]);
@@ -168,10 +168,10 @@ void Print_Key(void) { // should be output-dependent (stdout, stderr, other file
   printf("\n");
 
   printf("%s Energy Matrices %s\n", lBrace, rBrace);
-    Print_Matrix("E_ovlp", nSeqEn, fEnergy, E_OVLP);
-    Print_Matrix("E_cont", nSeqEn, fEnergy, E_CONT);
-    Print_Matrix("R_cont", nSeqEn, fEnRad, E_CONT);
-    Print_Matrix("SC_SC", nSeqEn, fEnergy, E_SC_SC);
+    Print_Matrix("E_ovlp", nBeadTypes, fEnergy, E_OVLP);
+    Print_Matrix("E_cont", nBeadTypes, fEnergy, E_CONT);
+    Print_Matrix("R_cont", nBeadTypes, fEnRad, E_CONT);
+    Print_Matrix("SC_SC", nBeadTypes, fEnergy, E_SC_SC);
   printf("\n");
 
   printf("%s Linker Info %s\n", lBrace, rBrace);
@@ -255,7 +255,7 @@ void Write_RDF_Tot(char* filename, long nGen){
     fprintf(fp, "#Row-by-row RDF. dr = 1\n");
   }
     else{
-      for (i = 0; i < nBins_RDF;i++){
+      for (i = 0; i < nRDF_TotBins; i++){
         fprintf(fp, "%.5f\t", fRDF_TOT[i]);
       }
       fprintf(fp, "\n");
@@ -278,7 +278,7 @@ void Write_RDF_ComponentWise(char* filename, long nGen){
   }
     else{
       for (k=0; k<1; k++){
-        for (i = 0; i < nBins_RDF;i++){
+        for (i = 0; i < nRDF_TotBins; i++){
           fprintf(fp, "%.5Lf\t", ldRDF_ARR[k][i]);
         }
         fprintf(fp, "\n");
@@ -368,7 +368,7 @@ void Write_SysProp(char* filename){
   //Split RDFs
   fprintf(fp, "\n#Split RDFs. ALL-ALL; DIAGONALS and then from 0 onwards \n");
   for (j=0; j<RDF_COMPS; j++){
-    for (i=0; i<nBins_RDF; i++){
+    for (i=0; i < nRDF_TotBins; i++){
       fprintf(fp, "%LE\t", ldRDF_ARR[j][i] / (float)nRDFCounter);
     }
     fprintf(fp, "\n");
@@ -393,9 +393,10 @@ void Write_TotalSysProp(char* filename, int run_it){
     fprintf(fp, "#Split RDFs. ALL-ALL; DIAGONALS and then from 0-0, 0-1, and onwards \n");
     for (i = 0; i < run_it; i++){
         fprintf(fp, "#Run_Cycle = %d\n", i);
-        for (j = 0; j < RDF_COMPS ; j++){
-            for (k = 0; k < nBins_RDF; k++){
-                fprintf(fp, "%LE\t", ld_TOTRDF_ARR[i][j][k]);
+        for (j = 0; j < nRDF_TotComps ; j++){
+            for (k = 0; k < nRDF_TotBins; k++){
+                fprintf(fp, "%LE\t", ld_TOTRDF_ARR_temp[RDFArr_Index(i,j,k)]);
+                //fprintf(fp, "%LE\t", ld_TOTRDF_ARR[i][j][k]);
             }
             fprintf(fp, "\n");
         }
@@ -606,9 +607,12 @@ void Print_Data(long nGen, int run_it){
 
 void Copy_Data(int run_it){
     int i, j;
-    for(i = 0; i < RDF_COMPS; i++){
-        for (j = 0; j < RDF_MAXBINS; j++) {
-            ld_TOTRDF_ARR[run_it][i][j] = ldRDF_ARR[i][j] / (long double)nRDFCounter;
+    for(i = 0; i < nRDF_TotComps; i++){
+        for (j = 0; j < nRDF_TotBins; j++) {
+            //ld_TOTRDF_ARR[run_it][i][j] = ldRDF_ARR[i][j] / (long double)nRDFCounter;
+            ld_TOTRDF_ARR_temp[RDFArr_Index(run_it, i, j)] =
+                    ldRDF_ARR_temp[RDFArr_Index(0,i,j)] / (long double)nRDFCounter;
+
         }
     }
     ld_TOTCLUS_ARR[run_it][0] = (long double)nLargestClusterRightNow / (long double)nTotClusCounter;

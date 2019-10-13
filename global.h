@@ -97,7 +97,7 @@ lInt   Rot_IndArr[MAX_ROTSTATES-1];
 char   bReadConf;
 
 // energy matrices for stickers
-lInt  nSeqEn;
+lInt  nBeadTypes;
 float fEnergy[MAX_AA][MAX_AA][MAX_E];
 float fEnRad[MAX_AA][MAX_AA][MAX_E];
 lInt  rot_trial[MAX_VALENCY][MAX_ROTSTATES];//Used in orientational-bias MC moves
@@ -150,8 +150,11 @@ lInt nLargestClusterRightNow;
 float fRDF_TOT[RDF_MAXBINS];
 lLDub ldRDF_ARR[RDF_COMPS][RDF_MAXBINS];
 lLDub ld_TOTRDF_ARR[TEMP_CYCLES_MAX][RDF_COMPS][RDF_MAXBINS];
+lLDub *ld_TOTRDF_ARR_temp;
+lLDub *ldRDF_ARR_temp;
+lInt  nRDF_TotComps;
 lInt nRDFCounter;//This counts how many times the RDF has been calculated for averaging at the end.
-lInt nBins_RDF;
+lInt nRDF_TotBins;
 float fGyrTensor[7];//Gyration tensor
 float fSysGyrRad;//Gyration radius of the system.
 lLDub ld_TOTGYRRAD_ARR[TEMP_CYCLES_MAX][2];

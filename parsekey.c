@@ -61,7 +61,8 @@ int Parse_Keyfile(char *filename) {
             nBoxSize[2] = atoi(strTempArr[2]);
           }
         }
-        nBins_RDF = nBoxSize[0]*4;
+          nRDF_TotBins = nBoxSize[0] * 4;
+        //nRDF_TotBins   = (lInt)sqrtf((float))
       } else if (strcmp(strKeyword, "MC_TEMP") == 0) {
         sscanf(strLine, "%*s %f", &fKT);
       } else if (strcmp(strKeyword, "N_STEPS") == 0) {
@@ -235,8 +236,8 @@ int Parse_EnergyFile(char *strEnFile) {
         nRow = 0;
       } else if (strcmp(strLine, "\n") != 0) { // ignore empty lines
         if (nFlag == -1) { // sticker
-          sscanf(strLine, "%d", &nSeqEn);
-          if (nSeqEn > MAX_AA){
+          sscanf(strLine, "%d", &nBeadTypes);
+          if (nBeadTypes > MAX_AA){
                 fprintf(stderr, "ERROR: the number of AA types exceeds MAX_AA in %s.\n", strEnFile);
                 nRes = 3;
                 break;
@@ -255,10 +256,10 @@ int Parse_EnergyFile(char *strEnFile) {
         } else {
           nEntry = str2farr(strLine, fTemp);
 
-          if (nEntry != nSeqEn) {
+          if (nEntry != nBeadTypes) {
             if (nEntry == 1) {
-              for (i=0; i<nSeqEn; i++) {
-                for (j=0; j<nSeqEn; j++) {
+              for (i=0; i < nBeadTypes; i++) {
+                for (j=0; j < nBeadTypes; j++) {
                   if (nFlag % 2 == 0) fEnergy[i][j][(int)(nFlag/2)] = fTemp[0];
                   else                fEnRad[i][j][(int)(nFlag/2)] = fTemp[0];
                 }
@@ -270,9 +271,9 @@ int Parse_EnergyFile(char *strEnFile) {
             }
           } else {
             if (nFlag % 2 == 0) { // energy
-              for (i=0; i<nSeqEn; i++) fEnergy[nRow][i][(int)(nFlag/2)] = fTemp[i];
+              for (i=0; i < nBeadTypes; i++) fEnergy[nRow][i][(int)(nFlag / 2)] = fTemp[i];
             } else { // radius
-              for (i=0; i<nSeqEn; i++) fEnRad[nRow][i][(int)(nFlag/2)] = fTemp[i];
+              for (i=0; i < nBeadTypes; i++) fEnRad[nRow][i][(int)(nFlag / 2)] = fTemp[i];
             }
             nRow++;
           }
