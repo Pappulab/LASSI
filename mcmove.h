@@ -34,6 +34,7 @@ void OP_DispChain(int chainID, const int *movR);
 void OP_DispChain_ForTrans(int chainID, const int *movR);
 void OP_RestoreChain(int chainID);
 void OP_RestoreChain_ForTrans(int chainID);
+void OP_RestoreChain_ForSnake(const int fB, const int lB);
 void OP_MoveBeadTo(int beadID, const int *newPos);
 void OP_Inv_MoveBeadTo(int beadID);
 void OP_MoveBeadTo_ForMTLocal(int beadID, const int *newPos);

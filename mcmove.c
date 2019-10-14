@@ -318,7 +318,6 @@ int Move_Local(int beadID, float MyTemp){//Performs a local translation MC-move 
       return bAccept;
     }
     else{
-        //TODO: make separate undo function
         OP_Inv_MoveBeadTo(beadID);
       bAccept = 0;
       return bAccept;
@@ -498,27 +497,8 @@ int Move_Snake(int chainID, float MyTemp){//Performs a slither MC-move on chainI
       bAccept = 1;
       return bAccept;
     }
-     else{//TODO: Make a function that resets a single chain, breaking new bonds and restoring old ones.
-       for(i=firstB; i<lastB; i++){//Resetting the lattice
-         if(bead_info[i][BEAD_FACE] != -1){//Need to break the newly proposed bond
-           bead_info[bead_info[i][BEAD_FACE]][BEAD_FACE] = -1;
-         }
-         for(j=0; j<POS_MAX; j++){//This is where I am
-          tmpR2[j] = bead_info[i][j];
-        }
-           naTotLattice[Lat_Ind_FromVec(tmpR2)]  = -1;
-         }
-       for(i=firstB; i<lastB; i++){
-         for(j=0;j<BEADINFO_MAX; j++){
-            bead_info[i][j] = old_bead[i][j];//Restoring
-            if(j<POS_MAX){//This is where I should be
-              tmpR2[j] = bead_info[i][j];
-            }
-         }
-         if(bead_info[i][BEAD_FACE] != -1){//I was bonded so restore the bond
-           bead_info[bead_info[i][BEAD_FACE]][BEAD_FACE] = i;}
-           naTotLattice[Lat_Ind_FromVec(tmpR2)]  = i;
-         }
+     else{
+         OP_RestoreChain_ForSnake(firstB, lastB);
          bAccept = 0;
          return bAccept;
         }
@@ -1596,21 +1576,7 @@ int Move_Snake_Equil(int chainID, float MyTemp){//Performs a slither MC-move on 
       return bAccept;
     }
      else{
-       for(i=firstB; i<lastB; i++){//Resetting the lattice
-         for(j=0;j<POS_MAX; j++){//This is where I am
-          tmpR2[j] = bead_info[i][j];
-        }
-           naTotLattice[Lat_Ind_FromVec(tmpR2)]  = -1;
-         }
-       for(i=firstB; i<lastB; i++){
-         for(j=0;j<BEADINFO_MAX; j++){
-            bead_info[i][j] = old_bead[i][j];//Restoring
-            if(j<POS_MAX){//This is where I should be
-              tmpR2[j] = bead_info[i][j];
-            }
-         }
-           naTotLattice[Lat_Ind_FromVec(tmpR2)]  = i;
-         }
+       OP_RestoreChain_ForSnake(firstB, lastB);
          bAccept = 0;
          return bAccept;
       }
@@ -2095,6 +2061,25 @@ void OP_RestoreChain_ForTrans(int chainID){//Uses old_bead to undo what OP_DispC
       bead_info[bead_info[i][BEAD_FACE]][BEAD_FACE] = i;
     }
   }
+}
+
+void OP_RestoreChain_ForSnake(const int fB, const int lB){
+    int i, j;
+
+    for(i=fB; i<lB; i++){//Resetting the lattice
+        if(bead_info[i][BEAD_FACE] != -1){//Need to break the newly proposed bond
+            bead_info[bead_info[i][BEAD_FACE]][BEAD_FACE] = -1;
+        }
+        naTotLattice[Lat_Ind_OfBead(i)]  = -1;
+    }
+    for(i=fB; i<lB; i++){
+        for(j=0;j<BEADINFO_MAX; j++){
+            bead_info[i][j] = old_bead[i][j];//Restoring
+        }
+        if(bead_info[i][BEAD_FACE] != -1){//I was bonded so restore the bond
+            bead_info[bead_info[i][BEAD_FACE]][BEAD_FACE] = i;}
+        naTotLattice[Lat_Ind_OfBead(i)]  = i;
+    }
 }
 
 inline int Check_MoveBeadTo(int *newPos){//Checks if I can move here
