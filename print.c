@@ -139,7 +139,7 @@ void Write_Trajectory(char* filename, long nGen){
   fprintf(fp, "%d\n", tot_beads);//Total atom number
 
   fprintf(fp, "ITEM: BOX BOUNDS pp pp pp\n");//BCs are always periodic for now
-  fprintf(fp, "0 %d\n 0 %d\n 0 %d\n", nBoxSize[0], nBoxSize[1], nBoxSize[2]);//Box dimensions
+  fprintf(fp, "0 %d\n0 %d\n0 %d\n", nBoxSize[0], nBoxSize[1], nBoxSize[2]);//Box dimensions
 
   fprintf(fp, "ITEM: ATOMS id type mol x y z bP\n");//What we are printing
 

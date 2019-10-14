@@ -328,6 +328,55 @@ void Initial_Conditions_Simple(void){
     }
 }
 
+void Initial_Conditions_FromFile(void){
+    printf("Reading file to generate initial configuration\n");
+    char strLine[1000];
+    int i, j;
+    int tmp_beadinfo[BEADINFO_MAX];
+    FILE *infile;
+    infile = fopen(strRestartFile, "r");
+    int tmpBeads = 0;
+    while (fgets(strLine, sizeof(strLine), infile) != NULL) {
+        tmpBeads++;
+        if (strcmp(strLine, "ITEM: ATOMS id type mol x y z bP\n") == 0){
+            break;
+        }
+    }
+    tmpBeads = 0;
+    while (fgets(strLine, sizeof(strLine), infile) != NULL) {
+        sscanf(strLine, "%d %d %d %d %d %d %d",
+               &i,
+               &tmp_beadinfo[BEAD_TYPE],
+               &tmp_beadinfo[BEAD_CHAINID],
+               &tmp_beadinfo[POS_X],
+               &tmp_beadinfo[POS_Y],
+               &tmp_beadinfo[POS_Z],
+               &tmp_beadinfo[BEAD_FACE]);
+        tmpBeads++;
+        for(j = 0; j < BEADINFO_MAX; j++){
+            bead_info[i][j] = tmp_beadinfo[j];
+        }
+    }
+    fclose(infile);
+    if (tmpBeads != tot_beads){
+        printf("Given restart file does not have the same number of beads as the provided structure.");
+        printf("Crashing!\n");
+        exit(1);
+    }
+    for(i=0; i < tot_beads; i++){
+        naTotLattice[Lat_Ind_OfBead(i)] = i;
+    }
+    printf("File read successfully and initial configuration set.\n");
+}
+
+void Initial_Conditions_BreakBonds(void){
+    int i;
+    for (i = 0; i < tot_beads; i++){
+        bead_info[i][BEAD_FACE] = -1;
+    }
+    printf("Since system has thermalization cycle, deleting all physical bonds!\n");
+}
+
 void Calculate_Rot_Bias(float CurrentTemp){
 
     int i, j;

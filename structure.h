@@ -5,6 +5,7 @@
 
 int Lat_Ind_FromCoords(int i, int j, int k);
 int Lat_Ind_FromVec(int *xArr);
+int Lat_Ind_OfBead(int beadID);
 
 float Dist_BeadToBead(int bead1, int bead2);
 float Dist_PointTotPoint_Float(float *f1, float *f2);

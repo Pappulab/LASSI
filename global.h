@@ -126,6 +126,7 @@ char fileEnergy[100];
 char fileStruct[100];
 char fileMCMove[100];
 char fileSysProp[100];
+char  strRestartFile[500];
 lLong  nReport[MAX_REPORT];//Array to store report frequencies.
 //Matrix to store acceptances and rejections 0: Rejected; 1: Accepted
 lLong   MCAccepMat[2][MAX_MV];

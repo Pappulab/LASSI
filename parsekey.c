@@ -105,8 +105,10 @@ int Parse_Keyfile(char *filename) {
         sscanf(strLine, "%*s %f", &fMCFreq[MV_PIVOT]);
       } else if (strcmp(strKeyword, "MV_BRROT_FREQ") == 0) {
         sscanf(strLine, "%*s %f", &fMCFreq[MV_BRROT]);
+      } else if (strcmp(strKeyword, "RESTART_FILE") == 0) {
+          sscanf(strLine, "%*s %s", strRestartFile);
       } else if (strcmp(strKeyword, "STRUCT_FILETYPE") == 0) {
-        sscanf(strLine, "%*s %d", &nStructFiletype);
+          sscanf(strLine, "%*s %d", &nStructFiletype);
       } else if (strcmp(strKeyword, "STRUCT_FILE") == 0) {
         sscanf(strLine, "%*s %s", strStructFile);
       } else if (strcmp(strKeyword, "ENERGY_FILE") == 0) {
@@ -158,19 +160,28 @@ int Parse_Keyfile(char *filename) {
     }
 
     if (strStructFile[0] != '\0') {
+        Parse_StructureFile(strStructFile);
       if (nStructFiletype == 0) {
-          Parse_StructureFile(strStructFile);
-        bReadConf = 0;
+          bReadConf = 0;
       } else if (nStructFiletype == 1) {
-          printf("Cannot do that yet, sorry! Must generate random initial conditions from a general"
-                 "structure file. Exiting!\n");
-          exit(1);
-        //bReadConf = 1;
+          printf("Reading restart file provided to generate initial configuration.\n");
+        bReadConf = 1;
       } else {
-        fprintf(stderr, "ERROR: undefined value in STRUCT_FILETYPE of %s.\n", filename);
+        fprintf(stderr, "ERROR: undefined value in STRUCT_FILETYPE of %s.\nCrashing!\n", filename);
+        exit(1);
       }
     } else {
       bReadConf = -1;
+    }
+    if (bReadConf == 1){
+        if (strRestartFile[0] != '\0') {
+            printf("Restart file is %s\n", strRestartFile);
+        }
+        else{
+            nErr = 5;
+            printf("No restart file provided.\n");
+        }
+        //exit(1);
     }
 
     return nErr;

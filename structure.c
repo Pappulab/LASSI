@@ -9,6 +9,10 @@ int Lat_Ind_FromVec(int *xArr){//Just the vector form of the above function. Eas
       return xArr[POS_X] + nBoxSize[POS_X]*(xArr[POS_Y] + nBoxSize[POS_Y]*xArr[POS_Z]);
 }
 
+int Lat_Ind_OfBead(int beadID){
+    return bead_info[beadID][POS_X] + nBoxSize[POS_X]*(bead_info[beadID][POS_Y] + nBoxSize[POS_Y]*bead_info[beadID][POS_Z]);
+}
+
 float Dist_PointTotPoint_Float(float *f1, float *f2) {
   float d[POS_MAX];
   int i;
@@ -78,9 +82,15 @@ int Check_System_Structure(void){
   while(topo_info[i][idx] != -1 && idx < MAX_BONDS){
     bondPart = topo_info[i][idx];
     if(Dist_BeadToBead(i, bondPart) > 1.74 * linker_len[i][idx]){
-      printf("Bad beads! %d\t(%d %d %d)\t\tTopo:(%d %d %d)\t\tLinkers:(%.5f\t%.5f\t%.5f)\n", i, bead_info[i][0], bead_info[i][1], bead_info[i][2], topo_info[i][0], topo_info[i][1], topo_info[i][2], (float)linker_len[i][0], (float)linker_len[i][1], (float)linker_len[i][2]);
+      printf("Bad beads! %d\t(%d %d %d)\t\tTopo:(%d %d %d)\t\tLinkers:(%.5f\t%.5f\t%.5f)\n", i,
+              bead_info[i][0], bead_info[i][1], bead_info[i][2],
+              topo_info[i][0], topo_info[i][1], topo_info[i][2],
+              (float)linker_len[i][0], (float)linker_len[i][1], (float)linker_len[i][2]);
       printf("\t\t\t\t\t-------------------->\t\t%f\tSHOULD BE\t%f\n", Dist_BeadToBead(i, bondPart), 1.74 * (float)linker_len[i][idx]);
-      printf("Bad beads! %d\t(%d %d %d)\t\tTopo:(%d %d %d)\t\tLinkers:(%.5f\t%.5f\t%.5f)\n\n", bondPart, bead_info[bondPart][0], bead_info[bondPart][1], bead_info[bondPart][2], topo_info[bondPart][0], topo_info[bondPart][1], topo_info[bondPart][2], (float)linker_len[bondPart][0], (float)linker_len[bondPart][1], (float)linker_len[bondPart][2]);
+      printf("Bad beads! %d\t(%d %d %d)\t\tTopo:(%d %d %d)\t\tLinkers:(%.5f\t%.5f\t%.5f)\n\n", bondPart,
+              bead_info[bondPart][0], bead_info[bondPart][1], bead_info[bondPart][2],
+              topo_info[bondPart][0], topo_info[bondPart][1], topo_info[bondPart][2],
+              (float)linker_len[bondPart][0], (float)linker_len[bondPart][1], (float)linker_len[bondPart][2]);
       return i+1;
     }
     idx++;
@@ -99,7 +109,9 @@ int Check_System_Structure(void){
       return i+1;
     }
     if(Dist_BeadToBead(i, bead_info[i][BEAD_FACE]) > 1.74){
-      printf("Bad bond! Distance is wrong\n\t%d %d %d\nCrashing.\n", i , bead_info[i][BEAD_FACE], bead_info[bead_info[i][BEAD_FACE]][BEAD_FACE]);
+      printf("Bad bond! Distance is wrong\n\t%d %d %d\n Distance is %f. Crashing.\n", i ,
+              bead_info[i][BEAD_FACE], bead_info[bead_info[i][BEAD_FACE]][BEAD_FACE],
+             Dist_BeadToBead(i, bead_info[i][BEAD_FACE]));
       return i+1;
     }
     }

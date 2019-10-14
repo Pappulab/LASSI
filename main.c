@@ -39,9 +39,15 @@ int main(int argc, char* argv[]) {
 
   if (bReadConf == 0) {
       Initial_Conditions_Simple();
-  } else if (bReadConf == -1) {
-    printf("ERROR: no structure information.\n");
-    exit(1);
+  } else if (bReadConf == 1) {
+      Initial_Conditions_FromFile();
+      if (nPreSteps > 0){
+          Initial_Conditions_BreakBonds();
+      }
+  }
+  else {
+      printf("Wrong initial conditions condition give. Crashing!\n");
+      exit(1);
   }
 
   if (Check_System_Structure() == 0) {
@@ -70,6 +76,7 @@ int main(int argc, char* argv[]) {
   Print_Data(-1,-1);//Initialization of files
   for (nGen = 0; nGen < nPreSteps; nGen++) {//Intentionally not performing any data acquisition in the thermalizing phase
       nMCInfo = MC_Step_Equil(fCuTemp);
+      //printf("(%d,%d)\n", nMCInfo / 12, nMCInfo % 2);
       Print_Data(nGen,-1);
   }
 
@@ -88,6 +95,7 @@ The system has thermalized!
   for(nGen = 0; nGen <= nSteps; nGen++){
     fCuTemp = Temperature_Function(Temp_Mode, nGen);
     nMCInfo = MC_Step(fCuTemp);
+    //printf("(%d,%d)\n", nMCInfo / 12, nMCInfo % 2);
     Print_Data(nGen, run_cycle);
   }
   Temp_Mode = -1;
