@@ -271,7 +271,12 @@ void GyrTensor_GyrRad_Avg(void){
 }
 
 int RDF_ComponentIndex(const int i, const int j){
-    return i == j ? 1+i : nBeadTypes + j - (i*(3 + i - 2*nBeadTypes))/2;
+    if (i > j){
+        return RDF_ComponentIndex(j,i);
+    }
+    else {
+        return i == j ? 1 + i : nBeadTypes + j - (i * (3 + i - 2 * nBeadTypes)) / 2;
+    }
 }
 
 int RDFArr_Index(const int run_cycle, const int rdf_comp, const int x_pos){

@@ -1,8 +1,8 @@
 #ifndef _INITIALIZE_H_   // include guard
 #define _INITIALIZE_H_
 
-void MemoryInitialization(void);
-void GlobalArrayInitialization(void);
+void Memory_Initialization_AtStart(void);
+void Global_Array_Initialization_AtStart(void);
 void Reset_Global_Arrays(void);
 
 void Initial_Conditions_Simple(void);

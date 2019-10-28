@@ -2,7 +2,7 @@
 #include "initialize.h"
 #include "structure.h"
 
-void MemoryInitialization(void){
+void Memory_Initialization_AtStart(void){
     int i,j;
     naTotLattice      = malloc(nBoxSize[0] * nBoxSize[1] * nBoxSize[2] * sizeof(lInt));
     naClusHistList    = malloc((1 + tot_chains) * sizeof(lLong));
@@ -36,7 +36,7 @@ void MemoryInitialization(void){
     }
 }
 
-void GlobalArrayInitialization(void){
+void Global_Array_Initialization_AtStart(void){
   int i, j, k, xTemp, yTemp, zTemp;//Indecies
   int myCubeLen = 3;
 

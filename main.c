@@ -34,8 +34,8 @@ int main(int argc, char* argv[]) {
 
   clock_t tStart = clock();
 
-  MemoryInitialization();
-  GlobalArrayInitialization();
+    Memory_Initialization_AtStart();
+    Global_Array_Initialization_AtStart();
 
   if (bReadConf == 0) {
       Initial_Conditions_Simple();
