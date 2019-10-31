@@ -71,34 +71,34 @@
 typedef int lInt;
 typedef long lLong;
 typedef double lDub;
-typedef  long double lLDub;
+typedef long double lLDub;
 
 // configurations and structural info
-lInt   bead_info[MAX_BEADS][BEADINFO_MAX];
-lInt   old_bead[MAX_BEADS][BEADINFO_MAX]; //Redundant copy for MCSteps
-lInt   linker_len[MAX_BEADS][MAX_BONDS];//Remember that this one is an INT, not float
-lInt   topo_info[MAX_BEADS][MAX_BONDS];
-lInt   chain_info[MAX_CHAINS][CHAININFO_MAX];
+lInt bead_info[MAX_BEADS][BEADINFO_MAX];
+lInt old_bead[MAX_BEADS][BEADINFO_MAX]; //Redundant copy for MCSteps
+lInt linker_len[MAX_BEADS][MAX_BONDS];//Remember that this one is an INT, not float
+lInt topo_info[MAX_BEADS][MAX_BONDS];
+lInt chain_info[MAX_CHAINS][CHAININFO_MAX];
 
-lInt   tot_beads;
-lInt   tot_chains;
-lInt   Temp_Mode;
-lInt   nThermalization_Mode, RotBias_Mode;
+lInt tot_beads;
+lInt tot_chains;
+lInt Temp_Mode;
+lInt nThermalization_Mode, RotBias_Mode;
 
 // system setup
-lInt   nBoxSize[POS_MAX];
-lInt   LocalArr[MAX_ROTSTATES-1][3];//Used to quickly iterate over nearby points in a R-cube
-lInt   Rot_IndArr[MAX_ROTSTATES-1];
-char   bReadConf;
+lInt nBoxSize[POS_MAX];
+lInt LocalArr[MAX_ROTSTATES - 1][3];//Used to quickly iterate over nearby points in a R-cube
+lInt Rot_IndArr[MAX_ROTSTATES - 1];
+char bReadConf;
 
 // energy matrices for stickers
-lInt  nBeadTypes;
+lInt nBeadTypes;
 float fEnergy[MAX_AA][MAX_AA][MAX_E];
 float fEnRad[MAX_AA][MAX_AA][MAX_E];
-lInt  rot_trial[MAX_VALENCY][MAX_ROTSTATES];//Used in orientational-bias MC moves
-lDub  bolt_fac[MAX_ROTSTATES - 1];//Used in orientational-bias
-lDub  bolt_norm[MAX_VALENCY];
-lDub  dbias_bolt_fac[MAX_AA][MAX_AA];//For pre-calculating the factors.
+lInt rot_trial[MAX_VALENCY][MAX_ROTSTATES];//Used in orientational-bias MC moves
+lDub bolt_fac[MAX_ROTSTATES - 1];//Used in orientational-bias
+lDub bolt_norm[MAX_VALENCY];
+lDub dbias_bolt_fac[MAX_AA][MAX_AA];//For pre-calculating the factors.
 float faCurrEn[MAX_E]; //Vector for current energy
 
 //Arrays to track certain topology and interaction information
@@ -113,23 +113,23 @@ float fLinkerEqLen;
 // MC setup
 float fKT, fPreKT, fCuTemp, fRot_Bias, f_globRotBias, fdelta_temp;
 float *fKT_Cycle;
-lLong  nSteps, nPreSteps;
+lLong nSteps, nPreSteps;
 float fMCFreq[MAX_MV];
-lInt   nMCMaxTrials, nTot_CycleNum;
+lInt nMCMaxTrials, nTot_CycleNum;
 
 // random number generator RNG_Seed
-lInt   RNG_Seed;
+lInt RNG_Seed;
 
 // report-related
-char  strReportPrefix[100];
+char strReportPrefix[100];
 char fileEnergy[100];
 char fileStruct[100];
 char fileMCMove[100];
 char fileSysProp[100];
-char  strRestartFile[500];
-lLong  nReport[MAX_REPORT];//Array to store report frequencies.
+char strRestartFile[500];
+lLong nReport[MAX_REPORT];//Array to store report frequencies.
 //Matrix to store acceptances and rejections 0: Rejected; 1: Accepted
-lLong   MCAccepMat[2][MAX_MV];
+lLong MCAccepMat[2][MAX_MV];
 
 
 // Cluster analysis and MCMoves
@@ -144,7 +144,7 @@ lInt nLargestClusterRightNow;
 
 lLDub *ld_TOTRDF_Arr;
 lLDub *ldRDF_Arr;
-lInt  nRDF_TotComps;
+lInt nRDF_TotComps;
 lInt nRDFCounter;//This counts how many times the RDF has been calculated for averaging at the end.
 lInt nRDF_TotBins;
 float fGyrTensor[7];//Gyration tensor
