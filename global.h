@@ -129,6 +129,7 @@ char fileSysProp[100];
 char strRestartFile[500];
 lLong nReport[MAX_REPORT];//Array to store report frequencies.
 //Matrix to store acceptances and rejections 0: Rejected; 1: Accepted
+//TODO: Have a more extensive way to record also where/when a particular move fails -- not just if it fails.
 lLong MCAccepMat[2][MAX_MV];
 
 

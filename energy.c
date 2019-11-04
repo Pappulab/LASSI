@@ -2,24 +2,9 @@
 #include "energy.h"
 #include "structure.h"
 
-void Energy_Total_System() {
-    int i;//Indecies
-    // initialization
-    for (i = 0; i < MAX_E; i++) {
-        faCurrEn[i] = 0.0;
-    }
-//printf("We have %d beads and %d chains", tot_beads, tot_chains);
-    for (i = 0; i < tot_beads; i++) {
-        faCurrEn[E_OVLP] += Energy_Isotropic(i) / 2.;
-        faCurrEn[E_SC_SC] += Energy_Anisotropic(i) / 2.;
-        //printf("Done with bead %d\n", i);
-    }
-
-    for (i = 1; i < MAX_E; i++) {
-        faCurrEn[E_TOT] += faCurrEn[i];
-    }
-}
-
+/// Energy_Anisotropic - returns the bond energy for beadID if it is bonded.
+/// \param beadID
+/// \return
 float Energy_Anisotropic(int beadID) {//Calculates the SC-SC energy of the bead in question.
     float totEn = 0.0; //Storing total overlap energy
     if (bead_info[beadID][BEAD_FACE] != -1) {
@@ -28,6 +13,53 @@ float Energy_Anisotropic(int beadID) {//Calculates the SC-SC energy of the bead 
     return totEn;
 }
 
+/// Energy_InitPotential calculates the biasing potential used in the thermalization/equilibration
+/// The function calculates (T_current - T_final) and if < 0.005, sets nThermalization_Mode = 0.
+/// \param beadID
+/// \return The energy, given the nThermalization_Mode
+float Energy_InitPotential(int beadID) {
+
+    int j;
+    float totEn = 0.;
+    int tmpR[POS_MAX];
+    if (fCuTemp - fKT > 0.005) {
+        switch (nThermalization_Mode) {
+            case 1:
+                for (j = 0; j < POS_MAX; j++) {
+                    tmpR[j] = bead_info[beadID][j];
+                    tmpR[j] = tmpR[j] - nBoxSize[j] / 2;
+                    totEn += (float) (tmpR[j] * tmpR[j]);
+                }
+                totEn = (fCuTemp - fKT) * totEn;
+
+                break;
+
+            case 2:
+                for (j = 0; j < POS_MAX; j++) {
+                    tmpR[j] = bead_info[beadID][j];
+                    tmpR[j] = tmpR[j] - nBoxSize[j] / 2;
+                    totEn += (float) (tmpR[j] * tmpR[j]);
+                }
+                if (totEn >= 2500) {
+                    totEn = fKT * ((float) tot_beads + totEn);
+                } else if (totEn <= 2000) {
+                    totEn = fKT * ((float) tot_beads + 1. / (totEn + 0.02));
+                }
+                break;
+            default:
+                totEn = 0.;
+                break;
+        }
+    } else {
+        nThermalization_Mode = 0;
+    }
+
+    return totEn;
+}
+
+/// Energy_Isotroptic calculates the isotropic contribution to the energy by searching
+/// \param beadID
+/// \return
 float Energy_Isotropic(int beadID) {//Calculate Contact and Overlap energy of bead i
     float totEn = 0.0; //Storing total overlap energy
     int i, j;//Indecies
@@ -85,6 +117,24 @@ float Energy_Isotropic(int beadID) {//Calculate Contact and Overlap energy of be
 
 }
 
+void Energy_Total_System() {
+    int i;//Indecies
+    // initialization
+    for (i = 0; i < MAX_E; i++) {
+        faCurrEn[i] = 0.0;
+    }
+//printf("We have %d beads and %d chains", tot_beads, tot_chains);
+    for (i = 0; i < tot_beads; i++) {
+        faCurrEn[E_OVLP] += Energy_Isotropic(i) / 2.;
+        faCurrEn[E_SC_SC] += Energy_Anisotropic(i) / 2.;
+        //printf("Done with bead %d\n", i);
+    }
+
+    for (i = 1; i < MAX_E; i++) {
+        faCurrEn[E_TOT] += faCurrEn[i];
+    }
+}
+
 float Energy_Of_Chain(int chainID) {//Calculates the energy of the given chain
     float totEn = 0.0;
     int i;//Indecies
@@ -92,46 +142,6 @@ float Energy_Of_Chain(int chainID) {//Calculates the energy of the given chain
     for (i = chain_info[chainID][CHAIN_START];
          i < chain_info[chainID][CHAIN_START] + chain_info[chainID][CHAIN_LENGTH]; i++) {
         totEn += Energy_Anisotropic(i) + Energy_Isotropic(i);
-    }
-
-    return totEn;
-}
-
-float Energy_InitPotential(int beadID) {
-
-    int j;
-    float totEn = 0.;
-    int tmpR[POS_MAX];
-    if (fCuTemp - fKT > 0.005) {
-        switch (nThermalization_Mode) {
-            case 1:
-                for (j = 0; j < POS_MAX; j++) {
-                    tmpR[j] = bead_info[beadID][j];
-                    tmpR[j] = tmpR[j] - nBoxSize[j] / 2;
-                    totEn += (float) (tmpR[j] * tmpR[j]);
-                }
-                totEn = (fCuTemp - fKT) * totEn;
-
-                break;
-
-            case 2:
-                for (j = 0; j < POS_MAX; j++) {
-                    tmpR[j] = bead_info[beadID][j];
-                    tmpR[j] = tmpR[j] - nBoxSize[j] / 2;
-                    totEn += (float) (tmpR[j] * tmpR[j]);
-                }
-                if (totEn >= 2500) {
-                    totEn = fKT * ((float) tot_beads + totEn);
-                } else if (totEn <= 2000) {
-                    totEn = fKT * ((float) tot_beads + 1. / (totEn + 0.02));
-                }
-                break;
-            default:
-                totEn = 0.;
-                break;
-        }
-    } else {
-        nThermalization_Mode = 0;
     }
 
     return totEn;

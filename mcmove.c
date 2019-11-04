@@ -4,6 +4,9 @@
 #include "cluster.h"
 #include "energy.h"
 
+/// MC_Step - given the MC move frequencies, picks which move to try.
+/// \param fMCTemp
+/// \return bAccept - the acceptance state where MCMove=bAccept/12 and MCAccept=bAccept%2.
 int MC_Step(float fMCTemp) {
     int mode = 0; //Which move to do
     int nAccept; //Used in MC steps
@@ -57,7 +60,7 @@ int MC_Step(float fMCTemp) {
             //Double Pivot
         case MV_DBPVT:
             i = rand() % tot_beads;//Pick a random bead
-            nAccept = Move_DbPvt(i, fMCTemp);
+            nAccept = Move_DbPvt(i);
             break;
 
             //Co-Local
@@ -93,6 +96,9 @@ int MC_Step(float fMCTemp) {
     return mode * 12 + nAccept;
 }
 
+/// MC_Step_Equil - given the MC move frequencies, picks non-anisotropic variants of the moves.
+/// \param fMCTemp
+/// \return bAccept - the acceptance state where MCMove=bAccept/12 and MCAccept=bAccept%2.
 int MC_Step_Equil(float fMCTemp) {
     int mode = 0; //Which move to do
     int nAccept; //Used in MC steps
@@ -146,7 +152,7 @@ int MC_Step_Equil(float fMCTemp) {
             // double pivot
         case MV_DBPVT:
             i = rand() % tot_beads;//Pick a random bead
-            nAccept = Move_DbPvt(i, fMCTemp);
+            nAccept = Move_DbPvt(i);
             break;
 
             // co-local
@@ -181,6 +187,14 @@ int MC_Step_Equil(float fMCTemp) {
     return mode * 12 + nAccept;
 }
 
+/*
+ * The following functions are sub-routines that perform the varios Monte-Carlo (MC) moves.
+ */
+
+// Move_Rot - searches the 3^3-1=26 possible sites for forming a bond, and performs Metropolis-Hastings. Rejects move if beadID cannot forms bonds.
+/// \param beadID
+/// \param MyTemp
+/// \return 1 if accepted, 0 if rejected.
 int Move_Rot(int beadID, float MyTemp) {
     //Performs a rotational MC-Move on beadID
     int bAccept; //Used in MC steps
@@ -232,6 +246,14 @@ int Move_Rot(int beadID, float MyTemp) {
     }
 }
 
+/// Move_Local - performs a biased local move on beadID by:
+/// 1. Seeing if there is a free spot to move to in a <+-2,+-2,+-2> random location. Rejects if no space found/exists.
+/// 2. Calculating the Rosenbluth weight by searching the 3^3-1=26 possible bonding locations, and calculate
+/// the rest of the energy.
+/// 3. Move the bead. Calculate the Rosenbluth weight, and energy. Propose a bond and perform Metropolis-Hastings
+/// \param beadID
+/// \param MyTemp
+/// \return 1 if accepted, 0 if rejected.
 int Move_Local(int beadID, float MyTemp) {//Performs a local translation MC-move on beadID
 
     int bAccept = 0; //Used in MC steps
@@ -250,7 +272,7 @@ int Move_Local(int beadID, float MyTemp) {//Performs a local translation MC-move
         tmpR[j] = bead_info[beadID][j];
     }
     //Initialize the radii for the search of next trial location
-    //For now just +-2
+    //For now just +-2, but could also use a linker length from the bead
     //lRadLow = linker_len[beadID][0];
     lRadLow = 2;
     lRadUp = lRadLow * 2 + 1;//2*2+1
@@ -323,6 +345,27 @@ int Move_Local(int beadID, float MyTemp) {//Performs a local translation MC-move
     }
 }
 
+/// Move_Snake - performs a biased reptation move on chainID by:
+/// 1. Randomly picking which end to reptate.
+/// 2. Performing sort of a local move by finding an empty spot to move to, while recording
+///    the Rosenbluth weights, but for the whole chain. Calculate the total energy of the chain.
+/// Break all the physical bonds.
+/// 3. Moving the chain along and recalculating the total weights. While calculating the total
+/// weights, also randomly assign a physical bond from the boltzmann distribution. Calculate the new
+/// energy.
+/// Note that rather than \f\$prod_{i=1}^{N}W_{i}$\f, I calculate the \f$\log_{10}$\f
+/// so I calculate the sum of smallish numbers rather than the product of large numbers.
+/// 4. Perform the Metropolis-Hastings step.
+/// The move is automatically rejected for molecules that are not chains.
+/// The move is NOT smart enough to detect that the given chain has all the same linker lengths
+/// within the chain.
+/// TODO: In initialization, add a sub-routine that checks if the molecules have the same linker
+/// lengths throughout.
+/// TODO: Add a new snake move that reptates the smallest block of the polymer that is invariant
+/// under reptation.
+/// \param chainID
+/// \param MyTemp
+/// \return 1 if accepted, 0 if rejected.
 int Move_Snake(int chainID, float MyTemp) {//Performs a slither MC-move on chainID
 
     int firstB, lastB;//Track first and last+1 bead of chainID. Makes reading easier.
@@ -502,6 +545,15 @@ int Move_Snake(int chainID, float MyTemp) {//Performs a slither MC-move on chain
     }
 }
 
+/// Move_Trans - performs a biased translation of chainID by:
+/// 1. Seeing if there is a spot to move the entire chain in a <+-L/2,+-L/2,+-L/2> random location.
+/// Move fails if no spot available.
+/// 2. Calculcate the Rosenbluth weights of the whole chain like Move_Snake().
+/// 3. Move the chain and recalculate the total weights.
+/// 4. Perform the Metropolis-Hastings step.
+/// \param chainID
+/// \param MyTemp
+/// \return 1 if accepted, 0 if rejected.
 int Move_Trans(int chainID, float MyTemp) {//Performs a translation move with orientational bias
     int bAccept = 0; //Used in MC steps
     float MCProb, oldEn, newEn; //For Metropolis Hastings
@@ -518,7 +570,7 @@ int Move_Trans(int chainID, float MyTemp) {//Performs a translation move with or
     //Finding the bounds for looping over the molecule/chain
     firstB = chain_info[chainID][CHAIN_START];
     lastB = firstB + chain_info[chainID][CHAIN_LENGTH];
-    //Radii for translation moves. All moves are L/4 radius
+    //Radii for translation moves. All moves are L/2 radius
     lRadLow = nBoxSize[2] / 2;
     lRadUp = 2 * lRadLow + 1;
 
@@ -605,6 +657,16 @@ int Move_Trans(int chainID, float MyTemp) {//Performs a translation move with or
 
 }
 
+/// Move_Clus - translates the second largest cluster of the system by:
+/// 1. Performs a total clustering analysis of the system and finds the second largest cluster.
+/// If there are more than 1 second largest clusters, randomly pick 1.
+/// 2. Try to find an empty spot in a <+-L/2,+-L/2,+-L/2> random location. Calculate old energy.
+/// 3. Move the cluster over.
+/// Note that since the definition of a cluster is based on the network of existing physical bonds,
+/// the system energy, the clusters do not change post translations.
+/// 4. Calculate the new energy and perform the Metropolis-Hastings step.
+/// \param MyTemp
+/// \return 1 if accepted, 0 if rejected.
 int Move_Clus(float MyTemp) {
     //Attempts to move the second largest cluster
 
@@ -660,6 +722,15 @@ int Move_Clus(float MyTemp) {
     return bAccept;
 }
 
+/// Move_SmallClus - translates this cluster only if it is smaller than 5 total molecules by
+/// 1. Performs a clustering analysis on chainID. Move fails if the cluster is larger than 5.
+/// 2. Try to find an empty spot in a <+-L/2,+-L/2,+-L/2> random location. Calculate old energy.
+/// 3. Move the cluster over.
+/// Note that since the definition of a cluster is based on the network of existing physical bonds,
+/// the system energy, the clusters do not change post translations.
+/// 4. Calculate the new energy and perform the Metropolis-Hastings step.
+/// \param MyTemp
+/// \return 1 if accepted, 0 if rejected.
 int Move_SmallClus(int chainID, float MyTemp) {
     //Performs a cluster move where a given chain and it's cluster are moved. No new 'bonds' are made so the move is reversible....
 
@@ -718,7 +789,17 @@ int Move_SmallClus(int chainID, float MyTemp) {
     return bAccept;
 }
 
-int Move_DbPvt(int beadID, float MyTemp) {//Performs a double-pivot move.
+/// Move_DbPvt - performs a Double-Pivot move on beadID by:
+/// 1. Calculate the number of possible bridges in a <+-2,+-2,+-2> around beadID.
+/// The move is rejected if the molecule is not a chain.
+/// 2. Pick one of these bridges, and remember which beadID'+1 will be beadID+1 after the move.
+/// 3. Calculate the number of bridges possible around beadID'+1.
+/// 4. Calculate the ratio between the number of possible bridges, and perform the Metropolis-Hastings
+/// step.
+/// Note that bridging only changes the local connectivity of the chains, and thus not the energy.
+/// \param beadID
+/// \return 1 if accepted, 0 if rejected.
+int Move_DbPvt(int beadID) {//Performs a double-pivot move.
     /* Molecule MUST be LINEAR
   The move requires selecting a random bead, which is beadID. Then, we'll search the lattice in +-2 sites around beadID.
   Let i be the position of beadID along it's chain. Let i' denote same position along another chain of the same type. We want
@@ -795,9 +876,7 @@ int Move_DbPvt(int beadID, float MyTemp) {//Performs a double-pivot move.
     thisbead = rand() % nListLen;//Randomly select a candidate
     thisbead = candList[thisbead];//Pick the ID of the candidate
     thischain = bead_info[thisbead][BEAD_CHAINID];//The chain ID of the candidate
-    mychain = bead_info[beadID][BEAD_CHAINID];
     thischaintype = chain_info[thischain][CHAIN_TYPE];
-    thischainstart = chain_info[thischain][CHAIN_START];
 
     //For detailed balance, we need to count how many candidates thisbead-1 has!
 
@@ -823,7 +902,6 @@ int Move_DbPvt(int beadID, float MyTemp) {//Performs a double-pivot move.
                             if (Dist_BeadToBead(thisbead - 1, otherbead) < 1.74 * linker_len[thisbead - 1][1] &&
                                 Dist_BeadToBead(thisbead, otherbead - 1) < 1.74 * linker_len[otherbead -
                                                                                              1][1]) {//The linker lengths are correct to change connectivity
-                                //candList[nListLen] = thisbead;//Storing which bead it is
                                 nListLen_back++;//Onto the next guy
                                 if (nListLen_back ==
                                     MAX_ROTSTATES) { goto FoundMax_back; }//MAX_ROTSTATES is the size of candList[]
@@ -854,6 +932,13 @@ int Move_DbPvt(int beadID, float MyTemp) {//Performs a double-pivot move.
     }//*/
 }
 
+/// Move_CoLocal - move beadID and it's physical bond partner to a new location.
+/// Move fails if beadID has no partner, and if no space is found.
+/// A standard unbiased translation of two beads where a Metropolis-Hastings step is performed
+/// at the end.
+/// \param beadID
+/// \param MyTemp
+/// \return 1 if accepted, 0 if rejected.
 int Move_CoLocal(int beadID, float MyTemp) {
     /*
   Translate a bead and its partner in tandem. If no partner, reject move.
@@ -917,6 +1002,17 @@ int Move_CoLocal(int beadID, float MyTemp) {
     }
 }
 
+/// Move_MultiLocal - performs a biased set of local moves where beadID and every covalently bonded
+/// bead of beadID is moved by:
+/// 1. Finding an empty spot for all the beads involved (in a <+-2,+-2,+-2>). This is a little crude because I put the
+/// beads on the lattice into the new proposed spot because the structure constraint sub-routine
+/// is designed as such.
+/// 2. If there is space for all of the beads. Calculate the energies and the total Rosenbluth weights.
+/// 3. Move the beads to new location and recalculate the energies and weights. Perform a Metropolis-Hastings
+/// step.
+/// \param beadID
+/// \param MyTemp
+/// \return 1 if accepted, 0 if rejected.
 int Move_MultiLocal(int beadID, float MyTemp) {
     int topIt; //Iterator for topo_info
     int i, j; //Loop iterators
@@ -1104,6 +1200,20 @@ int Move_MultiLocal(int beadID, float MyTemp) {
     }
 }
 
+/// Move_Pivot - performs a biased pivot move on chainID.
+/// Move fails if chainID is branched. The process is:
+/// 1. Pick a random bead within chainID that shall act as the pivot around which a rotation
+/// operation shall be performed. The operation is performed on the shorter part of the chain. If the
+/// selected bead is an end, the move is rejected.
+/// 2. Pick a rotation operation. The list of operation is a rotation by 90, 180, 270 or 360 (null)
+/// degrees around the X, Y, or Z axis.
+/// 3. Calculate the Rosenbluth weights and energies, and check if there is steric clash after the
+/// proposed move. If there is a clash, reject the move.
+/// 4. Rotate the beads, and recalculate the weights, propose new bonds and recalculate the energies.
+/// 5. Perform the Metropolis-Hastings step.
+/// \param chainID
+/// \param MyTemp
+/// \return 1 if accepted, 0 if rejected.
 int Move_Pivot(int chainID, float MyTemp) {
     //Performs a pivot move on chainID
     /*
@@ -1278,6 +1388,13 @@ int Move_Pivot(int chainID, float MyTemp) {
     }
 }
 
+/// Move_BranchedRot - performs the branched analog for the pivot move where the central bead of the
+/// branched molecule is considered the anchor, and the whole molecule is rotated with the biased
+/// sampling, and re-assigning of bonds.
+/// The move is rejected if chainID is linear.
+/// \param chainID
+/// \param MyTemp
+/// \return
 int Move_BranchedRot(int chainID, float MyTemp) {
     //Rotates a branched molecule about the branching, which is assumed to be the firstB of chainID
     //Performs a Move_Pivot() on molecule where the rotation occurs around firstB
@@ -1420,6 +1537,9 @@ int Move_BranchedRot(int chainID, float MyTemp) {
         return bAccept;
     }
 }
+
+// All the _Equil variants of the moves are spatially the same as their non _Equil variants.
+// The only difference is that the aniso-tropic interaction is ignored, and thus no bias is applied.
 
 int Move_Local_Equil(int beadID, float MyTemp) {//Performs a local translation MC-move on beadID
 
@@ -1976,6 +2096,10 @@ int Move_BranchedRot_Equil(int chainID, float MyTemp) {
     }
 }
 
+/// Check_ChainDisp - checks if moving chainID by tR[POS_MAX] will lead to sterix clash.
+/// \param chainID
+/// \param tR
+/// \return 0 if clash, 1 if no clash.
 int Check_ChainDisp(int chainID, const int *tR) {//Checks if chain can be displaced by tR
     int i, j;
     int canI = 1;
@@ -1995,6 +2119,10 @@ int Check_ChainDisp(int chainID, const int *tR) {//Checks if chain can be displa
     return canI;
 }
 
+/// OP_DispChain - displaced chainID by movR[POS_MAX], while remembering the chain in old_beads. Also handles the
+/// lattice placement.
+/// \param chainID
+/// \param movR
 void OP_DispChain(int chainID, const int *movR) {
     //Displaces current chain by movR and handles the lattice
     //Also remembers where everything was moved and saves into old_bead
@@ -2017,6 +2145,10 @@ void OP_DispChain(int chainID, const int *movR) {
     }
 }
 
+/// OP_DispChain_ForTrans - displaced chainID by movR[POS_MAX], while remembering the chain in old_beads. Also handles the
+/// lattice placement. Move_Trans variant where I break all the physical bonds.
+/// \param chainID
+/// \param movR
 void OP_DispChain_ForTrans(int chainID, const int *movR) {
     //Displaces current chain by movR and handles lattice
     //Specific for Move_Trans because it breaks old bonds!
@@ -2046,6 +2178,8 @@ void OP_DispChain_ForTrans(int chainID, const int *movR) {
     }
 }
 
+/// OP_RestoreChain - uses old_bead to undo what OP_DispChain does.
+/// \param chainID
 void OP_RestoreChain(int chainID) {//Uses old_bead to undo what OP_DispChain does.
     int i, l;
     int fB = chain_info[chainID][CHAIN_START];
@@ -2064,6 +2198,8 @@ void OP_RestoreChain(int chainID) {//Uses old_bead to undo what OP_DispChain doe
     }
 }
 
+/// OP_RestoreChain_ForTrans - translation variant to restore chainID.
+/// \param chainID
 void OP_RestoreChain_ForTrans(int chainID) {//Uses old_bead to undo what OP_DispChain_ForTrans does.
     //Note that removing and placing separately makes sure that no incorrect bonds are formed, or unformed.
     int i, l;
@@ -2095,6 +2231,9 @@ void OP_RestoreChain_ForTrans(int chainID) {//Uses old_bead to undo what OP_Disp
     }
 }
 
+/// OP_RestoreChain_ForSnake - restores the chain: beadID's betweem fB and lB-1, to before the snake move.
+/// \param fB
+/// \param lB
 void OP_RestoreChain_ForSnake(const int fB, const int lB) {
     int i, j;
 
@@ -2115,6 +2254,9 @@ void OP_RestoreChain_ForSnake(const int fB, const int lB) {
     }
 }
 
+/// Check_MoveBeadTo - checks if newPos[POS_MAX] is empty on the lattice.
+/// \param newPos
+/// \return
 inline int Check_MoveBeadTo(int *newPos) {//Checks if I can move here
 
     if (naTotLattice[Lat_Ind_FromVec(newPos)] != -1) {
@@ -2123,6 +2265,9 @@ inline int Check_MoveBeadTo(int *newPos) {//Checks if I can move here
     return 1;
 }
 
+/// OP_MoveBeadTo - move beadID to newPos[POS_MAX], while remebering the bead properties, and handling the lattice.
+/// \param beadID
+/// \param newPos
 void OP_MoveBeadTo(int beadID, const int *newPos) {//Updates position to new one and handles lattice
     int i;
     int tmpR[POS_MAX], tmpR2[POS_MAX];
@@ -2138,6 +2283,8 @@ void OP_MoveBeadTo(int beadID, const int *newPos) {//Updates position to new one
     naTotLattice[Lat_Ind_FromVec(tmpR2)] = beadID;
 }
 
+/// OP_Inv_MoveBeadTo - performs the inverse of OP_MoveBeadTo to restore beadID using old_bead.
+/// \param beadID
 void OP_Inv_MoveBeadTo(int beadID) {//Undoes what the above function does
     int i;
     int tmpR[POS_MAX], tmpR2[POS_MAX];
@@ -2157,8 +2304,11 @@ void OP_Inv_MoveBeadTo(int beadID) {//Undoes what the above function does
     }
 }
 
-void OP_MoveBeadTo_ForMTLocal(int beadID,
-                              const int *newPos) {//Updates position to new one and handles lattice specifically for shake move
+/// OP_MoveBeadTo_ForMTLocal - moves the bead over to newPos[POS_MAX], handles the lattice and breaks bonds.
+/// This function is specifically for the MultiLocal move.
+/// \param beadID
+/// \param newPos
+void OP_MoveBeadTo_ForMTLocal(int beadID, const int *newPos) {//Updates position to new one and handles lattice specifically for shake move
     int i;
     int tmpR2[POS_MAX];
     for (i = 0; i < POS_MAX; i++) {
@@ -2173,6 +2323,9 @@ void OP_MoveBeadTo_ForMTLocal(int beadID,
     }
 }
 
+/// OP_SwapBeads - swaps all the properties, including bonding partners betweem bead1 and bead2. Used in the DbPvt move.
+/// \param bead1
+/// \param bead2
 void OP_SwapBeads(int bead1, int bead2) {
     //Swaps ALL properties of the beads, and exchanged bonding partners
     int MyF1, MyF2;
@@ -2203,6 +2356,68 @@ void OP_SwapBeads(int bead1, int bead2) {
     //Swap them on the lattice
     naTotLattice[Lat_Ind_FromVec(tmpR)] = bead2;
     naTotLattice[Lat_Ind_FromVec(tmpR2)] = bead1;
+}
+
+/// OP_Rotation - given the rotation operation PivotM, rotate beadID using tmpR[POS_MAX] as the origin.
+/// Note the global array naTempR[POS_MAX] stores the locations of the post-rotated beads. Furthermore, if PivotM is 10,
+/// the null operation is still performed.
+/// Mathematically, we have that \f$\vec{r}^\prime = \hat{R}_i(\theta)\vec{r}$\f where \f$\vec{r}$\f is the new position,
+/// \f$\hat{R}_i(\theta)$\f is the standard rotation matrix where i=X,Y,Z and \f$\theta=45^\circ,180^\circ,270^\circ$\f.
+/// For now, only 90 degree rotations are implemented where the Rot_{#1}_{#2} functions/sub-routines below explicitly
+/// calculate what the new vector is given the axis ({#1}) and angle ({#2}).
+/// Aribitrary rotations are a little harder on lattices because some rotations do not fully overlap with points on
+/// the lattice being used. In our case, it is a simple cubic lattice.
+/// \param PivotM - this is the operation to perform
+/// \param beadID - the ID of the bead to move
+/// \param tmpR   - the location of the anchor point, or, origin around which to rotate
+void OP_Rotation(int PivotM, int beadID, int *tmpR) {
+    int j;
+    switch (PivotM) {
+        case 1:
+            Rot_X_90(beadID, tmpR);
+            break;
+
+        case 2:
+            Rot_X_180(beadID, tmpR);
+            break;
+
+        case 3:
+            Rot_X_270(beadID, tmpR);
+            break;
+
+        case 4:
+            Rot_Y_90(beadID, tmpR);
+            break;
+
+        case 5:
+            Rot_Y_180(beadID, tmpR);
+            break;
+
+        case 6:
+            Rot_Y_270(beadID, tmpR);
+            break;
+
+        case 7:
+            Rot_Z_90(beadID, tmpR);
+            break;
+
+        case 8:
+            Rot_Z_180(beadID, tmpR);
+            break;
+
+        case 9:
+            Rot_Z_270(beadID, tmpR);
+            break;
+
+        default:
+            //printf("How\n");
+            for (j = 0; j < POS_MAX; j++) {
+                naTempR[j] = bead_info[beadID][j]; //Does nothing; should make the move fail.
+            }
+            break;
+    }
+
+
 }
 
 void Rot_X_90(int beadID, const int tmpR[POS_MAX]) {
@@ -2325,56 +2540,8 @@ void Rot_Z_270(int beadID, const int tmpR[POS_MAX]) {
     naTempR[POS_Y] = (bead_info[beadID][POS_Y] + nBoxSize[POS_Y]) % nBoxSize[POS_Y];
 }
 
-void OP_Rotation(int PivotM, int beadID, int *tmpR) {
-    int j;
-    switch (PivotM) {
-        case 1:
-            Rot_X_90(beadID, tmpR);
-            break;
-
-        case 2:
-            Rot_X_180(beadID, tmpR);
-            break;
-
-        case 3:
-            Rot_X_270(beadID, tmpR);
-            break;
-
-        case 4:
-            Rot_Y_90(beadID, tmpR);
-            break;
-
-        case 5:
-            Rot_Y_180(beadID, tmpR);
-            break;
-
-        case 6:
-            Rot_Y_270(beadID, tmpR);
-            break;
-
-        case 7:
-            Rot_Z_90(beadID, tmpR);
-            break;
-
-        case 8:
-            Rot_Z_180(beadID, tmpR);
-            break;
-
-        case 9:
-            Rot_Z_270(beadID, tmpR);
-            break;
-
-        default:
-            //printf("How\n");
-            for (j = 0; j < POS_MAX; j++) {
-                naTempR[j] = bead_info[beadID][j]; //Does nothing; should make the move fail.
-            }
-            break;
-    }
-
-
-}
-
+/// OP_ShuffleRotIndecies - randomly shuffles the incdecies to sample the rotational states around a bead.
+/// Ensures that we fully, but randomly, sample the states. The implementation was taken from the provided URL.
 void OP_ShuffleRotIndecies(void) {
     //Algorithm taken from
     //https://www.w3resource.com/c-programming-exercises/array/c-array-exercise-77.php
@@ -2429,6 +2596,15 @@ void OP_ShuffleRotIndecies(void) {
 
 }*/
 
+/// Check_RotStatesOld -- goes around beadID, of type resi to built the boltzmann distribution if the rotational states.
+/// Used in the old location.
+/// Note that this implementation is one where the solvent interaction does not exist for the rotaitonal state.
+/// The commented version below is one where the solvent also has a contribution to the boltzmann distribution of
+/// the rotational states.
+/// \param beadID
+/// \param resi
+/// \param MyTemp
+/// \return The total number of possible candidates
 int Check_RotStatesOld(int beadID, int resi, float MyTemp) {
 
     int i, j, k, tmpBead;
@@ -2495,6 +2671,15 @@ int Check_RotStatesOld(int beadID, int resi, float MyTemp) {
 
 }*/
 
+/// Check_RotStatesNew -- goes around beadID, of type resi to built the boltzmann distribution if the rotational states.
+/// Used in the new proposed location.
+/// Note that this implementation is one where the solvent interaction does not exist for the rotaitonal state.
+/// The commented version below is one where the solvent also has a contribution to the boltzmann distribution of
+/// the rotational states.
+/// \param beadID
+/// \param resi
+/// \param MyTemp
+/// \return The total number of possible candidates
 int Check_RotStatesNew(int beadID, int resi, float MyTemp) {
 
     int i, j, k, tmpBead;
@@ -2525,6 +2710,14 @@ int Check_RotStatesNew(int beadID, int resi, float MyTemp) {
 
 }
 
+/// OP_NormalizeRotState -- normalizes the rotational boltzmann distribution, and generates the cumulative distribution
+/// so that we can sample from it.
+/// \param beadVal - bolt_norm[MAX_VALENCY] stores the total Rosenbluth weights for moves that sample multiple stickers.
+/// Note that bolt_fac[] is now the cumulative boltzmann distribution, which is sampled to propose bonds.
+/// \param CandNums - total possible bonding partners for this particular sticker case.
+/// Lastly, note that the I add 10 to the total weight because a weight of 0 is possible before this addition, and
+/// \f\$\log_{10}(10)$f is undefined. (Remember that I take the sum of logs rather than the product in the Metropolis-Hastings
+/// step.
 void OP_NormalizeRotState(int beadVal, int CandNums) {
     int i;
     bolt_norm[beadVal] = 0.;
@@ -2542,6 +2735,12 @@ void OP_NormalizeRotState(int beadVal, int CandNums) {
     bolt_norm[beadVal] += 10.;
 }
 
+/// OP_PickRotState - propose a new bonding partner.
+/// This is the implementation where the solvent is ignored. Thus, there is a 1/(CandNums+1) to break the bond, and
+/// (CandNums)/(CandNums+1) to form a bond. If forming a bond, sample from the boltzmann distribution of rotational states
+/// already built up and stored in bolt_fac[]
+/// \param CandNums - the number of possible bonding candidates.
+/// \return The new proposed bonding partner.
 int OP_PickRotState(int CandNums) {
     int newRot = -1;
     int i;
