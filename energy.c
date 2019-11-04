@@ -117,7 +117,10 @@ float Energy_Isotropic(int beadID) {//Calculate Contact and Overlap energy of be
 
 }
 
-void Energy_Total_System() {
+/// Energy_Total_System - calculates the total energy of the system using the functions above.
+/// Note the factor of 1/2 to account for double counting since all the energy contributions (for now)
+/// are pair-wise. Furthermore, faCurrEn[] stores the two energies separately as well.
+void Energy_Total_System(void) {
     int i;//Indecies
     // initialization
     for (i = 0; i < MAX_E; i++) {
@@ -135,9 +138,15 @@ void Energy_Total_System() {
     }
 }
 
+/// Energy_Of_Chain - calculates the total energy of a molecule.
+/// \param chainID - ID of the molecule to calculate the energy.
+/// \return The total aniso + isotropic energy of this chain.
+/// Note that this sub-routine is dumb and does not account for double counting within the same chain.
+/// As such, this function should be used in both the old and new energy calculations so that the energy difference
+/// is still correct.
 float Energy_Of_Chain(int chainID) {//Calculates the energy of the given chain
     float totEn = 0.0;
-    int i;//Indecies
+    int i;//Looping index
 
     for (i = chain_info[chainID][CHAIN_START];
          i < chain_info[chainID][CHAIN_START] + chain_info[chainID][CHAIN_LENGTH]; i++) {

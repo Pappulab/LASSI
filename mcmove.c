@@ -353,7 +353,7 @@ int Move_Local(int beadID, float MyTemp) {//Performs a local translation MC-move
 /// 3. Moving the chain along and recalculating the total weights. While calculating the total
 /// weights, also randomly assign a physical bond from the boltzmann distribution. Calculate the new
 /// energy.
-/// Note that rather than \f\$prod_{i=1}^{N}W_{i}$\f, I calculate the \f$\log_{10}$\f
+/// Note that rather than \f\$prod_{i=1}^{N}W_{i}\f$, I calculate the \f$\log_{10}\f$
 /// so I calculate the sum of smallish numbers rather than the product of large numbers.
 /// 4. Perform the Metropolis-Hastings step.
 /// The move is automatically rejected for molecules that are not chains.
@@ -2361,8 +2361,8 @@ void OP_SwapBeads(int bead1, int bead2) {
 /// OP_Rotation - given the rotation operation PivotM, rotate beadID using tmpR[POS_MAX] as the origin.
 /// Note the global array naTempR[POS_MAX] stores the locations of the post-rotated beads. Furthermore, if PivotM is 10,
 /// the null operation is still performed.
-/// Mathematically, we have that \f$\vec{r}^\prime = \hat{R}_i(\theta)\vec{r}$\f where \f$\vec{r}$\f is the new position,
-/// \f$\hat{R}_i(\theta)$\f is the standard rotation matrix where i=X,Y,Z and \f$\theta=45^\circ,180^\circ,270^\circ$\f.
+/// Mathematically, we have that \f$\vec{r}^\prime = \hat{R}_i(\theta)\vec{r}\f$ where \f$\vec{r}\f$ is the new position,
+/// \f$\hat{R}_i(\theta)\f$ is the standard rotation matrix where i=X,Y,Z and \f$\theta=45^\circ,180^\circ,270^\circ\f$.
 /// For now, only 90 degree rotations are implemented where the Rot_{#1}_{#2} functions/sub-routines below explicitly
 /// calculate what the new vector is given the axis ({#1}) and angle ({#2}).
 /// Aribitrary rotations are a little harder on lattices because some rotations do not fully overlap with points on

@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void Energy_Total_System();
+void Energy_Total_System(void);
 
 float Energy_Anisotropic(int beadID);
 
