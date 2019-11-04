@@ -185,6 +185,12 @@ int Parse_Keyfile(char *filename) {
     return nErr;
 }
 
+/// Parse_EnergyFile - reads the parameter keyfile. I recommend using the Python scripts to generate key files that
+/// are used in actual runs.
+/// Have to painstakingl;y go through every different keyword that exists in the keyfile. Everytime you want to add something
+/// to the keyfile, do it here and also the python scripts so that everything is consistent.
+/// \param strEnFile
+/// \return
 int Parse_EnergyFile(char *strEnFile) {
     int nRes = 0;
 
@@ -295,6 +301,11 @@ int Parse_EnergyFile(char *strEnFile) {
     return nRes;
 }
 
+/// str2farr - converts the string array to an array of floats. The nice thing about C is the ease of string manipulation.
+/// used to generate matrices from the energy file.
+/// \param strRaw
+/// \param fArray
+/// \return Changes fArray to include be the array in
 int str2farr(char strRaw[], float fArray[MAX_AA]) {
     int i;
     char *strTemp;
@@ -316,6 +327,10 @@ int str2farr(char strRaw[], float fArray[MAX_AA]) {
     return i;
 }
 
+/// Parse_StructureFile - reads the structure file filename.
+/// The format of the structure file is in the function below. Should be easier to use Python to generate the files,
+/// usually.
+/// \param filename
 void Parse_StructureFile(char *filename) {
     /*
     This function reads in a structure file that also includes topology information. The format is:
