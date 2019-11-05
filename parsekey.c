@@ -5,6 +5,12 @@
 
 int str2farr(char *strRaw, float fArray[MAX_AA]);
 
+/// Parse_KeyFile - reads the parameter keyfile. I recommend using the Python scripts to generate key files that
+/// are used in actual runs.
+/// Have to painstakingly go through every different keyword that exists in the keyfile. Everytime you want to add something
+/// to the keyfile, do it here and also the python scripts so that everything is consistent.
+/// \param filename
+/// \return
 int Parse_Keyfile(char *filename) {
     FILE *infile;
     infile = fopen(filename, "r");
@@ -185,10 +191,8 @@ int Parse_Keyfile(char *filename) {
     return nErr;
 }
 
-/// Parse_EnergyFile - reads the parameter keyfile. I recommend using the Python scripts to generate key files that
-/// are used in actual runs.
-/// Have to painstakingl;y go through every different keyword that exists in the keyfile. Everytime you want to add something
-/// to the keyfile, do it here and also the python scripts so that everything is consistent.
+/// Parse_EnergyFile - reads the energy file
+/// Have to painstakingly go through every different keyword that exists in the energy file. Reads all the matrices
 /// \param strEnFile
 /// \return
 int Parse_EnergyFile(char *strEnFile) {

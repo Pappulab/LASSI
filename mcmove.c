@@ -2751,7 +2751,7 @@ int OP_PickRotState(int CandNums) {
         newRot = -1;
     } else {
         fProb = (float) rand() / (float) RAND_MAX;
-        for (i = 0; i < CandNums; i++) {
+        for (i = 0; i < CandNums-1; i++) {
             if (fProb < bolt_fac[i]) {
                 break;
             }

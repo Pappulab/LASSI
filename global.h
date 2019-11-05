@@ -87,7 +87,7 @@ lInt nThermalization_Mode, RotBias_Mode;
 
 // system setup
 lInt nBoxSize[POS_MAX];
-lInt LocalArr[MAX_ROTSTATES - 1][3];//Used to quickly iterate over nearby points in a R-cube
+lInt LocalArr[MAX_ROTSTATES - 1][3];//Used to quickly iterate over nearby points in an R-cube
 lInt Rot_IndArr[MAX_ROTSTATES - 1];
 char bReadConf;
 
