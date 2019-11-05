@@ -88,7 +88,12 @@ float Dist_BeadToBead(int n1, int n2) {
     return sqrtf((float) (d[POS_X] * d[POS_X] + d[POS_Y] * d[POS_Y] + d[POS_Z] * d[POS_Z]));
 }
 
-/// Check_System_Structure -
+/// Check_System_Structure - performs a intensive and extensive sanity check.
+/// 1. All distances between beads in a molecule are legal.
+/// 2. All bonds are symmetric.
+/// 3. Bonds are only between possibly interacting beads.
+/// 4. Beads' locations correspond with actual lattice location.
+/// 5. Bonds are not between beads that are too far apart.
 /// \return 0 if everything is okay, beadID+1 if failed.
 int Check_System_Structure(void) {
     int i, j;//Looping variables

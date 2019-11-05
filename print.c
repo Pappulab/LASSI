@@ -6,6 +6,11 @@
 
 void Print_Matrix(char *strTitle, int nSeqEn, float fArray[MAX_AA][MAX_AA][MAX_E], int param);
 
+/// Write_ClusterDist - write the cluster histogram to a separate file. NOT USED ANYMORE, but might find a use later
+/// Always appends to the file for this run. Stopped using it because the IO load was slowing things down at our cluster
+/// Would be a good way to gather proper statistics on clusters as the runs went on
+/// \param filename
+/// \param nGen
 void Write_ClusterDist(char *filename, long nGen) {
     FILE *fp;
     int i;
@@ -28,6 +33,11 @@ void Write_ClusterDist(char *filename, long nGen) {
     fclose(fp);
 }
 
+/// Write_GyrTen - write the total gyration tensor to a file. Remember that we only have 6 things in a symmetric 3x3 tensor.
+/// Always appends to the file for this run. Stopped using it because the IO load was slowing things down at our cluster
+/// Would be a good way to gather proper statistics on the shapes and such as the runs went on
+/// \param filename
+/// \param nGen
 void Write_GyrTen(char *filename, long nGen) {
     FILE *fp;
     int i;
@@ -51,6 +61,11 @@ void Write_GyrTen(char *filename, long nGen) {
     fclose(fp);
 }
 
+/// Write_MCMove - writes the acceptance and rejection ratios of the various moves.
+/// Just keeps appending to that file. Can be used to track the 'dynamics' during a simulation.
+/// \param filename
+/// \param nGen
+/// \param fMCTemp
 void Write_MCMove(char *filename, long nGen, float fMCTemp) {
     FILE *fp;
     int i;//Iterator
@@ -82,6 +97,9 @@ void Write_MCMove(char *filename, long nGen, float fMCTemp) {
     fclose(fp);
 }
 
+/// Print_LogToScreen - prints current status of the
+/// \param nGen
+/// \param run_it
 void Print_LogToScreen(long nGen, int run_it) {
     printf("Step       %.2e\n", (float) nGen);
     printf("Run Cycle: %d\n", run_it);
@@ -589,6 +607,9 @@ void Print_Data(long nGen, int run_it) {
 
 }
 
+/// Copy_Data - copies data from run_it specific data arrays to the overall global data arrays that are printed later.
+/// Also note that the averaging, or dividing by the frequency of acquisitions, occurs here.
+/// \param run_it
 void Copy_Data(int run_it) {
     int i, j;
     for (i = 0; i < nRDF_TotComps; i++) {
