@@ -1,19 +1,36 @@
 #include "global.h"
 #include "structure.h"
 
+/// Lat_Ind_FromCoords - helper function to get the correct 1D index of this position
+/// \param i
+/// \param j
+/// \param k
+/// \return the 1D index location for (i,j,k) position
 int Lat_Ind_FromCoords(int i, int j, int k) {//Lattice index from 3D to 1D array
     return i + nBoxSize[0] * (j + nBoxSize[1] * k);
 }
 
+/// Lat_Ind_FromVec - returns the 1D index given the array xArr
+/// \param xArr
+/// \return
 int Lat_Ind_FromVec(int *xArr) {//Just the vector form of the above function. Easier to read sometimes.
     return xArr[POS_X] + nBoxSize[POS_X] * (xArr[POS_Y] + nBoxSize[POS_Y] * xArr[POS_Z]);
 }
 
+/// Lat_Ind_OfBead - returns the 1D index of this bead's location
+/// \param beadID
+/// \return
 int Lat_Ind_OfBead(int beadID) {
     return bead_info[beadID][POS_X] +
            nBoxSize[POS_X] * (bead_info[beadID][POS_Y] + nBoxSize[POS_Y] * bead_info[beadID][POS_Z]);
 }
 
+//Note that the distance functions account for periodic boundaries
+
+/// Dist_PointTotPoint_Float - euclidean distance between the vectors (arrays) f1 and f2 where f1 and f2 are floats.
+/// \param f1
+/// \param f2
+/// \return
 float Dist_PointTotPoint_Float(float *f1, float *f2) {
     float d[POS_MAX];
     int i;
@@ -25,6 +42,10 @@ float Dist_PointTotPoint_Float(float *f1, float *f2) {
     return sqrtf(d[POS_X] * d[POS_X] + d[POS_Y] * d[POS_Y] + d[POS_Z] * d[POS_Z]);
 }
 
+/// Dist_PointToPoint - euclidean distance between the vectors (arrays) f1 and f2 where f1 and f2 are integer points.
+/// \param f1
+/// \param f2
+/// \return
 float Dist_PointToPoint(int *f1, int *f2) {
     int d[POS_MAX];
     int i;
@@ -37,6 +58,10 @@ float Dist_PointToPoint(int *f1, int *f2) {
     return sqrtf((float) (d[POS_X] * d[POS_X] + d[POS_Y] * d[POS_Y] + d[POS_Z] * d[POS_Z]));
 }
 
+/// Dist_BeadToPoint - euclidean distance between beadID and the vector f1.
+/// \param beadID
+/// \param f1
+/// \return
 float Dist_BeadToPoint(int beadID, int *f1) {
     int d[POS_MAX];
     int i;
@@ -47,6 +72,10 @@ float Dist_BeadToPoint(int beadID, int *f1) {
     return sqrtf((float) (d[POS_X] * d[POS_X] + d[POS_Y] * d[POS_Y] + d[POS_Z] * d[POS_Z]));
 }
 
+/// Dist_BeadToBead - euclidean distance between the two beads.
+/// \param n1
+/// \param n2
+/// \return
 float Dist_BeadToBead(int n1, int n2) {
     lInt d[POS_MAX];
     lInt i;
@@ -59,6 +88,8 @@ float Dist_BeadToBead(int n1, int n2) {
     return sqrtf((float) (d[POS_X] * d[POS_X] + d[POS_Y] * d[POS_Y] + d[POS_Z] * d[POS_Z]));
 }
 
+/// Check_System_Structure -
+/// \return 0 if everything is okay, beadID+1 if failed.
 int Check_System_Structure(void) {
     int i, j;//Looping variables
     int idx;//Internal iterators for covalent bonds.
@@ -126,10 +157,18 @@ int Check_System_Structure(void) {
     return 0;
 }
 
+/// Dist_VecMag - non periodic boundary euclidean magnitude of vector
+/// \param f1
+/// \return
 float Dist_VecMag(const int *f1) {//Outputs the magnitude of the vector
     return sqrtf((float) (f1[0] * f1[0] + f1[1] * f1[1] + f1[2] * f1[2]));
 }
 
+/// GyrTensor_ClusterSpecific - calculates the total Gyration Tensor for a given cluster
+/// \param ClusSize - the total size of the cluster.
+/// \param ClusIndex - the index on naCluster where the cluster is stored.
+/// THIS IS VERY OLD AND HASN'T BEEN LOOKED AT IN A WHILE
+/// TODO: Update this for the new version
 void GyrTensor_ClusterSpecific(int ClusSize, int ClusIndex) {
     //Calculate the components of the gyration tensor for a given cluster.
     //ClusSize is the size of the cluster -- obviously -- whereas ClusIndex tell us
@@ -208,6 +247,11 @@ void GyrTensor_ClusterSpecific(int ClusSize, int ClusIndex) {
 
 }
 
+/// GyrTensor_GyrRad - calculates the total Gyration Tensor of the system.
+/// \param ClusSize - the total size of the cluster.
+/// \param ClusIndex - the index on naCluster where the cluster is stored.
+/// THIS IS VERY OLD AND HASN'T BEEN LOOKED AT IN A WHILE
+/// TODO: Update this for the new version
 void GyrTensor_GyrRad(void) {//Calculates the gyration tensor for the whole system
     int i, k, j, j2;//Basic indecies for loops
     for (i = 0; i < 7; i++) { fGyrTensor[i] = 0.; }//Initializing
@@ -249,6 +293,9 @@ void GyrTensor_GyrRad(void) {//Calculates the gyration tensor for the whole syst
     for (i = 0; i < 7; i++) { fGyrTensor[i] /= (float) tot_beads; }//printf("%f\n",fGyrTensor[i]);}printf("\n");
 }
 
+/// GyrTensor_GyrRad_Avg - calculates the total radius of gyration of the system, while not being smart about the
+/// periodic boundaries. This is used as a proxy to detect phase separation, but is a relic of the old formalism. The
+/// RDF should be used in general. Although this can be used without the need for a non-interacting prior.
 void GyrTensor_GyrRad_Avg(void) {
     /*
     Only calculates the diagonals of the gyration tensor, and calculates the sum of the
@@ -284,6 +331,11 @@ void GyrTensor_GyrRad_Avg(void) {
 
 }
 
+/// RDF_ComponentIndex - 1D index for the symmetric g_{ij} matrix given i and j.
+/// \param i
+/// \param j
+/// \return The index of the array
+/// The way it is set up, the indexing goes through the diagonal and then 0-1, 0-2, ... 0-N, 1-2, ... 1-N and so on
 int RDF_ComponentIndex(const int i, const int j) {
     if (i > j) {
         return RDF_ComponentIndex(j, i);
@@ -292,10 +344,17 @@ int RDF_ComponentIndex(const int i, const int j) {
     }
 }
 
+/// RDFArr_Inde - 1D index for ld_TOTRDF_Arr which is used to globally store the different RDFs
+/// \param run_cycle
+/// \param rdf_comp
+/// \param x_pos
+/// \return 1D index for the totalRDFArray
 int RDFArr_Index(const int run_cycle, const int rdf_comp, const int x_pos) {
     return x_pos + nRDF_TotBins * (rdf_comp + nRDF_TotComps * run_cycle);
 }
 
+/// RDF_ComponentWise_Avg - calculates the pair-distribution of the system where every bead acts as the center
+/// of a radial histogram of pairs. Note that dr = 1/4 lattice units.
 void RDF_ComponentWise_Avg(void) {
     /*
     Calculates the RDF and adds it all up so that it can be averaged out at the end of the run.
@@ -323,6 +382,10 @@ void RDF_ComponentWise_Avg(void) {
     nRDFCounter++;
 }
 
+/// Check_LinkerConstraint - if I move beadID to tmpR, do I still satisfy the linker lengths for beadID?
+/// \param beadID
+/// \param tmpR
+/// \return 1 means all is good, 0 means bad.
 int Check_LinkerConstraint(int beadID, int *tmpR) {
     //Check if the proposed new location for beadID is such that all the linkers are unbroken.
     int idx;//Iterator to loop over bond Partners
@@ -340,6 +403,11 @@ int Check_LinkerConstraint(int beadID, int *tmpR) {
     return 1;//This means that all linker constraints are satisfied.
 }
 
+/// Check_MTLinkerConstraint - if I move beadID and all of it's covalent bonded beads to the locations stored in
+/// tmpR[][], would all the linker constraints be satisfied?
+/// \param beadID
+/// \param tmpR
+/// \return
 int Check_MTLinkerConstraint(int beadID, int (*tmpR)[POS_MAX]) {
 
     int curID = beadID;

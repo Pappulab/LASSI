@@ -2,6 +2,7 @@
 #include "initialize.h"
 #include "structure.h"
 
+/// Memory_Initialization_AtStart - allocates memory, and initializes the various global arrays.
 void Memory_Initialization_AtStart(void) {
     int i, j;
     naTotLattice = malloc(nBoxSize[0] * nBoxSize[1] * nBoxSize[2] * sizeof(lInt));
@@ -132,6 +133,7 @@ void Global_Array_Initialization_AtStart(void) {
     printf("All setup has been completed!\n");
 }
 
+/// Reset_Global_Arrays - resets the various global counters and arrays for system analysis.
 void Reset_Global_Arrays(void) {
     //Zero-ing out all the arrays used for data tracking!
     int i, j;
@@ -156,6 +158,7 @@ void Reset_Global_Arrays(void) {
     nLargestClusterRightNow = 0;
 }
 
+/// Initial_Conditions_Simple - randomly place all the molecules.
 void Initial_Conditions_Simple(void) {
     /*
     Generates initial conditions for a system with topology information. The idea is to see if the selected bead has been placed or not.
@@ -333,6 +336,7 @@ void Initial_Conditions_Simple(void) {
     }
 }
 
+/// Initial_Conditions_FromFile - reads the restart file and sets the initial conditions for the system
 void Initial_Conditions_FromFile(void) {
     printf("Reading file to generate initial configuration\n");
     char strLine[1000];
@@ -374,6 +378,8 @@ void Initial_Conditions_FromFile(void) {
     printf("File read successfully and initial configuration set.\n");
 }
 
+/// Initial_Conditions_BreakBonds - glorified for loop to break every bond. Is used when a restart file with
+/// thermalization steps.
 void Initial_Conditions_BreakBonds(void) {
     int i;
     for (i = 0; i < tot_beads; i++) {
@@ -382,6 +388,9 @@ void Initial_Conditions_BreakBonds(void) {
     printf("Since system has thermalization cycle, deleting all physical bonds!\n");
 }
 
+/// Calculate_Rot_Bias - calculates the possible anisotropic Boltzmann weights at the beginning so that
+/// we have a look-up table.
+/// \param CurrentTemp
 void Calculate_Rot_Bias(float CurrentTemp) {
 
     int i, j;
@@ -395,6 +404,18 @@ void Calculate_Rot_Bias(float CurrentTemp) {
 
 }
 
+/// Temperature_Function - used to calculate what fCuTemp should (current temperature) based on how long the run has been
+/// going.
+/// \param mode - which of the four functions to use.
+/// Note that the various modes are described below where \f$F(t)\f$ is the returned value, and t == nGen.
+/// If mode = 0: \f$F(t) = fKT + \tanh(1.+ (nGen-nPre)/1250fPreKT\f$. A hyperbolic tangent to smoothly reduce temperature,
+/// after nPreSteps
+/// If mode = 1: \f$F(t) = fKT + 5\exp(-(nGen-nPre)/4nPre)\abs(sin((nGen-nPre)/nPre))\f$. An exponentially decaying
+/// sinusoidal bouncing after nPreSteps
+/// If mode = 2: \f$F(t) = fKT + 5\exp(-(nGen-10nPre)^2/10nPre^2)/fKT\f$. Gaussian like decay after nPreSteps.
+/// If mode = 3: \f$F(t) = fKT + \exp(-4nGen/nPre)/fKT\f$. Exponential decay from the beginning.
+/// \param nGen - basically 'time' or how many MC Steps have been done.
+/// \return end_val - the current temperature.
 float Temperature_Function(int mode, long nGen) {
 
     float x_val;
