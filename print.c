@@ -97,7 +97,7 @@ void Write_MCMove(char *filename, long nGen, float fMCTemp) {
     fclose(fp);
 }
 
-/// Print_LogToScreen - prints current status of the
+/// Print_LogToScreen - prints current status of the run. Overall move acceptance ratios, and energies.
 /// \param nGen
 /// \param run_it
 void Print_LogToScreen(long nGen, int run_it) {
@@ -117,6 +117,10 @@ void Print_LogToScreen(long nGen, int run_it) {
     printf("\n\n");
 }
 
+/// Write_Energy - write the decomposed energy of the system to a file.
+/// Just appends to the file for this run.
+/// \param filename
+/// \param nGen
 void Write_Energy(char *filename, long nGen) {
     FILE *fp;
     if (nGen == -1) {
@@ -140,6 +144,10 @@ void Write_Energy(char *filename, long nGen) {
     fclose(fp);
 }
 
+/// Write_Trajectory -  write a LAMMPS style trajectory file for the system.
+/// Appends to the file for this run.
+/// \param filename
+/// \param nGen
 void Write_Trajectory(char *filename, long nGen) {
 //Writes the trajectory in LAMMPS format. To be viewed with VMD (Hopefully). Read the LAMMPS dump documentation for
 //the actual formate of the file
@@ -172,6 +180,7 @@ void Write_Trajectory(char *filename, long nGen) {
     fclose(fp);
 }
 
+/// Print_Key - print the keyfile that was read in to the screen
 void Print_Key(void) { // should be output-dependent (stdout, stderr, other files)
 
     int i;
@@ -236,6 +245,11 @@ void Print_Key(void) { // should be output-dependent (stdout, stderr, other file
     printf("\n");
 }
 
+/// Print_Matrix - fancy function to print symmetric matrices with labels
+/// \param strTitle
+/// \param nSeqEn
+/// \param fArray
+/// \param param
 void Print_Matrix(char *strTitle, int nSeqEn, float fArray[MAX_AA][MAX_AA][MAX_E], int param) {
     int nLen;
     nLen = nSeqEn;
@@ -262,6 +276,12 @@ void Print_Matrix(char *strTitle, int nSeqEn, float fArray[MAX_AA][MAX_AA][MAX_E
     printf("\n");
 }
 
+/// Write_RDF_ComponentWise - old implementation of printing the RDF, component by component.
+/// Always appends to the file for this run. Stopped using it because the IO load was slowing things down at our cluster
+/// Would be a good way to gather proper statistics on clusters as the runs went on. TODO: update this to work with
+/// the new indexing
+/// \param filename
+/// \param nGen
 void Write_RDF_ComponentWise(char *filename, long nGen) {
     FILE *fp;
     if (nGen == -1) {
@@ -285,6 +305,9 @@ void Write_RDF_ComponentWise(char *filename, long nGen) {
 
 }
 
+/// Write_TopFile - write a LAMMPS DATA file, which can be read in VMD to store topological information for the system
+/// Only writes the topology once at the beginning of the runs.
+/// \param filename
 void Write_TopFile(char *filename) {
     /*
     Writes a topology file for VMD. Since the trajectory is saved in the LAMMPS format,
@@ -349,6 +372,9 @@ void Write_TopFile(char *filename) {
     fclose(fp);
 }
 
+/// Write_SysProp - writes the RDF, CLUS and GyrTen avg rrays to a file. OLD implementation that should not be used yet
+/// Also, TODO: update this to work with the new indexing
+/// \param filename
 void Write_SysProp(char *filename) {
 
     FILE *fp;
@@ -377,6 +403,10 @@ void Write_SysProp(char *filename) {
 
 }
 
+/// Write_TotalSysProp - writes the RDF, CLUS and GyrTen arrays to their respective files.
+/// These arrays store the data over the course of an ENTIRE run, or over all the temp cycles.
+/// \param filename
+/// \param run_it
 void Write_TotalSysProp(char *filename, int run_it) {
     /* This function writes one large file with all the averaged values from each run_cycle. run_it let's the function
      * know how many cycles to write.
@@ -429,6 +459,10 @@ void Write_TotalSysProp(char *filename, int run_it) {
 
 }
 
+/// Print_Data - helper function that decides given nGen and run_it which things to print.
+/// Usually don't print much during the thermalization but could change that here
+/// \param nGen
+/// \param run_it
 void Print_Data(long nGen, int run_it) {
     //This function handles all the data IO.
     int nFlagForEnCalc = 0; //Flag for total energy calculation
