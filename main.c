@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) {
     errorcode = Parse_Keyfile(keyfile);
     if (errorcode == 0) {
         printf("Key file %s was successfully parsed.\n\n", keyfile);
-        srand(RNG_Seed == 0 ? time(NULL) : RNG_Seed);
+        srand(RNG_Seed);
         Print_Key();
     } else {
         printf("ERROR: unable to parse key file %s.\n", keyfile);

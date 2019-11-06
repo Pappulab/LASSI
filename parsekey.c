@@ -121,6 +121,7 @@ int Parse_Keyfile(char *filename) {
                 sscanf(strLine, "%*s %s", strEnergyFile);
             } else if (strcmp(strKeyword, "RANDOM_SEED") == 0) {
                 sscanf(strLine, "%*s %d", &RNG_Seed);
+                RNG_Seed = RNG_Seed == 0 ? time(NULL) : RNG_Seed;
             } else if (strcmp(strKeyword, "REPORT_PREFIX") == 0) {
                 sscanf(strLine, "%*s %s", strReportPrefix);
             } else if (strcmp(strKeyword, "REPORT_LOG_FREQ") == 0) {
