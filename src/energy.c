@@ -114,9 +114,9 @@ float Energy_Isotropic(int beadID) {//Calculate Contact and Overlap energy of be
                 /*if (secBi == -1 && fSolEnergy != 0.){
                     totEn += fSolEnergy*(fCuTemp-fThetaTemp);
                 }*/
-                if (secBi == -1 ) {
+                /*if (secBi == -1 ) {
                     totEn = 0.05;//3. * (fKT - 1.1);
-                }
+                }*/
             }
         }
     }

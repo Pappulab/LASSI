@@ -153,7 +153,7 @@ void Write_Trajectory(char *filename, long nGen) {
 //the actual formate of the file
     FILE *fp;
     if (nGen == -1) {
-        fp = fopen(filename, "w"); //This always overwrites a previos file
+        fp = fopen(filename, "w+"); //This always overwrites a previous file
     } else {
         fp = fopen(filename, "a"); //We will append to the file made for this run
 

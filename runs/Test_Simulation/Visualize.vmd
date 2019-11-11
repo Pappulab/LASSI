@@ -1,0 +1,18 @@
+##Author: Furqan Dar
+## Simple Visualization Script to see simulation trajectory
+
+color Display Background black
+material change opacity Transparent 0.7
+display culling off
+display depthcue on
+display cuedensity 0.3
+#display rendermore GLSL
+
+#Read in the topology file, and the trajectory
+topo readlammpsdata TestRun_topo.lammpstrj
+mol addfile TestRun_trj.lammpstrj waitfor all
+
+#Set style to beads
+mol modstyle 0 top points 5
+
+display resetview

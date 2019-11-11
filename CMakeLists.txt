@@ -7,7 +7,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Og")
 
 include_directories(.)
 
-add_executable(LASSI_SRC
+add_executable(lassi
         src/cluster.c
         src/cluster.h
         src/energy.c
