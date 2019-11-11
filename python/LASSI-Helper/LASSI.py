@@ -1129,8 +1129,7 @@ class Analysis(Sim_Setup):
                     my_func = np.abs(g_of_r - 1.)
                     volume_norm = RDFVolumeElement(x_ar, box_size)
                     my_func_norm = my_func * volume_norm
-                    #rho_bar = np.trapz(my_func_norm, x_ar) / (box_size ** 3.)
-                    rho_bar = np.trapz(g_of_r*my_func_norm,x_ar)/np.trapz(g_of_r*volume_norm,x_ar)
+                    rho_bar = np.trapz(my_func_norm, x_ar) / (box_size ** 3.)
                     rho_bar_temp.append(rho_bar)
                 rho_bar_comp.append(rho_bar_temp)
             rho_bar_mat.append(rho_bar_comp)
