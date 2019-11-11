@@ -111,17 +111,17 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named LASSI_SRC
+# Target rules for targets named lassi
 
 # Build rule for target.
-LASSI_SRC: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 LASSI_SRC
-.PHONY : LASSI_SRC
+lassi: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 lassi
+.PHONY : lassi
 
 # fast build rule for target.
-LASSI_SRC/fast:
-	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/build
-.PHONY : LASSI_SRC/fast
+lassi/fast:
+	$(MAKE) -f CMakeFiles/lassi.dir/build.make CMakeFiles/lassi.dir/build
+.PHONY : lassi/fast
 
 src/cluster.o: src/cluster.c.o
 
@@ -129,7 +129,7 @@ src/cluster.o: src/cluster.c.o
 
 # target to build an object file
 src/cluster.c.o:
-	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/src/cluster.c.o
+	$(MAKE) -f CMakeFiles/lassi.dir/build.make CMakeFiles/lassi.dir/src/cluster.c.o
 .PHONY : src/cluster.c.o
 
 src/cluster.i: src/cluster.c.i
@@ -138,7 +138,7 @@ src/cluster.i: src/cluster.c.i
 
 # target to preprocess a source file
 src/cluster.c.i:
-	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/src/cluster.c.i
+	$(MAKE) -f CMakeFiles/lassi.dir/build.make CMakeFiles/lassi.dir/src/cluster.c.i
 .PHONY : src/cluster.c.i
 
 src/cluster.s: src/cluster.c.s
@@ -147,7 +147,7 @@ src/cluster.s: src/cluster.c.s
 
 # target to generate assembly for a file
 src/cluster.c.s:
-	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/src/cluster.c.s
+	$(MAKE) -f CMakeFiles/lassi.dir/build.make CMakeFiles/lassi.dir/src/cluster.c.s
 .PHONY : src/cluster.c.s
 
 src/energy.o: src/energy.c.o
@@ -156,7 +156,7 @@ src/energy.o: src/energy.c.o
 
 # target to build an object file
 src/energy.c.o:
-	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/src/energy.c.o
+	$(MAKE) -f CMakeFiles/lassi.dir/build.make CMakeFiles/lassi.dir/src/energy.c.o
 .PHONY : src/energy.c.o
 
 src/energy.i: src/energy.c.i
@@ -165,7 +165,7 @@ src/energy.i: src/energy.c.i
 
 # target to preprocess a source file
 src/energy.c.i:
-	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/src/energy.c.i
+	$(MAKE) -f CMakeFiles/lassi.dir/build.make CMakeFiles/lassi.dir/src/energy.c.i
 .PHONY : src/energy.c.i
 
 src/energy.s: src/energy.c.s
@@ -174,7 +174,7 @@ src/energy.s: src/energy.c.s
 
 # target to generate assembly for a file
 src/energy.c.s:
-	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/src/energy.c.s
+	$(MAKE) -f CMakeFiles/lassi.dir/build.make CMakeFiles/lassi.dir/src/energy.c.s
 .PHONY : src/energy.c.s
 
 src/initialize.o: src/initialize.c.o
@@ -183,7 +183,7 @@ src/initialize.o: src/initialize.c.o
 
 # target to build an object file
 src/initialize.c.o:
-	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/src/initialize.c.o
+	$(MAKE) -f CMakeFiles/lassi.dir/build.make CMakeFiles/lassi.dir/src/initialize.c.o
 .PHONY : src/initialize.c.o
 
 src/initialize.i: src/initialize.c.i
@@ -192,7 +192,7 @@ src/initialize.i: src/initialize.c.i
 
 # target to preprocess a source file
 src/initialize.c.i:
-	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/src/initialize.c.i
+	$(MAKE) -f CMakeFiles/lassi.dir/build.make CMakeFiles/lassi.dir/src/initialize.c.i
 .PHONY : src/initialize.c.i
 
 src/initialize.s: src/initialize.c.s
@@ -201,7 +201,7 @@ src/initialize.s: src/initialize.c.s
 
 # target to generate assembly for a file
 src/initialize.c.s:
-	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/src/initialize.c.s
+	$(MAKE) -f CMakeFiles/lassi.dir/build.make CMakeFiles/lassi.dir/src/initialize.c.s
 .PHONY : src/initialize.c.s
 
 src/main.o: src/main.c.o
@@ -210,7 +210,7 @@ src/main.o: src/main.c.o
 
 # target to build an object file
 src/main.c.o:
-	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/src/main.c.o
+	$(MAKE) -f CMakeFiles/lassi.dir/build.make CMakeFiles/lassi.dir/src/main.c.o
 .PHONY : src/main.c.o
 
 src/main.i: src/main.c.i
@@ -219,7 +219,7 @@ src/main.i: src/main.c.i
 
 # target to preprocess a source file
 src/main.c.i:
-	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/src/main.c.i
+	$(MAKE) -f CMakeFiles/lassi.dir/build.make CMakeFiles/lassi.dir/src/main.c.i
 .PHONY : src/main.c.i
 
 src/main.s: src/main.c.s
@@ -228,7 +228,7 @@ src/main.s: src/main.c.s
 
 # target to generate assembly for a file
 src/main.c.s:
-	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/src/main.c.s
+	$(MAKE) -f CMakeFiles/lassi.dir/build.make CMakeFiles/lassi.dir/src/main.c.s
 .PHONY : src/main.c.s
 
 src/mcmove.o: src/mcmove.c.o
@@ -237,7 +237,7 @@ src/mcmove.o: src/mcmove.c.o
 
 # target to build an object file
 src/mcmove.c.o:
-	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/src/mcmove.c.o
+	$(MAKE) -f CMakeFiles/lassi.dir/build.make CMakeFiles/lassi.dir/src/mcmove.c.o
 .PHONY : src/mcmove.c.o
 
 src/mcmove.i: src/mcmove.c.i
@@ -246,7 +246,7 @@ src/mcmove.i: src/mcmove.c.i
 
 # target to preprocess a source file
 src/mcmove.c.i:
-	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/src/mcmove.c.i
+	$(MAKE) -f CMakeFiles/lassi.dir/build.make CMakeFiles/lassi.dir/src/mcmove.c.i
 .PHONY : src/mcmove.c.i
 
 src/mcmove.s: src/mcmove.c.s
@@ -255,7 +255,7 @@ src/mcmove.s: src/mcmove.c.s
 
 # target to generate assembly for a file
 src/mcmove.c.s:
-	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/src/mcmove.c.s
+	$(MAKE) -f CMakeFiles/lassi.dir/build.make CMakeFiles/lassi.dir/src/mcmove.c.s
 .PHONY : src/mcmove.c.s
 
 src/parsekey.o: src/parsekey.c.o
@@ -264,7 +264,7 @@ src/parsekey.o: src/parsekey.c.o
 
 # target to build an object file
 src/parsekey.c.o:
-	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/src/parsekey.c.o
+	$(MAKE) -f CMakeFiles/lassi.dir/build.make CMakeFiles/lassi.dir/src/parsekey.c.o
 .PHONY : src/parsekey.c.o
 
 src/parsekey.i: src/parsekey.c.i
@@ -273,7 +273,7 @@ src/parsekey.i: src/parsekey.c.i
 
 # target to preprocess a source file
 src/parsekey.c.i:
-	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/src/parsekey.c.i
+	$(MAKE) -f CMakeFiles/lassi.dir/build.make CMakeFiles/lassi.dir/src/parsekey.c.i
 .PHONY : src/parsekey.c.i
 
 src/parsekey.s: src/parsekey.c.s
@@ -282,7 +282,7 @@ src/parsekey.s: src/parsekey.c.s
 
 # target to generate assembly for a file
 src/parsekey.c.s:
-	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/src/parsekey.c.s
+	$(MAKE) -f CMakeFiles/lassi.dir/build.make CMakeFiles/lassi.dir/src/parsekey.c.s
 .PHONY : src/parsekey.c.s
 
 src/print.o: src/print.c.o
@@ -291,7 +291,7 @@ src/print.o: src/print.c.o
 
 # target to build an object file
 src/print.c.o:
-	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/src/print.c.o
+	$(MAKE) -f CMakeFiles/lassi.dir/build.make CMakeFiles/lassi.dir/src/print.c.o
 .PHONY : src/print.c.o
 
 src/print.i: src/print.c.i
@@ -300,7 +300,7 @@ src/print.i: src/print.c.i
 
 # target to preprocess a source file
 src/print.c.i:
-	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/src/print.c.i
+	$(MAKE) -f CMakeFiles/lassi.dir/build.make CMakeFiles/lassi.dir/src/print.c.i
 .PHONY : src/print.c.i
 
 src/print.s: src/print.c.s
@@ -309,7 +309,7 @@ src/print.s: src/print.c.s
 
 # target to generate assembly for a file
 src/print.c.s:
-	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/src/print.c.s
+	$(MAKE) -f CMakeFiles/lassi.dir/build.make CMakeFiles/lassi.dir/src/print.c.s
 .PHONY : src/print.c.s
 
 src/structure.o: src/structure.c.o
@@ -318,7 +318,7 @@ src/structure.o: src/structure.c.o
 
 # target to build an object file
 src/structure.c.o:
-	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/src/structure.c.o
+	$(MAKE) -f CMakeFiles/lassi.dir/build.make CMakeFiles/lassi.dir/src/structure.c.o
 .PHONY : src/structure.c.o
 
 src/structure.i: src/structure.c.i
@@ -327,7 +327,7 @@ src/structure.i: src/structure.c.i
 
 # target to preprocess a source file
 src/structure.c.i:
-	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/src/structure.c.i
+	$(MAKE) -f CMakeFiles/lassi.dir/build.make CMakeFiles/lassi.dir/src/structure.c.i
 .PHONY : src/structure.c.i
 
 src/structure.s: src/structure.c.s
@@ -336,7 +336,7 @@ src/structure.s: src/structure.c.s
 
 # target to generate assembly for a file
 src/structure.c.s:
-	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/src/structure.c.s
+	$(MAKE) -f CMakeFiles/lassi.dir/build.make CMakeFiles/lassi.dir/src/structure.c.s
 .PHONY : src/structure.c.s
 
 # Help Target
@@ -347,7 +347,7 @@ help:
 	@echo "... depend"
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
-	@echo "... LASSI_SRC"
+	@echo "... lassi"
 	@echo "... src/cluster.o"
 	@echo "... src/cluster.i"
 	@echo "... src/cluster.s"

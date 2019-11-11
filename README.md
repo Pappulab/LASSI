@@ -1,11 +1,8 @@
 LASSI - **LA**ttice **S**imulation Engine For **S**t**i**ckers And Spacers
 ==========================================================================
 
-LASSI is a versatile simulation engine designed to perform Monte-Carlo 
-(MC) simulations for phase transitions of explicit polymer 
-instantiations of the *Stickers-and-Spacers* formalism. 
-Furthermore, LASSI is designed, from the ground up, around 
-anisotropic interactions between individual monomers.
+LASSI is an engine designed for simulating the phase transitions
+of polymers with specific anisotropic interactions.
 
 For information about the underlying physics and an applied example, please see this 
 [paper](https://doi.org/10.1371/journal.pcbi.1007028).

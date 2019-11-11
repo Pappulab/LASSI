@@ -65,39 +65,39 @@ CMAKE_SOURCE_DIR = /Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT
 CMAKE_BINARY_DIR = /Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cmake-build-debug
 
 #=============================================================================
-# Target rules for target CMakeFiles/LASSI_SRC.dir
+# Target rules for target CMakeFiles/lassi.dir
 
 # All Build rule for target.
-CMakeFiles/LASSI_SRC.dir/all:
-	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/depend
-	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cmake-build-debug/CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9 "Built target LASSI_SRC"
-.PHONY : CMakeFiles/LASSI_SRC.dir/all
+CMakeFiles/lassi.dir/all:
+	$(MAKE) -f CMakeFiles/lassi.dir/build.make CMakeFiles/lassi.dir/depend
+	$(MAKE) -f CMakeFiles/lassi.dir/build.make CMakeFiles/lassi.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cmake-build-debug/CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9 "Built target lassi"
+.PHONY : CMakeFiles/lassi.dir/all
 
 # Include target in all.
-all: CMakeFiles/LASSI_SRC.dir/all
+all: CMakeFiles/lassi.dir/all
 
 .PHONY : all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/LASSI_SRC.dir/rule: cmake_check_build_system
+CMakeFiles/lassi.dir/rule: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cmake-build-debug/CMakeFiles 9
-	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/LASSI_SRC.dir/all
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/lassi.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cmake-build-debug/CMakeFiles 0
-.PHONY : CMakeFiles/LASSI_SRC.dir/rule
+.PHONY : CMakeFiles/lassi.dir/rule
 
 # Convenience name for target.
-LASSI_SRC: CMakeFiles/LASSI_SRC.dir/rule
+lassi: CMakeFiles/lassi.dir/rule
 
-.PHONY : LASSI_SRC
-
-# clean rule for target.
-CMakeFiles/LASSI_SRC.dir/clean:
-	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/clean
-.PHONY : CMakeFiles/LASSI_SRC.dir/clean
+.PHONY : lassi
 
 # clean rule for target.
-clean: CMakeFiles/LASSI_SRC.dir/clean
+CMakeFiles/lassi.dir/clean:
+	$(MAKE) -f CMakeFiles/lassi.dir/build.make CMakeFiles/lassi.dir/clean
+.PHONY : CMakeFiles/lassi.dir/clean
+
+# clean rule for target.
+clean: CMakeFiles/lassi.dir/clean
 
 .PHONY : clean
 

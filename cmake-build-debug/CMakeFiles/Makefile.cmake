@@ -47,5 +47,5 @@ set(CMAKE_MAKEFILE_PRODUCTS
 
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
-  "CMakeFiles/LASSI_SRC.dir/DependInfo.cmake"
+  "CMakeFiles/lassi.dir/DependInfo.cmake"
   )
