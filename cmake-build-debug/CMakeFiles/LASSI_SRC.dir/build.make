@@ -57,132 +57,132 @@ include CMakeFiles/LASSI_SRC.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/LASSI_SRC.dir/flags.make
 
-CMakeFiles/LASSI_SRC.dir/cluster.c.o: CMakeFiles/LASSI_SRC.dir/flags.make
-CMakeFiles/LASSI_SRC.dir/cluster.c.o: ../cluster.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/LASSI_SRC.dir/cluster.c.o"
-	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/LASSI_SRC.dir/cluster.c.o   -c /Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cluster.c
+CMakeFiles/LASSI_SRC.dir/src/cluster.c.o: CMakeFiles/LASSI_SRC.dir/flags.make
+CMakeFiles/LASSI_SRC.dir/src/cluster.c.o: ../src/cluster.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/LASSI_SRC.dir/src/cluster.c.o"
+	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/LASSI_SRC.dir/src/cluster.c.o   -c /Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/src/cluster.c
 
-CMakeFiles/LASSI_SRC.dir/cluster.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/LASSI_SRC.dir/cluster.c.i"
-	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cluster.c > CMakeFiles/LASSI_SRC.dir/cluster.c.i
+CMakeFiles/LASSI_SRC.dir/src/cluster.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/LASSI_SRC.dir/src/cluster.c.i"
+	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/src/cluster.c > CMakeFiles/LASSI_SRC.dir/src/cluster.c.i
 
-CMakeFiles/LASSI_SRC.dir/cluster.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/LASSI_SRC.dir/cluster.c.s"
-	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cluster.c -o CMakeFiles/LASSI_SRC.dir/cluster.c.s
+CMakeFiles/LASSI_SRC.dir/src/cluster.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/LASSI_SRC.dir/src/cluster.c.s"
+	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/src/cluster.c -o CMakeFiles/LASSI_SRC.dir/src/cluster.c.s
 
-CMakeFiles/LASSI_SRC.dir/energy.c.o: CMakeFiles/LASSI_SRC.dir/flags.make
-CMakeFiles/LASSI_SRC.dir/energy.c.o: ../energy.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/LASSI_SRC.dir/energy.c.o"
-	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/LASSI_SRC.dir/energy.c.o   -c /Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/energy.c
+CMakeFiles/LASSI_SRC.dir/src/energy.c.o: CMakeFiles/LASSI_SRC.dir/flags.make
+CMakeFiles/LASSI_SRC.dir/src/energy.c.o: ../src/energy.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/LASSI_SRC.dir/src/energy.c.o"
+	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/LASSI_SRC.dir/src/energy.c.o   -c /Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/src/energy.c
 
-CMakeFiles/LASSI_SRC.dir/energy.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/LASSI_SRC.dir/energy.c.i"
-	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/energy.c > CMakeFiles/LASSI_SRC.dir/energy.c.i
+CMakeFiles/LASSI_SRC.dir/src/energy.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/LASSI_SRC.dir/src/energy.c.i"
+	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/src/energy.c > CMakeFiles/LASSI_SRC.dir/src/energy.c.i
 
-CMakeFiles/LASSI_SRC.dir/energy.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/LASSI_SRC.dir/energy.c.s"
-	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/energy.c -o CMakeFiles/LASSI_SRC.dir/energy.c.s
+CMakeFiles/LASSI_SRC.dir/src/energy.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/LASSI_SRC.dir/src/energy.c.s"
+	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/src/energy.c -o CMakeFiles/LASSI_SRC.dir/src/energy.c.s
 
-CMakeFiles/LASSI_SRC.dir/initialize.c.o: CMakeFiles/LASSI_SRC.dir/flags.make
-CMakeFiles/LASSI_SRC.dir/initialize.c.o: ../initialize.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building C object CMakeFiles/LASSI_SRC.dir/initialize.c.o"
-	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/LASSI_SRC.dir/initialize.c.o   -c /Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/initialize.c
+CMakeFiles/LASSI_SRC.dir/src/initialize.c.o: CMakeFiles/LASSI_SRC.dir/flags.make
+CMakeFiles/LASSI_SRC.dir/src/initialize.c.o: ../src/initialize.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building C object CMakeFiles/LASSI_SRC.dir/src/initialize.c.o"
+	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/LASSI_SRC.dir/src/initialize.c.o   -c /Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/src/initialize.c
 
-CMakeFiles/LASSI_SRC.dir/initialize.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/LASSI_SRC.dir/initialize.c.i"
-	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/initialize.c > CMakeFiles/LASSI_SRC.dir/initialize.c.i
+CMakeFiles/LASSI_SRC.dir/src/initialize.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/LASSI_SRC.dir/src/initialize.c.i"
+	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/src/initialize.c > CMakeFiles/LASSI_SRC.dir/src/initialize.c.i
 
-CMakeFiles/LASSI_SRC.dir/initialize.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/LASSI_SRC.dir/initialize.c.s"
-	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/initialize.c -o CMakeFiles/LASSI_SRC.dir/initialize.c.s
+CMakeFiles/LASSI_SRC.dir/src/initialize.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/LASSI_SRC.dir/src/initialize.c.s"
+	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/src/initialize.c -o CMakeFiles/LASSI_SRC.dir/src/initialize.c.s
 
-CMakeFiles/LASSI_SRC.dir/main.c.o: CMakeFiles/LASSI_SRC.dir/flags.make
-CMakeFiles/LASSI_SRC.dir/main.c.o: ../main.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building C object CMakeFiles/LASSI_SRC.dir/main.c.o"
-	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/LASSI_SRC.dir/main.c.o   -c /Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/main.c
+CMakeFiles/LASSI_SRC.dir/src/main.c.o: CMakeFiles/LASSI_SRC.dir/flags.make
+CMakeFiles/LASSI_SRC.dir/src/main.c.o: ../src/main.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building C object CMakeFiles/LASSI_SRC.dir/src/main.c.o"
+	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/LASSI_SRC.dir/src/main.c.o   -c /Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/src/main.c
 
-CMakeFiles/LASSI_SRC.dir/main.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/LASSI_SRC.dir/main.c.i"
-	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/main.c > CMakeFiles/LASSI_SRC.dir/main.c.i
+CMakeFiles/LASSI_SRC.dir/src/main.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/LASSI_SRC.dir/src/main.c.i"
+	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/src/main.c > CMakeFiles/LASSI_SRC.dir/src/main.c.i
 
-CMakeFiles/LASSI_SRC.dir/main.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/LASSI_SRC.dir/main.c.s"
-	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/main.c -o CMakeFiles/LASSI_SRC.dir/main.c.s
+CMakeFiles/LASSI_SRC.dir/src/main.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/LASSI_SRC.dir/src/main.c.s"
+	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/src/main.c -o CMakeFiles/LASSI_SRC.dir/src/main.c.s
 
-CMakeFiles/LASSI_SRC.dir/mcmove.c.o: CMakeFiles/LASSI_SRC.dir/flags.make
-CMakeFiles/LASSI_SRC.dir/mcmove.c.o: ../mcmove.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building C object CMakeFiles/LASSI_SRC.dir/mcmove.c.o"
-	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/LASSI_SRC.dir/mcmove.c.o   -c /Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/mcmove.c
+CMakeFiles/LASSI_SRC.dir/src/mcmove.c.o: CMakeFiles/LASSI_SRC.dir/flags.make
+CMakeFiles/LASSI_SRC.dir/src/mcmove.c.o: ../src/mcmove.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building C object CMakeFiles/LASSI_SRC.dir/src/mcmove.c.o"
+	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/LASSI_SRC.dir/src/mcmove.c.o   -c /Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/src/mcmove.c
 
-CMakeFiles/LASSI_SRC.dir/mcmove.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/LASSI_SRC.dir/mcmove.c.i"
-	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/mcmove.c > CMakeFiles/LASSI_SRC.dir/mcmove.c.i
+CMakeFiles/LASSI_SRC.dir/src/mcmove.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/LASSI_SRC.dir/src/mcmove.c.i"
+	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/src/mcmove.c > CMakeFiles/LASSI_SRC.dir/src/mcmove.c.i
 
-CMakeFiles/LASSI_SRC.dir/mcmove.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/LASSI_SRC.dir/mcmove.c.s"
-	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/mcmove.c -o CMakeFiles/LASSI_SRC.dir/mcmove.c.s
+CMakeFiles/LASSI_SRC.dir/src/mcmove.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/LASSI_SRC.dir/src/mcmove.c.s"
+	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/src/mcmove.c -o CMakeFiles/LASSI_SRC.dir/src/mcmove.c.s
 
-CMakeFiles/LASSI_SRC.dir/parsekey.c.o: CMakeFiles/LASSI_SRC.dir/flags.make
-CMakeFiles/LASSI_SRC.dir/parsekey.c.o: ../parsekey.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building C object CMakeFiles/LASSI_SRC.dir/parsekey.c.o"
-	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/LASSI_SRC.dir/parsekey.c.o   -c /Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/parsekey.c
+CMakeFiles/LASSI_SRC.dir/src/parsekey.c.o: CMakeFiles/LASSI_SRC.dir/flags.make
+CMakeFiles/LASSI_SRC.dir/src/parsekey.c.o: ../src/parsekey.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building C object CMakeFiles/LASSI_SRC.dir/src/parsekey.c.o"
+	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/LASSI_SRC.dir/src/parsekey.c.o   -c /Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/src/parsekey.c
 
-CMakeFiles/LASSI_SRC.dir/parsekey.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/LASSI_SRC.dir/parsekey.c.i"
-	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/parsekey.c > CMakeFiles/LASSI_SRC.dir/parsekey.c.i
+CMakeFiles/LASSI_SRC.dir/src/parsekey.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/LASSI_SRC.dir/src/parsekey.c.i"
+	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/src/parsekey.c > CMakeFiles/LASSI_SRC.dir/src/parsekey.c.i
 
-CMakeFiles/LASSI_SRC.dir/parsekey.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/LASSI_SRC.dir/parsekey.c.s"
-	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/parsekey.c -o CMakeFiles/LASSI_SRC.dir/parsekey.c.s
+CMakeFiles/LASSI_SRC.dir/src/parsekey.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/LASSI_SRC.dir/src/parsekey.c.s"
+	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/src/parsekey.c -o CMakeFiles/LASSI_SRC.dir/src/parsekey.c.s
 
-CMakeFiles/LASSI_SRC.dir/print.c.o: CMakeFiles/LASSI_SRC.dir/flags.make
-CMakeFiles/LASSI_SRC.dir/print.c.o: ../print.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building C object CMakeFiles/LASSI_SRC.dir/print.c.o"
-	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/LASSI_SRC.dir/print.c.o   -c /Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/print.c
+CMakeFiles/LASSI_SRC.dir/src/print.c.o: CMakeFiles/LASSI_SRC.dir/flags.make
+CMakeFiles/LASSI_SRC.dir/src/print.c.o: ../src/print.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building C object CMakeFiles/LASSI_SRC.dir/src/print.c.o"
+	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/LASSI_SRC.dir/src/print.c.o   -c /Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/src/print.c
 
-CMakeFiles/LASSI_SRC.dir/print.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/LASSI_SRC.dir/print.c.i"
-	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/print.c > CMakeFiles/LASSI_SRC.dir/print.c.i
+CMakeFiles/LASSI_SRC.dir/src/print.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/LASSI_SRC.dir/src/print.c.i"
+	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/src/print.c > CMakeFiles/LASSI_SRC.dir/src/print.c.i
 
-CMakeFiles/LASSI_SRC.dir/print.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/LASSI_SRC.dir/print.c.s"
-	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/print.c -o CMakeFiles/LASSI_SRC.dir/print.c.s
+CMakeFiles/LASSI_SRC.dir/src/print.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/LASSI_SRC.dir/src/print.c.s"
+	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/src/print.c -o CMakeFiles/LASSI_SRC.dir/src/print.c.s
 
-CMakeFiles/LASSI_SRC.dir/structure.c.o: CMakeFiles/LASSI_SRC.dir/flags.make
-CMakeFiles/LASSI_SRC.dir/structure.c.o: ../structure.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building C object CMakeFiles/LASSI_SRC.dir/structure.c.o"
-	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/LASSI_SRC.dir/structure.c.o   -c /Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/structure.c
+CMakeFiles/LASSI_SRC.dir/src/structure.c.o: CMakeFiles/LASSI_SRC.dir/flags.make
+CMakeFiles/LASSI_SRC.dir/src/structure.c.o: ../src/structure.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building C object CMakeFiles/LASSI_SRC.dir/src/structure.c.o"
+	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/LASSI_SRC.dir/src/structure.c.o   -c /Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/src/structure.c
 
-CMakeFiles/LASSI_SRC.dir/structure.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/LASSI_SRC.dir/structure.c.i"
-	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/structure.c > CMakeFiles/LASSI_SRC.dir/structure.c.i
+CMakeFiles/LASSI_SRC.dir/src/structure.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/LASSI_SRC.dir/src/structure.c.i"
+	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/src/structure.c > CMakeFiles/LASSI_SRC.dir/src/structure.c.i
 
-CMakeFiles/LASSI_SRC.dir/structure.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/LASSI_SRC.dir/structure.c.s"
-	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/structure.c -o CMakeFiles/LASSI_SRC.dir/structure.c.s
+CMakeFiles/LASSI_SRC.dir/src/structure.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/LASSI_SRC.dir/src/structure.c.s"
+	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/src/structure.c -o CMakeFiles/LASSI_SRC.dir/src/structure.c.s
 
 # Object files for target LASSI_SRC
 LASSI_SRC_OBJECTS = \
-"CMakeFiles/LASSI_SRC.dir/cluster.c.o" \
-"CMakeFiles/LASSI_SRC.dir/energy.c.o" \
-"CMakeFiles/LASSI_SRC.dir/initialize.c.o" \
-"CMakeFiles/LASSI_SRC.dir/main.c.o" \
-"CMakeFiles/LASSI_SRC.dir/mcmove.c.o" \
-"CMakeFiles/LASSI_SRC.dir/parsekey.c.o" \
-"CMakeFiles/LASSI_SRC.dir/print.c.o" \
-"CMakeFiles/LASSI_SRC.dir/structure.c.o"
+"CMakeFiles/LASSI_SRC.dir/src/cluster.c.o" \
+"CMakeFiles/LASSI_SRC.dir/src/energy.c.o" \
+"CMakeFiles/LASSI_SRC.dir/src/initialize.c.o" \
+"CMakeFiles/LASSI_SRC.dir/src/main.c.o" \
+"CMakeFiles/LASSI_SRC.dir/src/mcmove.c.o" \
+"CMakeFiles/LASSI_SRC.dir/src/parsekey.c.o" \
+"CMakeFiles/LASSI_SRC.dir/src/print.c.o" \
+"CMakeFiles/LASSI_SRC.dir/src/structure.c.o"
 
 # External object files for target LASSI_SRC
 LASSI_SRC_EXTERNAL_OBJECTS =
 
-LASSI_SRC: CMakeFiles/LASSI_SRC.dir/cluster.c.o
-LASSI_SRC: CMakeFiles/LASSI_SRC.dir/energy.c.o
-LASSI_SRC: CMakeFiles/LASSI_SRC.dir/initialize.c.o
-LASSI_SRC: CMakeFiles/LASSI_SRC.dir/main.c.o
-LASSI_SRC: CMakeFiles/LASSI_SRC.dir/mcmove.c.o
-LASSI_SRC: CMakeFiles/LASSI_SRC.dir/parsekey.c.o
-LASSI_SRC: CMakeFiles/LASSI_SRC.dir/print.c.o
-LASSI_SRC: CMakeFiles/LASSI_SRC.dir/structure.c.o
+LASSI_SRC: CMakeFiles/LASSI_SRC.dir/src/cluster.c.o
+LASSI_SRC: CMakeFiles/LASSI_SRC.dir/src/energy.c.o
+LASSI_SRC: CMakeFiles/LASSI_SRC.dir/src/initialize.c.o
+LASSI_SRC: CMakeFiles/LASSI_SRC.dir/src/main.c.o
+LASSI_SRC: CMakeFiles/LASSI_SRC.dir/src/mcmove.c.o
+LASSI_SRC: CMakeFiles/LASSI_SRC.dir/src/parsekey.c.o
+LASSI_SRC: CMakeFiles/LASSI_SRC.dir/src/print.c.o
+LASSI_SRC: CMakeFiles/LASSI_SRC.dir/src/structure.c.o
 LASSI_SRC: CMakeFiles/LASSI_SRC.dir/build.make
 LASSI_SRC: CMakeFiles/LASSI_SRC.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Linking C executable LASSI_SRC"
