@@ -8,19 +8,19 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Og")
 include_directories(.)
 
 add_executable(LASSI_SRC
-        cluster.c
-        cluster.h
-        energy.c
-        energy.h
-        global.h
-        initialize.c
-        initialize.h
-        main.c
-        mcmove.c
-        mcmove.h
-        parsekey.c
-        parsekey.h
-        print.c
-        print.h
-        structure.c
-        structure.h)
+        src/cluster.c
+        src/cluster.h
+        src/energy.c
+        src/energy.h
+        src/global.h
+        src/initialize.c
+        src/initialize.h
+        src/main.c
+        src/mcmove.c
+        src/mcmove.h
+        src/parsekey.c
+        src/parsekey.h
+        src/print.c
+        src/print.h
+        src/structure.c
+        src/structure.h)
