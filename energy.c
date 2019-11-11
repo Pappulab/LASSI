@@ -18,7 +18,6 @@ float Energy_Anisotropic(int beadID) {//Calculates the SC-SC energy of the bead 
 /// \param beadID
 /// \return The energy, given the nThermalization_Mode
 float Energy_InitPotential(int beadID) {
-
     int j;
     float totEn = 0.;
     int tmpR[POS_MAX];
@@ -31,7 +30,6 @@ float Energy_InitPotential(int beadID) {
                     totEn += (float) (tmpR[j] * tmpR[j]);
                 }
                 totEn = (fCuTemp - fKT) * totEn;
-
                 break;
 
             case 2:
@@ -40,10 +38,13 @@ float Energy_InitPotential(int beadID) {
                     tmpR[j] = tmpR[j] - nBoxSize[j] / 2;
                     totEn += (float) (tmpR[j] * tmpR[j]);
                 }
-                if (totEn >= 2500) {
-                    totEn = fKT * ((float) tot_beads + totEn);
-                } else if (totEn <= 2000) {
+                if (totEn > 800) {
+                    totEn = (fCuTemp - fKT) * ((float) totEn);
+                }/* else if (totEn <= 2000) {
                     totEn = fKT * ((float) tot_beads + 1. / (totEn + 0.02));
+                }*/
+                else{
+                    totEn=0.;
                 }
                 break;
             default:
@@ -113,6 +114,9 @@ float Energy_Isotropic(int beadID) {//Calculate Contact and Overlap energy of be
                 /*if (secBi == -1 && fSolEnergy != 0.){
                     totEn += fSolEnergy*(fCuTemp-fThetaTemp);
                 }*/
+                if (secBi == -1 ) {
+                    totEn = 0.05;//3. * (fKT - 1.1);
+                }
             }
         }
     }
