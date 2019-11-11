@@ -123,221 +123,221 @@ LASSI_SRC/fast:
 	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/build
 .PHONY : LASSI_SRC/fast
 
-cluster.o: cluster.c.o
+src/cluster.o: src/cluster.c.o
 
-.PHONY : cluster.o
-
-# target to build an object file
-cluster.c.o:
-	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/cluster.c.o
-.PHONY : cluster.c.o
-
-cluster.i: cluster.c.i
-
-.PHONY : cluster.i
-
-# target to preprocess a source file
-cluster.c.i:
-	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/cluster.c.i
-.PHONY : cluster.c.i
-
-cluster.s: cluster.c.s
-
-.PHONY : cluster.s
-
-# target to generate assembly for a file
-cluster.c.s:
-	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/cluster.c.s
-.PHONY : cluster.c.s
-
-energy.o: energy.c.o
-
-.PHONY : energy.o
+.PHONY : src/cluster.o
 
 # target to build an object file
-energy.c.o:
-	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/energy.c.o
-.PHONY : energy.c.o
+src/cluster.c.o:
+	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/src/cluster.c.o
+.PHONY : src/cluster.c.o
 
-energy.i: energy.c.i
+src/cluster.i: src/cluster.c.i
 
-.PHONY : energy.i
+.PHONY : src/cluster.i
 
 # target to preprocess a source file
-energy.c.i:
-	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/energy.c.i
-.PHONY : energy.c.i
+src/cluster.c.i:
+	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/src/cluster.c.i
+.PHONY : src/cluster.c.i
 
-energy.s: energy.c.s
+src/cluster.s: src/cluster.c.s
 
-.PHONY : energy.s
+.PHONY : src/cluster.s
 
 # target to generate assembly for a file
-energy.c.s:
-	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/energy.c.s
-.PHONY : energy.c.s
+src/cluster.c.s:
+	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/src/cluster.c.s
+.PHONY : src/cluster.c.s
 
-initialize.o: initialize.c.o
+src/energy.o: src/energy.c.o
 
-.PHONY : initialize.o
+.PHONY : src/energy.o
 
 # target to build an object file
-initialize.c.o:
-	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/initialize.c.o
-.PHONY : initialize.c.o
+src/energy.c.o:
+	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/src/energy.c.o
+.PHONY : src/energy.c.o
 
-initialize.i: initialize.c.i
+src/energy.i: src/energy.c.i
 
-.PHONY : initialize.i
+.PHONY : src/energy.i
 
 # target to preprocess a source file
-initialize.c.i:
-	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/initialize.c.i
-.PHONY : initialize.c.i
+src/energy.c.i:
+	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/src/energy.c.i
+.PHONY : src/energy.c.i
 
-initialize.s: initialize.c.s
+src/energy.s: src/energy.c.s
 
-.PHONY : initialize.s
+.PHONY : src/energy.s
 
 # target to generate assembly for a file
-initialize.c.s:
-	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/initialize.c.s
-.PHONY : initialize.c.s
+src/energy.c.s:
+	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/src/energy.c.s
+.PHONY : src/energy.c.s
 
-main.o: main.c.o
+src/initialize.o: src/initialize.c.o
 
-.PHONY : main.o
+.PHONY : src/initialize.o
 
 # target to build an object file
-main.c.o:
-	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/main.c.o
-.PHONY : main.c.o
+src/initialize.c.o:
+	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/src/initialize.c.o
+.PHONY : src/initialize.c.o
 
-main.i: main.c.i
+src/initialize.i: src/initialize.c.i
 
-.PHONY : main.i
+.PHONY : src/initialize.i
 
 # target to preprocess a source file
-main.c.i:
-	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/main.c.i
-.PHONY : main.c.i
+src/initialize.c.i:
+	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/src/initialize.c.i
+.PHONY : src/initialize.c.i
 
-main.s: main.c.s
+src/initialize.s: src/initialize.c.s
 
-.PHONY : main.s
+.PHONY : src/initialize.s
 
 # target to generate assembly for a file
-main.c.s:
-	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/main.c.s
-.PHONY : main.c.s
+src/initialize.c.s:
+	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/src/initialize.c.s
+.PHONY : src/initialize.c.s
 
-mcmove.o: mcmove.c.o
+src/main.o: src/main.c.o
 
-.PHONY : mcmove.o
+.PHONY : src/main.o
 
 # target to build an object file
-mcmove.c.o:
-	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/mcmove.c.o
-.PHONY : mcmove.c.o
+src/main.c.o:
+	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/src/main.c.o
+.PHONY : src/main.c.o
 
-mcmove.i: mcmove.c.i
+src/main.i: src/main.c.i
 
-.PHONY : mcmove.i
+.PHONY : src/main.i
 
 # target to preprocess a source file
-mcmove.c.i:
-	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/mcmove.c.i
-.PHONY : mcmove.c.i
+src/main.c.i:
+	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/src/main.c.i
+.PHONY : src/main.c.i
 
-mcmove.s: mcmove.c.s
+src/main.s: src/main.c.s
 
-.PHONY : mcmove.s
+.PHONY : src/main.s
 
 # target to generate assembly for a file
-mcmove.c.s:
-	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/mcmove.c.s
-.PHONY : mcmove.c.s
+src/main.c.s:
+	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/src/main.c.s
+.PHONY : src/main.c.s
 
-parsekey.o: parsekey.c.o
+src/mcmove.o: src/mcmove.c.o
 
-.PHONY : parsekey.o
+.PHONY : src/mcmove.o
 
 # target to build an object file
-parsekey.c.o:
-	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/parsekey.c.o
-.PHONY : parsekey.c.o
+src/mcmove.c.o:
+	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/src/mcmove.c.o
+.PHONY : src/mcmove.c.o
 
-parsekey.i: parsekey.c.i
+src/mcmove.i: src/mcmove.c.i
 
-.PHONY : parsekey.i
+.PHONY : src/mcmove.i
 
 # target to preprocess a source file
-parsekey.c.i:
-	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/parsekey.c.i
-.PHONY : parsekey.c.i
+src/mcmove.c.i:
+	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/src/mcmove.c.i
+.PHONY : src/mcmove.c.i
 
-parsekey.s: parsekey.c.s
+src/mcmove.s: src/mcmove.c.s
 
-.PHONY : parsekey.s
+.PHONY : src/mcmove.s
 
 # target to generate assembly for a file
-parsekey.c.s:
-	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/parsekey.c.s
-.PHONY : parsekey.c.s
+src/mcmove.c.s:
+	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/src/mcmove.c.s
+.PHONY : src/mcmove.c.s
 
-print.o: print.c.o
+src/parsekey.o: src/parsekey.c.o
 
-.PHONY : print.o
+.PHONY : src/parsekey.o
 
 # target to build an object file
-print.c.o:
-	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/print.c.o
-.PHONY : print.c.o
+src/parsekey.c.o:
+	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/src/parsekey.c.o
+.PHONY : src/parsekey.c.o
 
-print.i: print.c.i
+src/parsekey.i: src/parsekey.c.i
 
-.PHONY : print.i
+.PHONY : src/parsekey.i
 
 # target to preprocess a source file
-print.c.i:
-	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/print.c.i
-.PHONY : print.c.i
+src/parsekey.c.i:
+	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/src/parsekey.c.i
+.PHONY : src/parsekey.c.i
 
-print.s: print.c.s
+src/parsekey.s: src/parsekey.c.s
 
-.PHONY : print.s
+.PHONY : src/parsekey.s
 
 # target to generate assembly for a file
-print.c.s:
-	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/print.c.s
-.PHONY : print.c.s
+src/parsekey.c.s:
+	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/src/parsekey.c.s
+.PHONY : src/parsekey.c.s
 
-structure.o: structure.c.o
+src/print.o: src/print.c.o
 
-.PHONY : structure.o
+.PHONY : src/print.o
 
 # target to build an object file
-structure.c.o:
-	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/structure.c.o
-.PHONY : structure.c.o
+src/print.c.o:
+	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/src/print.c.o
+.PHONY : src/print.c.o
 
-structure.i: structure.c.i
+src/print.i: src/print.c.i
 
-.PHONY : structure.i
+.PHONY : src/print.i
 
 # target to preprocess a source file
-structure.c.i:
-	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/structure.c.i
-.PHONY : structure.c.i
+src/print.c.i:
+	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/src/print.c.i
+.PHONY : src/print.c.i
 
-structure.s: structure.c.s
+src/print.s: src/print.c.s
 
-.PHONY : structure.s
+.PHONY : src/print.s
 
 # target to generate assembly for a file
-structure.c.s:
-	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/structure.c.s
-.PHONY : structure.c.s
+src/print.c.s:
+	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/src/print.c.s
+.PHONY : src/print.c.s
+
+src/structure.o: src/structure.c.o
+
+.PHONY : src/structure.o
+
+# target to build an object file
+src/structure.c.o:
+	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/src/structure.c.o
+.PHONY : src/structure.c.o
+
+src/structure.i: src/structure.c.i
+
+.PHONY : src/structure.i
+
+# target to preprocess a source file
+src/structure.c.i:
+	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/src/structure.c.i
+.PHONY : src/structure.c.i
+
+src/structure.s: src/structure.c.s
+
+.PHONY : src/structure.s
+
+# target to generate assembly for a file
+src/structure.c.s:
+	$(MAKE) -f CMakeFiles/LASSI_SRC.dir/build.make CMakeFiles/LASSI_SRC.dir/src/structure.c.s
+.PHONY : src/structure.c.s
 
 # Help Target
 help:
@@ -348,30 +348,30 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... LASSI_SRC"
-	@echo "... cluster.o"
-	@echo "... cluster.i"
-	@echo "... cluster.s"
-	@echo "... energy.o"
-	@echo "... energy.i"
-	@echo "... energy.s"
-	@echo "... initialize.o"
-	@echo "... initialize.i"
-	@echo "... initialize.s"
-	@echo "... main.o"
-	@echo "... main.i"
-	@echo "... main.s"
-	@echo "... mcmove.o"
-	@echo "... mcmove.i"
-	@echo "... mcmove.s"
-	@echo "... parsekey.o"
-	@echo "... parsekey.i"
-	@echo "... parsekey.s"
-	@echo "... print.o"
-	@echo "... print.i"
-	@echo "... print.s"
-	@echo "... structure.o"
-	@echo "... structure.i"
-	@echo "... structure.s"
+	@echo "... src/cluster.o"
+	@echo "... src/cluster.i"
+	@echo "... src/cluster.s"
+	@echo "... src/energy.o"
+	@echo "... src/energy.i"
+	@echo "... src/energy.s"
+	@echo "... src/initialize.o"
+	@echo "... src/initialize.i"
+	@echo "... src/initialize.s"
+	@echo "... src/main.o"
+	@echo "... src/main.i"
+	@echo "... src/main.s"
+	@echo "... src/mcmove.o"
+	@echo "... src/mcmove.i"
+	@echo "... src/mcmove.s"
+	@echo "... src/parsekey.o"
+	@echo "... src/parsekey.i"
+	@echo "... src/parsekey.s"
+	@echo "... src/print.o"
+	@echo "... src/print.i"
+	@echo "... src/print.s"
+	@echo "... src/structure.o"
+	@echo "... src/structure.i"
+	@echo "... src/structure.s"
 .PHONY : help
 
 

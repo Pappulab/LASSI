@@ -80,52 +80,52 @@
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cluster.c">
+		<Unit filename="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/src/cluster.c">
 			<Option target="LASSI_SRC"/>
 		</Unit>
-		<Unit filename="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cluster.h">
+		<Unit filename="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/src/cluster.h">
 			<Option target="LASSI_SRC"/>
 		</Unit>
-		<Unit filename="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/energy.c">
+		<Unit filename="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/src/energy.c">
 			<Option target="LASSI_SRC"/>
 		</Unit>
-		<Unit filename="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/energy.h">
+		<Unit filename="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/src/energy.h">
 			<Option target="LASSI_SRC"/>
 		</Unit>
-		<Unit filename="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/global.h">
+		<Unit filename="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/src/global.h">
 			<Option target="LASSI_SRC"/>
 		</Unit>
-		<Unit filename="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/initialize.c">
+		<Unit filename="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/src/initialize.c">
 			<Option target="LASSI_SRC"/>
 		</Unit>
-		<Unit filename="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/initialize.h">
+		<Unit filename="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/src/initialize.h">
 			<Option target="LASSI_SRC"/>
 		</Unit>
-		<Unit filename="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/main.c">
+		<Unit filename="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/src/main.c">
 			<Option target="LASSI_SRC"/>
 		</Unit>
-		<Unit filename="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/mcmove.c">
+		<Unit filename="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/src/mcmove.c">
 			<Option target="LASSI_SRC"/>
 		</Unit>
-		<Unit filename="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/mcmove.h">
+		<Unit filename="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/src/mcmove.h">
 			<Option target="LASSI_SRC"/>
 		</Unit>
-		<Unit filename="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/parsekey.c">
+		<Unit filename="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/src/parsekey.c">
 			<Option target="LASSI_SRC"/>
 		</Unit>
-		<Unit filename="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/parsekey.h">
+		<Unit filename="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/src/parsekey.h">
 			<Option target="LASSI_SRC"/>
 		</Unit>
-		<Unit filename="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/print.c">
+		<Unit filename="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/src/print.c">
 			<Option target="LASSI_SRC"/>
 		</Unit>
-		<Unit filename="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/print.h">
+		<Unit filename="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/src/print.h">
 			<Option target="LASSI_SRC"/>
 		</Unit>
-		<Unit filename="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/structure.c">
+		<Unit filename="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/src/structure.c">
 			<Option target="LASSI_SRC"/>
 		</Unit>
-		<Unit filename="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/structure.h">
+		<Unit filename="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/src/structure.h">
 			<Option target="LASSI_SRC"/>
 		</Unit>
 		<Unit filename="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/CMakeLists.txt">
