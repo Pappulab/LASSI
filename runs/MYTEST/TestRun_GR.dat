@@ -1,0 +1,12 @@
+#Cluster Histograms: 1st column is largest cluster, and then clusters of size 1, 2, and so on
+#Run_Cycle = 0
+3.102933E+01	5.000000E+01
+#Run_Cycle = 1
+4.978236E+01	5.000000E+01
+#Run_Cycle = 2
+4.978571E+01	5.000000E+01
+#Run_Cycle = 3
+4.995161E+01	5.000000E+01
+#Run_Cycle = 4
+5.001845E+01	5.000000E+01
+#Done
