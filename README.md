@@ -1,4 +1,4 @@
-LASSI - **LA**ttice **S**imulation Engine For **S**t**i**ckers And Spacers
+LASSI - LAttice Simulation Engine For Stickers And Spacer Interactions
 ==========================================================================
 
 LASSI is an engine designed for simulating the phase transitions
