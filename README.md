@@ -1,4 +1,4 @@
-![LASSI Logo](https://github.com/FurqanDar/LASSI_GIT/blob/master/docs/_imgs/LaSSI_Logo.png)
+![LASSI Logo](https://github.com/FurqanDar/LASSI_GIT/blob/master/docs/_imgs/LaSSI_Logo.png | width = 50)
 
 LASSI - LAttice Simulation Engine For Stickers And Spacer Interactions
 ==========================================================================
