@@ -1,0 +1,29 @@
+##Author: Furqan Dar
+## Simple Visualization Script to see simulation trajectory
+
+color Display Background black
+material change opacity Transparent 0.7
+display culling off
+display depthcue on
+display cuedensity 0.3
+#display rendermore GLSL
+
+#Read in the topology file, and the trajectory
+topo readlammpsdata SMol_topo.lammpstrj
+mol addfile SMol_trj.lammpstrj waitfor all
+
+#Set style to beads
+mol modstyle 0 top points 5
+
+set nframes [molinfo top get numframes]
+
+set allBeads [atomselect top all]
+
+for {set df 0} {$df < $nframes} {incr df} {
+    molinfo top set frame $df
+    pbc wrap -center com
+    set newCen [measure center $allBeads]
+    $allBeads moveby [vecinvert $newCen]
+}
+
+display resetview
