@@ -1,6 +1,3 @@
-__author__ = 'Furqan Dar'
-__name__   = 'LASSI'
-
 from __future__ import division
 import numpy as np
 import scipy as sp
@@ -10,6 +7,9 @@ import subprocess as sproc
 import time
 import pickle
 import matplotlib.pyplot as plt
+
+__author__ = 'Furqan Dar'
+__name__   = 'LASSI'
 
 def MKDirCatch(this_dir):
     try:
