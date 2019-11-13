@@ -1,4 +1,4 @@
-from __future__ import division
+
 import numpy as np
 import scipy as sp
 import os
@@ -129,11 +129,11 @@ def SubmitJobs_ToQueue(systems_list, linker_lengths, box_size, runs_per_conditio
                         try:
                             ret_code = sproc.check_output(run_command, shell=True, stderr=sproc.STDOUT)
                             if ret_code < 0:
-                                print("The submission failed! Signal: ", -retcode)
+                                print(("The submission failed! Signal: ", -retcode))
                             else:
                                 print(ret_code)
                         except OSError as myErr:
-                            print("Couldn't submit because ", myErr)
+                            print(("Couldn't submit because ", myErr))
                             raise
                         time.sleep(2)
     # Return back to starting directory
@@ -254,7 +254,7 @@ def sGen_WriteStructuresToFile(StrucList, file_name):
                 this_line.append("\n")
                 strucFile.write("".join(this_line))
             strucFile.write("}END\n")
-    print("Wrote structures to file: {:}".format(file_name))
+    print(("Wrote structures to file: {:}".format(file_name)))
 
 
 def Index_RDF(compA, compB, totComp):
@@ -312,7 +312,7 @@ class Sim_Setup:
         for aStr, aLin in zip(structures, linkers):
             self.SysInfo[aStr] = {}
             self.SysInfo[aStr]['Linker Length'] = aLin
-            print(" " * 2 + "{:}:= Linker length {:} lattice units.".format(aStr, aLin))
+            print((" " * 2 + "{:}:= Linker length {:} lattice units.".format(aStr, aLin)))
             self.SysInfo[aStr]['Structure'] = []
         self.AddParamFiles_ForAll(param_file)
         self.SetRunName_ForAll()
@@ -320,7 +320,7 @@ class Sim_Setup:
 
     def Set_SimulationPath(self, end_path_name):
         self.SimulationPath = end_path_name
-        print("Simulations shall be done in dir: {:}".format(self.SimulationPath))
+        print(("Simulations shall be done in dir: {:}".format(self.SimulationPath)))
 
     def Set_QSUB_Command(self, qsub_command):
         self.QSubCommand = qsub_command
@@ -347,25 +347,25 @@ class Sim_Setup:
                     continue
                 if a_line[:4] == 'NEW{':
                     dum_struc_in = []
-                    a_line = tot_file.next()
+                    a_line = next(tot_file)
                     num_mol = int(a_line[:-1])
-                    a_line = tot_file.next()
+                    a_line = next(tot_file)
                     while (a_line[:4] != "}END"):
                         a_line = a_line[:-1].split()
                         this_line = [int(aVal) for aVal in a_line]
-                        a_line = tot_file.next()
+                        a_line = next(tot_file)
                         dum_struc_in.append(this_line)
                     dum_struc_tot.append([num_mol, np.array(dum_struc_in)])
         return dum_struc_tot
 
     def AddNewSystem(self, sysName, lin_len):
-        if sysName in self.SysInfo.keys():
+        if sysName in list(self.SysInfo.keys()):
             print("This structure name already exists! Doing nothing.")
         else:
             self.SysInfo[sysName] = {}
             self.SysInfo[sysName]['Linker Length'] = lin_len
             self.SysInfo[sysName]['Structure'] = []
-            print("Added {:}:= Linker length {:} lattice units.".format(sysName, lin_len))
+            print(("Added {:}:= Linker length {:} lattice units.".format(sysName, lin_len)))
             self.AddParamFileTo(sysName, self.GlobalParamFile)
             self.SetRunNameFor(sysName, sysName)
             self.SetNumberOfRunsFor(sysName, 2)
@@ -373,7 +373,7 @@ class Sim_Setup:
     def AddStrucFileTo(self, sysName, file_name):
         try:
             self.SysInfo[sysName]['Structure File'] = file_name
-            print("{:} has structure file: {:}".format(sysName, file_name))
+            print(("{:} has structure file: {:}".format(sysName, file_name)))
             self.SysInfo[sysName]['Key File'][1]['STRUCT_FILE'] = self.CurrentDir + file_name
             self.SysInfo[sysName]['Structure'] = self.Read_StrucFileFor(sysName)
             self.CalcNonZeroRDFComps(sysName)
@@ -393,8 +393,8 @@ class Sim_Setup:
         try:
             self.SysInfo[sysName]['Int Energy File'] = self.CurrentDir + fileName_WInt
             self.SysInfo[sysName]['NoInt Energy File'] = self.CurrentDir + fileName_NoInt
-            print("{:} has energy files: Int:{:}  NoInt:{:}".format(sysName, self.SysInfo[sysName]['Int Energy File'],
-                                                                    self.SysInfo[sysName]['NoInt Energy File']))
+            print(("{:} has energy files: Int:{:}  NoInt:{:}".format(sysName, self.SysInfo[sysName]['Int Energy File'],
+                                                                    self.SysInfo[sysName]['NoInt Energy File'])))
             with open(self.CurrentDir + fileName_WInt) as WIntFile:
                 WIntFile.readline() #First line is a comment
                 tot_stickers = int(WIntFile.readline())
@@ -404,14 +404,14 @@ class Sim_Setup:
             return
 
     def AddEnergyFiles_ForAll(self, fileName_NoInt, fileName_WInt):
-        for aSys in self.SysInfo.keys():
+        for aSys in list(self.SysInfo.keys()):
             self.AddEnergyFileTo(aSys, fileName_NoInt, fileName_WInt)
 
     def AddParamFileTo(self, sysName, fileName):
         self.SysInfo[sysName]['Key File'] = Read_ParamFile(fileName)
 
     def AddParamFiles_ForAll(self, fileName):
-        for aSys in self.SysInfo.keys():
+        for aSys in list(self.SysInfo.keys()):
             self.AddParamFileTo(aSys, fileName)
 
     def PrintParamsFor(self, sysName):
@@ -421,7 +421,7 @@ class Sim_Setup:
             dumKeys = dumKeys[0]
             for aKey in dumKeys:
                 dum_spaces = 25 - len(aKey)
-                print('{:}{:}{:}'.format(aKey, ' ' * dum_spaces, dumDict[aKey]))
+                print(('{:}{:}{:}'.format(aKey, ' ' * dum_spaces, dumDict[aKey])))
         except KeyError as myErr:
             if myErr[0] == 'Key File':
                 print("Did you import the file?")
@@ -461,7 +461,7 @@ class Sim_Setup:
             print("Failed! Did you type the correct system name? Or does this system even exist?")
 
     def Write_StructureFiles_ForAll(self):
-        for aSys in self.SysInfo.keys():
+        for aSys in list(self.SysInfo.keys()):
             sGen_WriteStructuresToFile(self.SysInfo[aSys]['Structure'], aSys + '_struc.prm')
             self.AddStrucFileTo(sysName, aSys + '_struc.prm')
 
@@ -479,7 +479,7 @@ class Sim_Setup:
             print("Failed! Did you type the correct system name?")
 
     def SetTemperatures_ForAll(self, init_temp, final_temp, temp_steps, therm_temp):
-        for aSys in self.SysInfo.keys():
+        for aSys in list(self.SysInfo.keys()):
             self.SetTemperaturesFor(aSys, init_temp, final_temp, temp_steps, therm_temp)
 
     def SetMCStepsFor(self, sysName, therm_steps, run_steps):
@@ -491,7 +491,7 @@ class Sim_Setup:
             print("Failed! Did you type the correct system name?")
 
     def SetMCSteps_ForAll(self, therm_steps, run_steps):
-        for aSys in self.SysInfo.keys():
+        for aSys in list(self.SysInfo.keys()):
             self.SetMCStepsFor(aSys, therm_steps, run_steps)
 
     def CalcBoxSizeArr(self, low_con, high_con, tot_beads, tot_boxes):
@@ -563,7 +563,7 @@ class Sim_Setup:
             print("Failed! Did you type the correct system name?")
 
     def SetBoxSizes_ForAll(self, low_con, high_con, tot_boxes):
-        for aSys in self.SysInfo.keys():
+        for aSys in list(self.SysInfo.keys()):
             self.SetBoxSizesFor(aSys, low_con, high_con, tot_boxes)
 
     def SetBoxSizes_To(self, sysName):
@@ -573,7 +573,7 @@ class Sim_Setup:
             print("Failed! Did you type the correct system name? "
                   "Or have you setup the boxes for this system?")
             return
-        for aSys in self.SysInfo.keys():
+        for aSys in list(self.SysInfo.keys()):
             if aSys != sysName:
                 self.SysInfo[aSys]['Boxes'] = tot_ar
 
@@ -585,7 +585,7 @@ class Sim_Setup:
                   " Does this system exist?")
 
     def SetRunName_ForAll(self):
-        for aSys in self.SysInfo.keys():
+        for aSys in list(self.SysInfo.keys()):
             self.SetRunNameFor(aSys, aSys)
 
     def SetNumberOfRunsFor(self, sysName, run_num):
@@ -596,7 +596,7 @@ class Sim_Setup:
                   " Does this system exist?")
 
     def SetNumberOfRuns_ForAll(self, run_num):
-        for aSys in self.SysInfo.keys():
+        for aSys in list(self.SysInfo.keys()):
             self.SetNumberOfRunsFor(aSys, run_num)
 
     def MakeDirs_NoIntFor(self, sysName):
@@ -662,15 +662,15 @@ class Sim_Setup:
         self.MakeDirs_NoIntFor(sysName)
 
     def MakeDirs_ForAll(self):
-        for aSys in self.SysInfo.keys():
+        for aSys in list(self.SysInfo.keys()):
             self.MakeDirs_For(aSys)
 
     def MakeDirs_ForAll_NoInt(self):
-        for aSys in self.SysInfo.keys():
+        for aSys in list(self.SysInfo.keys()):
             self.MakeDirs_NoIntFor(aSys)
 
     def MakeDirs_ForAll_WInt(self):
-        for aSys in self.SysInfo.keys():
+        for aSys in list(self.SysInfo.keys()):
             self.MakeDirs_WIntFor(aSys)
 
     def Write_ParamsWIntFor(self, sysName):
@@ -741,15 +741,15 @@ class Sim_Setup:
         self.Write_ParamsNoIntFor(sysName)
 
     def Write_ParamsWInt_ForAll(self):
-        for aSys in self.SysInfo.keys():
+        for aSys in list(self.SysInfo.keys()):
             self.Write_ParamsWIntFor(aSys)
 
     def Write_ParamsNoInt_ForAll(self):
-        for aSys in self.SysInfo.keys():
+        for aSys in list(self.SysInfo.keys()):
             self.Write_ParamsNoIntFor(aSys)
 
     def Write_Params_ForAll(self):
-        for aSys in self.SysInfo.keys():
+        for aSys in list(self.SysInfo.keys()):
             self.Write_ParamsWIntFor(aSys)
             self.Write_ParamsNoIntFor(aSys)
 
@@ -786,11 +786,11 @@ class Sim_Setup:
                     try:
                         ret_code = sproc.check_output(run_command, shell=True, stderr=sproc.STDOUT)
                         if ret_code < 0:
-                            print("The submission failed! Signal: ", -retcode)
+                            print(("The submission failed! Signal: ", -retcode))
                         else:
                             print(ret_code)
                     except OSError as myErr:
-                        print("Couldn't submit because ", myErr)
+                        print(("Couldn't submit because ", myErr))
                         raise
                     time.sleep(2)
                     self.QSubIter += 1
@@ -831,11 +831,11 @@ class Sim_Setup:
                     try:
                         ret_code = sproc.check_output(run_command, shell=True, stderr=sproc.STDOUT)
                         if ret_code < 0:
-                            print("The submission failed! Signal: ", -retcode)
+                            print(("The submission failed! Signal: ", -retcode))
                         else:
                             print(ret_code)
                     except OSError as myErr:
-                        print("Couldn't submit because ", myErr)
+                        print(("Couldn't submit because ", myErr))
                         raise
                     time.sleep(2)
                     self.QSubIter += 1
@@ -844,11 +844,11 @@ class Sim_Setup:
         os.chdir(self.CurrentDir)
 
     def SubmitWIntJobs_ForAll(self, WIntQueue):
-        for aSys in self.SysInfo.keys():
+        for aSys in list(self.SysInfo.keys()):
             self.SubmitWIntJobs_ToQueueFor(aSys, WIntQueue)
 
     def SubmitNoIntJobs_ForAll(self, NoIntQueue):
-        for aSys in self.SysInfo.keys():
+        for aSys in list(self.SysInfo.keys()):
             self.SubmitWIntJobs_ToQueueFor(aSys, NoIntQueue)
 
     def SubmitJobs_ForAll(self):
@@ -860,7 +860,7 @@ class Sim_Setup:
             print("You need to set up the qsub command, and which queues to use!")
             return
         self.Reset_QSUB_Iter()
-        for aSys in self.SysInfo.keys():
+        for aSys in list(self.SysInfo.keys()):
             self.SubmitNoIntJobs_ToQueueFor(aSys, self.QSUB_NoIntQ)
             self.SubmitWIntJobs_ToQueueFor(aSys, self.QSUB_WIntQ)
 
