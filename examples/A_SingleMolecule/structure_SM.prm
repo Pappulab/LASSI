@@ -1,6 +1,11 @@
-#Simple mixed system for 2-sticker types.
-#The first two molecules are linear, and the second two are branched.
-#The
+#Di-block Copolymer of the form (AAAAAAAAAABBBBBBBBBB)
+# The structure file defines all the bonds between the monomers for each molecule. For this example,
+# we have a chain of 20 monomers. The bonds are represented between internal monomer id's, starting from 0.
+# (This is somewhat based on how LAMMPS data files represent bonds)
+# Thus, AAAAAAAAAABBBBBBBBBB becomes 0-1-2-3-4-5-6-7-8-9-10-11-12-13-14-15-16-17-18-19 where '-' represents a bond.
+# The structure is written in column form where we have bead_id bead_type linker_length bonded_to
+# All molecules, regardless of structure must be in between NEW{ and }END
+# The first line after NEW{ defines the number of molecules, which in this case is 1.
 NEW{
 1
 0 0 1 1

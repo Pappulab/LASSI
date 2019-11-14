@@ -1,5 +1,5 @@
-#Example of a branched H-shaped polymer. It is recommended that branched polymers are 'drawn' out to minimize the
-#chances of writing the wrong structure.
+# Example of a branched H-shaped polymer. It is recommended that branched polymers are 'drawn' out to minimize the
+# chances of writing the wrong structure.
 # For each molecule, the shape is as shown below.
 #            8       3
 #            |       |
@@ -11,8 +11,8 @@
 #            |       |
 #            10      5
 #
-#Note that for the central point, or bead 0, we have a different species where in the energy file we define a high
-#cost, mimicking a high excluded volume folded domain like structure.
+# Note that for the central point, or bead 0, we have a different species where in the energy file we define a high
+# cost, mimicking a high excluded volume folded domain like structure.
 NEW{
 500
 0 2 3 1

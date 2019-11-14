@@ -1,5 +1,5 @@
-##Author: Furqan Dar
 ## Simple Visualization Script to see simulation trajectory
+## The trajectory is centered around the COM
 
 color Display Background black
 material change opacity Transparent 0.7

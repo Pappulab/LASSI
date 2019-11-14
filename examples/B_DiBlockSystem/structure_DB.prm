@@ -1,4 +1,4 @@
-#Example
+#This is the same structure as example A (read that to understand how to build chains), with the difference that we have 500 chains.
 NEW{
 500
 0 0 1 1
