@@ -129,7 +129,7 @@ void Global_Array_Initialization_AtStart(void) {
     for (i = 0; i < nTot_CycleNum; i++) {
         fKT_Cycle[i] = fKT + (float) i * fdelta_temp;
     }
-
+    ld_SmallestProbLog = logl((lLDub) 1. / (lLDub) RAND_MAX);
     printf("All setup has been completed!\n");
 }
 

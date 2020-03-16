@@ -17,9 +17,9 @@ int Move_Snake(int chainID, float MyTemp);
 
 int Move_Trans(int chainID, float MyTemp);
 
-int Move_Clus(float MyTemp);
+int Move_Clus_Network(float MyTemp);
 
-int Move_SmallClus(int chainID, float MyTemp);
+int Move_SmallClus_Network(int chainID, float MyTemp);
 
 int Move_DbPvt(int beadID);
 
@@ -94,5 +94,7 @@ int Check_RotStatesNew(int beadID, int resi, float MyTemp);
 void OP_NormalizeRotState(int beadVal, int CandNums);
 
 int OP_PickRotState(int CandNums);
+
+lLDub OP_GenMHValue(lLDub fRos, lLDub bRos, lLDub Delta_En, lLDub Cur_Temp);
 
 #endif // _MCMOVE_H_

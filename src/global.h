@@ -99,6 +99,7 @@ lInt rot_trial[MAX_VALENCY][MAX_ROTSTATES];//Used in orientational-bias MC moves
 lDub bolt_fac[MAX_ROTSTATES - 1];//Used in orientational-bias
 lDub bolt_norm[MAX_VALENCY];
 lDub dbias_bolt_fac[MAX_AA][MAX_AA];//For pre-calculating the factors.
+lLDub ld_SmallestProbLog;//Smallest probability possible logl(1/RAND_MAX)
 float faCurrEn[MAX_E]; //Vector for current energy
 
 //Arrays to track certain topology and interaction information
