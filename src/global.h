@@ -99,13 +99,14 @@ lInt rot_trial[MAX_VALENCY][MAX_ROTSTATES];//Used in orientational-bias MC moves
 lDub bolt_fac[MAX_ROTSTATES - 1];//Used in orientational-bias
 lDub bolt_norm[MAX_VALENCY];
 lDub dbias_bolt_fac[MAX_AA][MAX_AA];//For pre-calculating the factors.
-lLDub ld_SmallestProbLog;//Smallest probability possible logl(1/RAND_MAX)
+lLDub ld_LogOfSmallestPossibleProb;//Smallest probability possible logl(1/RAND_MAX)
 float faCurrEn[MAX_E]; //Vector for current energy
 
 //Arrays to track certain topology and interaction information
 lInt nBeadTypeIsSticker[MAX_AA];//Used to track if that beadType interacts via rotations.
 lInt nChainTypeIsLinear[MAX_CHAINTYPES];//Used to track if this chainType is linear.
 lInt nBeadTypeCanOvlp[MAX_AA];//Used to track if a certain beadType has an overlap cost.
+lInt nBeadTypeCanCont[MAX_AA];//Used to track if a certain beadType has a contact cost.
 
 float fLinkerLength;
 float fLinkerSprCon;

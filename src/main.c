@@ -93,7 +93,7 @@ The system has thermalized!
     int run_cycle;
     //Going through the MC cycles.
     for (run_cycle = 0; run_cycle < nTot_CycleNum; run_cycle++) {
-        fKT = fKT_Cycle[run_cycle];//temp_cycle[run_cycle];
+        fKT = fKT_Cycle[run_cycle];
         Calculate_Rot_Bias(fKT_Cycle[run_cycle]);
         Print_Data(-1, run_cycle);
         for (nGen = 0; nGen <= nSteps; nGen++) {

@@ -117,6 +117,9 @@ void Global_Array_Initialization_AtStart(void) {
             if (fEnergy[i][j][E_OVLP] != 0.0) {//Seeing if this beadType rotationally interacts.
                 nBeadTypeCanOvlp[i] = 1;
             }
+            if (fEnergy[i][j][E_CONT] != 0.0) {//Seeing if this beadType rotationally interacts.
+                nBeadTypeCanCont[i] = 1;
+            }
         }
     }
     for (i = MV_NULL + 2; i < MAX_MV; i++) {
@@ -129,7 +132,7 @@ void Global_Array_Initialization_AtStart(void) {
     for (i = 0; i < nTot_CycleNum; i++) {
         fKT_Cycle[i] = fKT + (float) i * fdelta_temp;
     }
-    ld_SmallestProbLog = logl((lLDub) 1. / (lLDub) RAND_MAX);
+    ld_LogOfSmallestPossibleProb = logl((lLDub) 1. / (lLDub) RAND_MAX);
     printf("All setup has been completed!\n");
 }
 
