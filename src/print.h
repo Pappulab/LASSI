@@ -1,28 +1,86 @@
-#ifndef _PRINT_H_   // include guard
+#ifndef _PRINT_H_ // include guard
 #define _PRINT_H_
 
-#include <stdio.h>
-#include <stdlib.h>
+#include "global.h"
+
+long TrajArr_Index(const int beadID, const int nFrameNumber, const int beadProp);
 
 void Print_LogToScreen(long nGen, int run_it);
 
-void Write_MCMove(char *filename, long nGen, float fMCTemp);
+void ScreenIO_Print_KeyFile(void);
 
-void Write_Energy(char *filename, long nGen);
+void ScreenIO_Print_SystemEnergy(void);
 
-void Print_Key(void);
+void ScreenIO_Print_AcceptanceRatios(void);
 
-void Write_Trajectory(char *filename, long nGen);
+void ScreenIO_Print_Log_Thermalization(const long nGen);
 
-void Write_TopFile(char *filename);
+void ScreenIO_Print_Log_FullRun(const long nGen, const int run_cycle);
 
-void Write_SysProp(char *filename);
+void ScreenIO_Print_SanityCheckFailurePreamble(long nGen, int run_cycle);
 
-void Write_TotalSysProp(char *filename, int run_it);
+void ScreenIO_Print_SanityFail_BeadPosAndLattPos(int badBead);
 
-void Print_Data(long nGen, int run_it);
+void ScreenIO_Print_SanityFail_MolecularStructure(int badBead);
 
-void Copy_Data(int run_it);
+void ScreenIO_Print_SanityFail_SelfBond(int badBead);
 
+void ScreenIO_Print_SanityFail_BeadBondSymmetry(int badBead);
+
+void ScreenIO_Print_SanityFail_BeadBondDistance(int badBead);
+
+char ForPrinting_GetReportState(const long nGen, const long thisReport);
+
+void DataPrinting_Thermalization(const long nGen);
+
+void DataPrinting_DuringRunCycles(const long nGen, const int run_it);
+
+void DataAnalysis_DuringRunCycles(const long nGen, const int run_it);
+
+void Save_Trajectory(const long nGen, const long curFrame);
+
+void Write_Saved_Trajectory(char* filename, const int run_it);
+
+void Write_SysProp(char* filename);
+
+void Print_Data(const long nGen, const int run_it);
+
+void CopyData_All(const int run_it);
+
+void CopyData_RDF(const int run_it);
+
+void CopyData_COMDen(const int run_it);
+
+void CopyData_Clus(const int run_it);
+
+void FileIOUtil_CreateFile_Overwrite(const char* fileName);
+
+void FileIOUtil_CreateFile_Binary_Overwrite(const char* fileName);
+
+void FileIO_CreateRunningDataFiles(void);
+
+void FileIO_PrintCrashSnapshot(void);
+
+void FileIO_WriteTo_MCMoveFile(const char* filename, const long nGen, const float fMCTemp);
+
+void FileIOUtil_PreCycle_Init(const int run_it);
+
+void FileIO_AppendEnergyTo_EnergyFile(const char* fileNameStr, const long nGen);
+
+void FileIO_WriteTo_TopFile(const char* filename);
+
+void FileIO_Trajectory_AppendFrame(const char* fileNameStr, const int run_it, const long nGen);
+
+void FileIOUtil_Traj_Txt_AppendFrame_ToFile(const char* filename, const long nGen);
+
+void FileIOUtil_Traj_Bin_AppendFrame_ToFile(const char* filename, const long nGen);
+
+void FileIO_WriteRestart_ForThermalization(void);
+
+void FileIO_PostCycle_WriteSystemRestart(const int run_it);
+
+void FileIO_PostCycle_WriteCycleAvgData(const int run_it);
+
+void FileIO_Write_TotalSysProp_TotFromGLB(const int run_it);
 
 #endif // _PRINT_H_

@@ -10,7 +10,7 @@ After the simulation/run has finished, you can use VMD to visualize the trajecto
 For the format of the energy file (the energy file only accepts
 a specific set of keywords, and no comments), we have:
 
-```{
+```
 #STICKERS
 2
 
@@ -64,4 +64,4 @@ a specific set of keywords, and no comments), we have:
 
 #LINKER_EQLEN
 1.0
-}```
+```

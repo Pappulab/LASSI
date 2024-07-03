@@ -8,127 +8,127 @@
 		<Option virtualFolders="CMake Files\;"/>
 		<Build>
 			<Target title="all">
-				<Option working_dir="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cmake-build-debug"/>
+				<Option working_dir="/mnt/f/Coding/CLion/Pappu_LASSI/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
-					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j8 -f &quot;/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j12 -f &quot;/mnt/f/Coding/CLion/Pappu_LASSI/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/mnt/f/Coding/CLion/Pappu_LASSI/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/mnt/f/Coding/CLion/Pappu_LASSI/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/mnt/f/Coding/CLion/Pappu_LASSI/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="rebuild_cache">
-				<Option working_dir="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cmake-build-debug"/>
+				<Option working_dir="/mnt/f/Coding/CLion/Pappu_LASSI/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
-					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j8 -f &quot;/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-				</MakeCommands>
-			</Target>
-			<Target title="edit_cache">
-				<Option working_dir="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cmake-build-debug"/>
-				<Option type="4"/>
-				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
-					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j8 -f &quot;/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j12 -f &quot;/mnt/f/Coding/CLion/Pappu_LASSI/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/mnt/f/Coding/CLion/Pappu_LASSI/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/mnt/f/Coding/CLion/Pappu_LASSI/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/mnt/f/Coding/CLion/Pappu_LASSI/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="lassi">
-				<Option output="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cmake-build-debug/lassi" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cmake-build-debug"/>
+				<Option output="/mnt/f/Coding/CLion/Pappu_LASSI/cmake-build-debug/lassi" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/mnt/f/Coding/CLion/Pappu_LASSI/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add directory="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/."/>
+					<Add directory="/mnt/f/Coding/CLion/Pappu_LASSI/."/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
 					<Add directory="/usr/local/include"/>
-					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/10.0.1/include"/>
-					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
-					<Add directory="/Library/Developer/CommandLineTools/SDKs/MacOSX10.14.sdk/usr/include"/>
-					<Add directory="/Library/Developer/CommandLineTools/SDKs/MacOSX10.14.sdk/System/Library/Frameworks"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cmake-build-debug/Makefile&quot;  VERBOSE=1 lassi"/>
-					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j8 -f &quot;/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j12 -f &quot;/mnt/f/Coding/CLion/Pappu_LASSI/cmake-build-debug/Makefile&quot;  VERBOSE=1 lassi"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/mnt/f/Coding/CLion/Pappu_LASSI/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/mnt/f/Coding/CLion/Pappu_LASSI/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/mnt/f/Coding/CLion/Pappu_LASSI/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="lassi/fast">
-				<Option output="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cmake-build-debug/lassi" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cmake-build-debug"/>
+				<Option output="/mnt/f/Coding/CLion/Pappu_LASSI/cmake-build-debug/lassi" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/mnt/f/Coding/CLion/Pappu_LASSI/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add directory="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/."/>
+					<Add directory="/mnt/f/Coding/CLion/Pappu_LASSI/."/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
 					<Add directory="/usr/local/include"/>
-					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/10.0.1/include"/>
-					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
-					<Add directory="/Library/Developer/CommandLineTools/SDKs/MacOSX10.14.sdk/usr/include"/>
-					<Add directory="/Library/Developer/CommandLineTools/SDKs/MacOSX10.14.sdk/System/Library/Frameworks"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cmake-build-debug/Makefile&quot;  VERBOSE=1 lassi/fast"/>
-					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j8 -f &quot;/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j12 -f &quot;/mnt/f/Coding/CLion/Pappu_LASSI/cmake-build-debug/Makefile&quot;  VERBOSE=1 lassi/fast"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/mnt/f/Coding/CLion/Pappu_LASSI/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/mnt/f/Coding/CLion/Pappu_LASSI/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/mnt/f/Coding/CLion/Pappu_LASSI/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/mnt/f/Coding/CLion/Pappu_LASSI/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/mnt/f/Coding/CLion/Pappu_LASSI/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/mnt/f/Coding/CLion/Pappu_LASSI/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/mnt/f/Coding/CLion/Pappu_LASSI/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/mnt/f/Coding/CLion/Pappu_LASSI/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/src/cluster.c">
+		<Unit filename="/mnt/f/Coding/CLion/Pappu_LASSI/src/cluster.c">
 			<Option target="lassi"/>
 		</Unit>
-		<Unit filename="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/src/cluster.h">
+		<Unit filename="/mnt/f/Coding/CLion/Pappu_LASSI/src/cluster.h">
 			<Option target="lassi"/>
 		</Unit>
-		<Unit filename="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/src/energy.c">
+		<Unit filename="/mnt/f/Coding/CLion/Pappu_LASSI/src/energy.c">
 			<Option target="lassi"/>
 		</Unit>
-		<Unit filename="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/src/energy.h">
+		<Unit filename="/mnt/f/Coding/CLion/Pappu_LASSI/src/energy.h">
 			<Option target="lassi"/>
 		</Unit>
-		<Unit filename="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/src/global.h">
+		<Unit filename="/mnt/f/Coding/CLion/Pappu_LASSI/src/global.h">
 			<Option target="lassi"/>
 		</Unit>
-		<Unit filename="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/src/initialize.c">
+		<Unit filename="/mnt/f/Coding/CLion/Pappu_LASSI/src/initialize.c">
 			<Option target="lassi"/>
 		</Unit>
-		<Unit filename="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/src/initialize.h">
+		<Unit filename="/mnt/f/Coding/CLion/Pappu_LASSI/src/initialize.h">
 			<Option target="lassi"/>
 		</Unit>
-		<Unit filename="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/src/main.c">
+		<Unit filename="/mnt/f/Coding/CLion/Pappu_LASSI/src/main.c">
 			<Option target="lassi"/>
 		</Unit>
-		<Unit filename="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/src/mcmove.c">
+		<Unit filename="/mnt/f/Coding/CLion/Pappu_LASSI/src/mcmove.c">
 			<Option target="lassi"/>
 		</Unit>
-		<Unit filename="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/src/mcmove.h">
+		<Unit filename="/mnt/f/Coding/CLion/Pappu_LASSI/src/mcmove.h">
 			<Option target="lassi"/>
 		</Unit>
-		<Unit filename="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/src/parsekey.c">
+		<Unit filename="/mnt/f/Coding/CLion/Pappu_LASSI/src/parsekey.c">
 			<Option target="lassi"/>
 		</Unit>
-		<Unit filename="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/src/parsekey.h">
+		<Unit filename="/mnt/f/Coding/CLion/Pappu_LASSI/src/parsekey.h">
 			<Option target="lassi"/>
 		</Unit>
-		<Unit filename="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/src/print.c">
+		<Unit filename="/mnt/f/Coding/CLion/Pappu_LASSI/src/print.c">
 			<Option target="lassi"/>
 		</Unit>
-		<Unit filename="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/src/print.h">
+		<Unit filename="/mnt/f/Coding/CLion/Pappu_LASSI/src/print.h">
 			<Option target="lassi"/>
 		</Unit>
-		<Unit filename="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/src/structure.c">
+		<Unit filename="/mnt/f/Coding/CLion/Pappu_LASSI/src/structure.c">
 			<Option target="lassi"/>
 		</Unit>
-		<Unit filename="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/src/structure.h">
+		<Unit filename="/mnt/f/Coding/CLion/Pappu_LASSI/src/structure.h">
 			<Option target="lassi"/>
 		</Unit>
-		<Unit filename="/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/CMakeLists.txt">
+		<Unit filename="/mnt/f/Coding/CLion/Pappu_LASSI/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
 		</Unit>
 	</Project>

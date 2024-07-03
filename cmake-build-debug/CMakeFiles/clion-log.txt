@@ -1,4 +1,11 @@
-/Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=/usr/bin/gcc -DCMAKE_CXX_COMPILER=/usr/bin/g++ -G "CodeBlocks - Unix Makefiles" /Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT
+/usr/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /mnt/f/Coding/CLion/Pappu_LASSI
+-- The C compiler identification is GNU 7.5.0
+-- Check for working C compiler: /usr/bin/cc
+-- Check for working C compiler: /usr/bin/cc -- works
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Detecting C compile features
+-- Detecting C compile features - done
 -- Configuring done
 -- Generating done
--- Build files have been written to: /Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cmake-build-debug
+-- Build files have been written to: /mnt/f/Coding/CLion/Pappu_LASSI/cmake-build-debug

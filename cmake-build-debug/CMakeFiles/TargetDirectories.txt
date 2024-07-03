@@ -1,3 +1,3 @@
-/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cmake-build-debug/CMakeFiles/edit_cache.dir
-/Users/furqandar/Desktop/Work/PappuLab/LatticeCodes/LASSI_GIT/cmake-build-debug/CMakeFiles/lassi.dir
+/mnt/f/Coding/CLion/Pappu_LASSI/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/mnt/f/Coding/CLion/Pappu_LASSI/cmake-build-debug/CMakeFiles/lassi.dir
+/mnt/f/Coding/CLion/Pappu_LASSI/cmake-build-debug/CMakeFiles/edit_cache.dir

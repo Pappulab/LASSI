@@ -2,7 +2,6 @@
 
 LASSI - LAttice Simulation Engine For Stickers And Spacer Interactions
 ==========================================================================
-
 LASSI is an engine designed for simulating the phase transitions
 of polymers with specific anisotropic interactions.
 
