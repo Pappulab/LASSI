@@ -243,6 +243,7 @@ void FileIOUtil_WriteHeader_ForEnergy(const char* fileName)
                 "T_IND       "
                 "STIFF       "
                 "BIAS        "
+                "UMBRELLA        "
                 "\n");
     fclose(fp);
 }
@@ -263,6 +264,14 @@ void FileIO_AppendEnergyTo_EnergyFile(const char* fileNameStr, const long nGen)
         }
     fprintf(fp, "\n");
 
+    fclose(fp);
+}
+
+void FileIO_AppendTo_UmbrellaFile(const char* fileNameStr, const long nGen,float distance_12)
+{
+    FILE* fp = fopen(fileNameStr, "a");
+
+    fprintf(fp,"%d\t%f\n",nGen,distance_12);
     fclose(fp);
 }
 
@@ -305,7 +314,7 @@ void FileIOUtil_Traj_Txt_AppendFrame_ToFile(const char* filename, const long nGe
     fprintf(fp, "%ld\n", nGen); // Timestep
 
     fprintf(fp, "ITEM: NUMBER OF ATOMS\n");
-    fprintf(fp, "%ld\n", (size_t) tot_beads_glb); // Total atom number
+    fprintf(fp, "%ld\n", tot_beads_glb); // Total atom number
 
     fprintf(fp, "ITEM: BOX BOUNDS pp pp pp\n"); // BCs are always periodic for now
     fprintf(fp, "0 %d\n0 %d\n0 %d\n", naBoxSize_glb[0], naBoxSize_glb[1], naBoxSize_glb[2]); // Box dimensions
@@ -411,7 +420,7 @@ void Write_Saved_Trajectory(char* filename, const int run_it)
                 }
 
             fprintf(fp, "ITEM: NUMBER OF ATOMS\n");
-            fprintf(fp, "%ld\n", (size_t) tot_beads_glb); // Total atom number
+            fprintf(fp, "%ld\n", tot_beads_glb); // Total atom number
 
             fprintf(fp, "ITEM: BOX BOUNDS pp pp pp\n"); // BCs are always periodic for now
             fprintf(fp, "0 %d\n0 %d\n0 %d\n", naBoxSize_glb[0], naBoxSize_glb[1], naBoxSize_glb[2]); // Box dimensions
@@ -482,6 +491,30 @@ void PrintToScreen_MCMoveFreqs(void)
     int i;
     for (i = MV_NULL + 1; i < MAX_MV; i++)
         {
+            if (freqMin >= faMCFreqEquil_glb[i] && faMCFreqEquil_glb[i] != 0.)
+                {
+                    freqMin = faMCFreqEquil_glb[i];
+                }
+        }
+
+    for (i = 0; i < 30; i++)
+        {
+            printf("-");
+        }
+    printf("\n");
+    printf("| MC Move Thermalization Frequencies%9s\n", "|");
+    for (i = MV_NULL + 1; i < MAX_MV; i++)
+        {
+            printf("| %-16s %5d %5s\n", MoveName[i], (int) ceilf(faMCFreqEquil_glb[i] / freqMin), "|");
+        }
+    for (i = 0; i < 30; i++)
+        {
+            printf("-");
+        }
+
+    freqMin = 1e10f;
+    for (i = MV_NULL + 1; i < MAX_MV; i++)
+        {
             if (freqMin >= faMCFreq_glb[i] && faMCFreq_glb[i] != 0.)
                 {
                     freqMin = faMCFreq_glb[i];
@@ -533,9 +566,9 @@ void ScreenIO_Print_KeyFile(void)
     const char rBrace[] = "      ======>";
     printf("%s System Settings %s\n", lBrace, rBrace);
     printf("Number of Bead Types = %d\n", nBeadTypes_glb);
-    printf("Number of Beads      = %ld\n", (size_t) tot_beads_glb);
-    printf("Number of Chains     = %ld\n", (size_t) tot_chains_glb);
-    printf("Number of Components = %ld\n", (size_t) tot_chain_types_glb);
+    printf("Number of Beads      = %ld\n", tot_beads_glb);
+    printf("Number of Chains     = %ld\n", tot_chains_glb);
+    printf("Number of Components = %ld\n", tot_chain_types_glb);
     printf("Lattice Dimensions   = %3d %3d %3d\n", naBoxSize_glb[0], naBoxSize_glb[1], naBoxSize_glb[2]);
     printf("Monomer Density      = %1.2e\n",
            (float) tot_beads_glb / (float) naBoxSize_glb[0] / (float) naBoxSize_glb[1] / (float) naBoxSize_glb[2]);
@@ -555,6 +588,8 @@ void ScreenIO_Print_KeyFile(void)
     ScreenIOUtil_PrintTemperatures();
 
     printf("Indent Mode                    = %d\n", nBiasPotential_Mode_glb);
+    printf("UMBRELLA Mode                    = %d\n", nBiasPotential_UmbrellaMode_glb);
+
     //    printf("Rotational Bias Mode           = %d\n", RotBias_Mode_glb);
     printf("Number of MC Cycles            = %d\n", nTotCycleNum_glb);
     printf("Number of MC Steps/Cycle       = %e\n", (float) nMCStepsPerCycle_glb);
@@ -585,6 +620,7 @@ void ScreenIO_Print_SystemEnergy(void)
     printf("FSol : %-10.2e |\n", faCurrEn_glb[E_F_SOL]);
     printf("Stiff: %-10.2e |\n", faCurrEn_glb[E_STIFF]);
     printf("Bias : %-10.2e |\n", faCurrEn_glb[E_BIAS]);
+    printf("Umbrella : %-10.2e |\n", faCurrEn_glb[E_UMBRELLA]);
     printf("%s\n", sSectionHead);
 }
 
@@ -671,133 +707,11 @@ void ScreenIO_Print_Log_FullRun(const long nGen, const int run_cycle)
     puts("****************************************");
 }
 
-/// ScreenIO_PrintStdErr_BeadPosition. Prints the beadID and it's position to STDERR.
-/// \param beadID
-void ScreenIO_PrintStdErr_BeadPosition(const int beadID)
-{
-    const int x = bead_info_glb[beadID][POS_X];
-    const int y = bead_info_glb[beadID][POS_Y];
-    const int z = bead_info_glb[beadID][POS_Z];
-    fprintf(stderr, "bead: %d is a position: <%d, %d, %d>\n", beadID, x, y, z);
-}
-
-/// ScreenIO_Print_SanityCheckFailurePreamble. Prints the preamble to the error message for sanity check failures.
-/// \param nGen Which MC Step this crash has occurred on.
-/// \param run_cycle Which run_cycle this crash has occurred on.
-void ScreenIO_Print_SanityCheckFailurePreamble(const long nGen, const int run_cycle)
-{
-    fputs("\n-------------------------------------------------------------------------------", stderr);
-    fputs("\nERROR! Sanity check failed! Crashing!\n", stderr);
-    fprintf(stderr, "Crash occurred at (run_cycle: %d; mc_step: %ld)\n", run_cycle, nGen);
-    fputs("Snapshot of system saved to crash_snapshot.txt\n", stderr);
-    fputs("CRASH TYPE: ", stderr);
-}
-
-/// ScreenIO_Print_SanityFail_BeadPosAndLattPos. Prints the crash information for when the bead position does not
-/// correspond to the lattice representation. Prints the bead position, and what the lattice thinks is at that position.
-/// \param badBead The bead for which to print the information.
-void ScreenIO_Print_SanityFail_BeadPosAndLattPos(const int badBead)
-{
-
-    const int x = bead_info_glb[badBead][POS_X];
-    const int y = bead_info_glb[badBead][POS_Y];
-    const int z = bead_info_glb[badBead][POS_Z];
-    fprintf(stderr, "bead: %d should be at: <%d, %d, %d>\n", badBead, x, y, z);
-
-    const int latInd = Lat_Ind_OfBead(badBead);
-    const int latVal = naTotLattice_glb[latInd];
-
-    fprintf(stderr, "while\nlattice: <%d, %d, %d> (ind: %d) has: %d\n", x, y, z, latInd, latVal);
-}
-
-/// ScreenIO_Print_SanityFail_MolecularStructure. Prints the crash information for when the linkers for badBead are
-/// broken. Prints out the chain badBead is in, all the bonded partners for badBead, where the beads are at, and the
-/// distances between the beads.
-/// \param badBead The bead for which to print the information.
-void ScreenIO_Print_SanityFail_MolecularStructure(const int badBead)
-{
-
-    const int badChain = bead_info_glb[badBead][BEAD_CHAINID];
-
-    fprintf(stderr, "chain: %d has broken structure\n", badChain);
-    fprintf(stderr, "bead:  %d has broken linkers\n", badBead);
-    ScreenIO_PrintStdErr_BeadPosition(badBead);
-    fprintf(stderr, "\nbead:  %d has partners:\n", badBead);
-    int idx      = 0;
-    int bondPart = topo_info_glb[badBead][idx];
-    while (bondPart != -1)
-        {
-            ScreenIO_PrintStdErr_BeadPosition(bondPart);
-            idx++;
-            bondPart = topo_info_glb[badBead][idx];
-        }
-    fputs("\n\nThe beads have the following distances and linker constraints:\n", stderr);
-
-    idx             = 0;
-    bondPart        = topo_info_glb[badBead][idx];
-    float bdDist   = 0.;
-    float linkCons = 0.;
-
-    while (bondPart != -1)
-        {
-
-            bdDist   = Dist_BeadToBead(badBead, bondPart);
-            linkCons = (float) linker_len_glb[badBead][idx] * LINKER_RSCALE;
-
-            fprintf(stderr, "beads: (%d, %d) have dist: %5.3f with linker-constraint: %5.3f\n", badBead, bondPart,
-                    bdDist, linkCons);
-            idx++;
-            bondPart = topo_info_glb[badBead][idx];
-        }
-}
-
-/// ScreenIO_Print_SanityFail_SelfBond. Prints the crash information for when the a bead is self-bonded. Prints out the
-/// id of the bead.
-/// \param badBead The bead for which to print the information.
-void ScreenIO_Print_SanityFail_SelfBond(const int badBead)
-{
-    fprintf(stderr, "bead: %d is bonded to itself!\n", badBead);
-}
-
-/// ScreenIO_Print_SanityFail_BeadBondSymmetry. Prints the crash information for when a bond is not symmetric. Prints
-/// out the id of the bead that failed, which bead badBead is bonded to, and which bead the beadPartner is bonded to.
-/// We also print the positions of the beads.
-/// \param badBead The bead for which to print the information.
-void ScreenIO_Print_SanityFail_BeadBondSymmetry(const int badBead)
-{
-    const int beadPart = bead_info_glb[badBead][BEAD_FACE];
-
-    fprintf(stderr, "bead: %d is bonded to bead: %d\n", badBead, beadPart);
-
-    const int partBond = bead_info_glb[beadPart][BEAD_FACE];
-
-    fprintf(stderr, "while\nbead: %d is bonded to bead: %d\n", beadPart, partBond);
-
-    ScreenIO_PrintStdErr_BeadPosition(badBead);
-    ScreenIO_PrintStdErr_BeadPosition(beadPart);
-}
-
-/// ScreenIO_Print_SanityFail_BeadBondDistance. Prints the crash information for when the distance between bonded beads
-/// is too large. Prints the relevant beads' ids, positions and the distance between them.
-/// \param badBead The bead for which to print the information.
-void ScreenIO_Print_SanityFail_BeadBondDistance(const int badBead)
-{
-    const int beadPart = bead_info_glb[badBead][BEAD_FACE];
-
-    fprintf(stderr, "bead: %d is bonded to bead: %d\n", badBead, beadPart);
-
-    const float bDist = Dist_BeadToBead(badBead, beadPart);
-    fprintf(stderr, "while\ndistance: %5.3f\n", bDist);
-
-    ScreenIO_PrintStdErr_BeadPosition(badBead);
-    ScreenIO_PrintStdErr_BeadPosition(beadPart);
-}
-
 /// Write_RDF_ComponentWise - old implementation of printing the RDF, component
 /// by component. Always appends to the file for this run. Stopped using it
 /// because the IO load was slowing things down at our cluster Would be a good
-/// way to gather proper statistics on clusters as the runs went on.
-/// TODO: update this to work with the new indexing
+/// way to gather proper statistics on clusters as the runs went on. TODO:
+/// update this to work with the new indexing
 /// \param filename
 /// \param nGen
 void Write_RDF_ComponentWise(char* filename, long nGen)
@@ -833,8 +747,7 @@ void Write_RDF_ComponentWise(char* filename, long nGen)
 
 /// FileIO_WriteTo_TopFile - write a LAMMPS DATA file, which can be read in VMD to store
 /// topological information for the system Only writes the topology once at the
-/// beginning of the runs.
-/// \param filename
+/// beginning of the runs. \param filename
 void FileIO_WriteTo_TopFile(const char* filename)
 {
     /*
@@ -849,9 +762,9 @@ void FileIO_WriteTo_TopFile(const char* filename)
     int i, j, k;               // Loop iterators.
     int numBonds;              // Used to count total number of bonds!
     printf("Writing the topology file!\n");
-    fprintf(fp, "LAMMPS Description\n");                   // The file must start with this.
-    fprintf(fp, "\n");                                     // Empty line.
-    fprintf(fp, "\t%ld\tatoms\n", (size_t) tot_beads_glb); // Listing total number of atoms
+    fprintf(fp, "LAMMPS Description\n");          // The file must start with this.
+    fprintf(fp, "\n");                            // Empty line.
+    fprintf(fp, "\t%ld\tatoms\n", tot_beads_glb); // Listing total number of atoms
     numBonds = 0;
     for (i = 0; i < tot_beads_glb; i++)
         {
@@ -1125,6 +1038,13 @@ void FileIOUtil_CreateFile_Binary_Overwrite(const char* fileName)
 /// of a simulation.
 void FileIO_CreateRunningDataFiles(void)
 {
+    if (naReportFreqs_glb[REPORT_UMBRELLA])
+        {
+            sprintf(strUmbrellaFile_glb,"%s_umbrella.dat", strReportPrefix_glb);
+            FileIOUtil_CreateFile_Overwrite(strUmbrellaFile_glb); // Open a new umbrella distance file; each run_it will have its own
+            
+        }
+
     // Trajectory
     if (naReportFreqs_glb[REPORT_CONFIG])
         {
@@ -1206,24 +1126,6 @@ char ForPrinting_GetReportState(const long nGen, const long thisReport)
     return dum_log;
 }
 
-void FileIO_PrintCrashSnapshot(void)
-{
-    FILE* fp = fopen("crash_snapshot.txt", "w+");
-
-    int i, x, y, z, bP;
-    fputs("#CRASH SNAPSHOT\n#X, Y, Z, bondPartner\n", fp);
-    for (i = 0; i < tot_beads_glb; i++)
-        {
-            x  = bead_info_glb[i][POS_X];
-            y  = bead_info_glb[i][POS_Y];
-            z  = bead_info_glb[i][POS_Z];
-            bP = bead_info_glb[i][BEAD_FACE];
-            fprintf(fp, "%d %d %d %d\n", x, y, z, bP);
-        }
-
-    fclose(fp);
-}
-
 /// DataPrinting_Thermalization - helper function for printing out data during the thermalization cycle.
 /// No data analysis is performed during the thermalization procedure.
 /// This function decides if, given the MCStep, it is time to print the following:
@@ -1246,7 +1148,13 @@ void DataPrinting_Thermalization(const long nGen)
             cLogFlag = ForPrinting_GetReportState(nGen, naReportFreqs_glb[REPORT_LOG]);
             if (cLogFlag)
                 {
-                    PerformRuntimeSanityChecks(nGen, -1);
+                    // TODO: I think this whole business can be abstracted away as well.
+                    if (Check_System_Structure())
+                        {
+                            fprintf(stderr, "Molecular structure is inconsistent with initial "
+                                            "structure.\nCRASHING\n\n");
+                            exit(1);
+                        }
                     Energy_Total_System();
                     cFlagForEnCal = 1;
                     ScreenIO_Print_Log_Thermalization(nGen);
@@ -1263,10 +1171,39 @@ void DataPrinting_Thermalization(const long nGen)
                             FileIO_Trajectory_AppendFrame(strFileTraj_glb, -1, nGen);
                         }
                 }
+            if (naReportFreqs_glb[REPORT_UMBRELLA])
+                {
+                    //(nGen, naReportFreqs_glb[REPORT_UMBRELLA]);
+                    //printf("%s\t%d\t%d\t%d\n","report_US",nGen,naReportFreqs_glb[REPORT_UMBRELLA],(nGen%naReportFreqs_glb[REPORT_UMBRELLA]));
+                    if ((nGen%naReportFreqs_glb[REPORT_UMBRELLA])==0)
+                        {   
+                            if(nBiasPotential_UmbrellaMode_glb==1)
+                                {
+                                    int bead1_Pos[POS_MAX]  = {bead_info_glb[nBead1_glb][0], bead_info_glb[nBead1_glb][1], bead_info_glb[nBead1_glb][2]};
+                                    int bead2_Pos[POS_MAX]  = {bead_info_glb[nBead2_glb][0], bead_info_glb[nBead2_glb][1], bead_info_glb[nBead2_glb][2]};
+                                    float distance_12 = Dist_PointToPoint(bead1_Pos,bead2_Pos);
+                                    //printf("UMB: %d\t%f\n",nGen,distance_12);
+                                    FileIO_AppendTo_UmbrellaFile(strUmbrellaFile_glb,nGen,distance_12);
+                                }
+                            else if(nBiasPotential_UmbrellaMode_glb==2)
+                                {
+                                    int chainID1=nBead1_glb;
+                                    int chainID2=nBead2_glb;
+                                    //printf("Chain IDs: %d\t %d \n",chainID1,chainID2);
+                                    float chain_1_com[POS_MAX]={0.};
+                                    float chain_2_com[POS_MAX]={0.};
+                                    Calc_CenterOfMass_OfChain(chain_1_com, chainID1);
+                                    Calc_CenterOfMass_OfChain(chain_2_com, chainID2);
+                                    float distance_12 = Dist_PointToPoint_Float(chain_1_com,chain_2_com);
+                                    //printf("UMB: %d\t%f\n",nGen,distance_12);
+                                    FileIO_AppendTo_UmbrellaFile(strUmbrellaFile_glb,nGen,distance_12);
+                                }
 
+                        }
+                }
             if (naReportFreqs_glb[REPORT_ENERGY])
                 {
-                    // DO ENERGY FLAGS
+                    // DO ENERGY SHIT
                     cEnergyFlag = ForPrinting_GetReportState(nGen, naReportFreqs_glb[REPORT_ENERGY]);
                     if (cEnergyFlag)
                         {
@@ -1281,7 +1218,7 @@ void DataPrinting_Thermalization(const long nGen)
 
             if (naReportFreqs_glb[REPORT_MCMOVE])
                 {
-                    // DO MC_ACC PRINTING
+                    // DO MC_ACC SHIT
                     cAccFlag = ForPrinting_GetReportState(nGen, naReportFreqs_glb[REPORT_MCMOVE]);
                     if (cAccFlag)
                         {
@@ -1307,7 +1244,13 @@ void DataPrinting_DuringRunCycles(const long nGen, const int run_it)
             cLogFlag = ForPrinting_GetReportState(nGen, naReportFreqs_glb[REPORT_LOG]);
             if (cLogFlag)
                 {
-                    PerformRuntimeSanityChecks(nGen, run_it);
+                    // TODO: I think this whole business can be abstracted away as well.
+                    if (Check_System_Structure())
+                        {
+                            fprintf(stderr, "Molecular structure is inconsistent with initial "
+                                            "structure.\nCRASHING\n\n");
+                            exit(1);
+                        }
                     Energy_Total_System();
                     cFlagForEnCal = 1;
                     ScreenIO_Print_Log_FullRun(nGen, run_it);
@@ -1324,10 +1267,39 @@ void DataPrinting_DuringRunCycles(const long nGen, const int run_it)
                             FileIO_Trajectory_AppendFrame(strFileTraj_glb, run_it, nGen);
                         }
                 }
+            if (naReportFreqs_glb[REPORT_UMBRELLA])
+                {
+                    //(nGen, naReportFreqs_glb[REPORT_UMBRELLA]);
+                    //printf("%s\t%d\t%d\t%d\n","report_US",nGen,naReportFreqs_glb[REPORT_UMBRELLA],(nGen%naReportFreqs_glb[REPORT_UMBRELLA]));
+                    if ((nGen%naReportFreqs_glb[REPORT_UMBRELLA])==0)
+                        {   if(nBiasPotential_UmbrellaMode_glb==1)
+                                {
+                                    int bead1_Pos[POS_MAX]  = {bead_info_glb[nBead1_glb][0], bead_info_glb[nBead1_glb][1], bead_info_glb[nBead1_glb][2]};
+                                    int bead2_Pos[POS_MAX]  = {bead_info_glb[nBead2_glb][0], bead_info_glb[nBead2_glb][1], bead_info_glb[nBead2_glb][2]};
+                                    float distance_12 = Dist_PointToPoint(bead1_Pos,bead2_Pos);
+                                    //printf("UMB: %d\t%f\n",nGen,distance_12);
+                                    FileIO_AppendTo_UmbrellaFile(strUmbrellaFile_glb,nGen,distance_12);
+                                }
+                            else if(nBiasPotential_UmbrellaMode_glb==2)
+                                {
+                                    int chainID1=nBead1_glb;
+                                    int chainID2=nBead2_glb;
+                                    //printf("Chain IDs: %d\t %d \n",chainID1,chainID2);
+                                    float chain_1_com[POS_MAX]={0.};
+                                    float chain_2_com[POS_MAX]={0.};
+                                    Calc_CenterOfMass_OfChain(chain_1_com, chainID1);
+                                    Calc_CenterOfMass_OfChain(chain_2_com, chainID2);
+                                    float distance_12 = Dist_PointToPoint_Float(chain_1_com,chain_2_com);
+                                    //printf("UMB: %d\t%f\n",nGen,distance_12);
+                                    FileIO_AppendTo_UmbrellaFile(strUmbrellaFile_glb,nGen,distance_12);
+                                }
+
+                        }
+                }
 
             if (naReportFreqs_glb[REPORT_ENERGY])
                 {
-                    // DO ENERGY PRINTING
+                    // DO ENERGY SHIT
                     cEnergyFlag = ForPrinting_GetReportState(nGen, naReportFreqs_glb[REPORT_ENERGY]);
                     if (cEnergyFlag)
                         {
@@ -1342,7 +1314,7 @@ void DataPrinting_DuringRunCycles(const long nGen, const int run_it)
 
             if (naReportFreqs_glb[REPORT_MCMOVE])
                 {
-                    // DO MC_ACC PRINTING
+                    // DO MC_ACC SHIT
                     cAccFlag = ForPrinting_GetReportState(nGen, naReportFreqs_glb[REPORT_MCMOVE]);
                     if (cAccFlag)
                         {
@@ -1418,6 +1390,13 @@ void FileIOUtil_PreCycle_Init(const int run_it)
             FileIOUtil_CreateFile_Overwrite(strFileEnergy_glb); // Open a new Energy file; each run_it will have its own
             FileIOUtil_WriteHeader_ForEnergy(strFileEnergy_glb);
         }
+    if (naReportFreqs_glb[REPORT_UMBRELLA])
+        {
+            sprintf(strUmbrellaFile_glb,"%s_%d_umbrella.dat", strReportPrefix_glb, run_it);
+            FileIOUtil_CreateFile_Overwrite(strUmbrellaFile_glb); // Open a new umbrella distance file; each run_it will have its own
+            
+        }
+    
     if (naReportFreqs_glb[REPORT_MCMOVE])
         {
             sprintf(strFileMCMove_glb, "%s_%d_mcmove.dat", strReportPrefix_glb, run_it);

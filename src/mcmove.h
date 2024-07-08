@@ -5,7 +5,7 @@
 
 int MC_Step(float fMCTemp);
 
-int MC_Step_Therm(float fMCTemp);
+int MC_Step_Equil(float fMCTemp);
 
 int Move_Rot(int beadID, float MyTemp);
 

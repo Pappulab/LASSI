@@ -6,6 +6,12 @@
 /// various global arrays.
 void Memory_Initialization_AtStart(void)
 {
+    // nBiasPotential_UmbrellaMode_glb = 0;
+    // nBead1_glb = 0;
+    // nBead2_glb = 0;
+    // spring_constant_glb = 0.0;
+    // equilibrium_distance_glb = 0.0;
+
     char arr_name[100];
 
     strcpy(arr_name, "naTotLattice_glb");
@@ -392,6 +398,7 @@ void Global_Array_Initialization_AtStart(void)
     for (i = MV_NULL + 2; i < MAX_MV; i++)
         {
             faMCFreq_glb[i] += faMCFreq_glb[i - 1]; // Cumulative Frequencies
+            faMCFreqEquil_glb[i] += faMCFreqEquil_glb[i - 1]; // Cumulative Frequencies
         }
     for (i = 0; i < MAX_MV; i++)
         { // Zero out all the MCAccepts

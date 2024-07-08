@@ -50,6 +50,7 @@ float Energy_Of_Chain(const int chainID);
 float Energy_Of_Chain_Self(const int chainID);
 
 float Energy_BiasingPotential(const int beadID);
+float Energy_UmbrellaPotential(int beadID1, int beadID2, double stiff_Umbrella, double equilibrium_distance);
 
 void Energy_Iso_ForLocal(const int beadID, const int resi, const int* r_pos0, long double* oldEn, long double* newEn,
                          int* ovlp_num, int* cont_num, int* ovlp_neighs, int* cont_neighs);

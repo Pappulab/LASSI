@@ -106,10 +106,10 @@ int MC_Step(float fMCTemp)
     return mode * 12 + nAccept;
 }
 
-/// MC_Step_Therm - given the MC move frequencies, picks non-anisotropic
+/// MC_Step_Equil - given the MC move frequencies, picks non-anisotropic
 /// variants of the moves. \param fMCTemp \return bAccept - the acceptance state
 /// where MCMove=bAccept/12 and MCAccept=bAccept%2.
-int MC_Step_Therm(float fMCTemp)
+int MC_Step_Equil(float fMCTemp)
 {
     int mode = 0; // Which move to do
     int nAccept;  // Used in MC steps
@@ -117,7 +117,7 @@ int MC_Step_Therm(float fMCTemp)
     int i; // Internal iterator, and int.
     for (i = 0; i < MAX_MV; i++)
         {
-            if (prob < faMCFreq_glb[i])
+            if (prob < faMCFreqEquil_glb[i])
                 { // Pick this move!
                     mode = i;
                     break;
@@ -325,6 +325,9 @@ int Move_Local(int beadID, float MyTemp)
     lLDub oldEn = nBiasPotential_Mode_glb == -1 ? 0. : Energy_BiasingPotential(beadID);
     lLDub newEn = 0.;
 
+    oldEn += nBiasPotential_UmbrellaMode_glb == -1 ? 0.f : Energy_UmbrellaPotential(nBead1_glb, nBead2_glb, spring_constant_glb,equilibrium_distance_glb);
+
+
     Energy_Iso_ForLocal(beadID, resi, r_pos0, &oldEn, &newEn, &old_ovlp_num, &old_cont_num, naOldOvlpNeighs_glb,
                         naOldContNeighs_glb);
 
@@ -339,6 +342,7 @@ int Move_Local(int beadID, float MyTemp)
     OP_System_MoveBeadTo(beadID, r_posNew);
 
     newEn += nBiasPotential_Mode_glb == -1 ? 0.f : Energy_BiasingPotential(beadID);
+    newEn += nBiasPotential_UmbrellaMode_glb == -1 ? 0.f : Energy_UmbrellaPotential(nBead1_glb, nBead2_glb, spring_constant_glb,equilibrium_distance_glb);
 
     Energy_Iso_ForLocal(beadID, resi, r_posNew, &newEn, &oldEn, &new_ovlp_num, &new_cont_num, naNewOvlpNeighs_glb,
                         naNewContNeighs_glb);
@@ -474,6 +478,11 @@ int Move_Snake(int chainID, float MyTemp)
                     oldEn += Energy_BiasingPotential(i);
                 }
         }
+    if (nBiasPotential_UmbrellaMode_glb != -1)
+        {
+           oldEn += Energy_UmbrellaPotential(nBead1_glb, nBead2_glb, spring_constant_glb,equilibrium_distance_glb);
+
+        }
 
     int old_ovlp_num, old_cont_num, new_ovlp_num, new_cont_num;
 
@@ -515,6 +524,11 @@ int Move_Snake(int chainID, float MyTemp)
                 {
                     newEn += Energy_BiasingPotential(i);
                 }
+        }
+    if (nBiasPotential_UmbrellaMode_glb != -1)
+        {
+            newEn += Energy_UmbrellaPotential(nBead1_glb, nBead2_glb, spring_constant_glb,equilibrium_distance_glb);
+
         }
 
     lLDub FSum = 0.;
@@ -595,6 +609,9 @@ int Move_Trans(int chainID, float MyTemp)
                     oldEn += Energy_BiasingPotential(i);
                 }
         }
+    if (nBiasPotential_UmbrellaMode_glb != -1)
+        {   oldEn += Energy_UmbrellaPotential(nBead1_glb, nBead2_glb, spring_constant_glb,equilibrium_distance_glb);
+        }
 
     int old_ovlp_num, old_cont_num, new_ovlp_num, new_cont_num;
 
@@ -615,6 +632,11 @@ int Move_Trans(int chainID, float MyTemp)
                 {
                     newEn += Energy_BiasingPotential(i);
                 }
+        }
+    if (nBiasPotential_UmbrellaMode_glb != -1)
+        {
+            newEn += Energy_UmbrellaPotential(nBead1_glb, nBead2_glb, spring_constant_glb,equilibrium_distance_glb);
+
         }
 
     lLDub FSum = 0.;
@@ -719,6 +741,11 @@ int Move_Clus_Network(float MyTemp)
                         }
                 }
         }
+    if (nBiasPotential_UmbrellaMode_glb != -1)
+        {
+            oldEn += Energy_UmbrellaPotential(nBead1_glb, nBead2_glb, spring_constant_glb,equilibrium_distance_glb);
+
+        }
 
     if (bSystemHasCont_glb || bSystemHasOvlp_glb || bSystemHasFSol_glb)
         {
@@ -752,6 +779,12 @@ int Move_Clus_Network(float MyTemp)
                             newEn += Energy_BiasingPotential(i);
                         }
                 }
+        }
+    
+    if (nBiasPotential_UmbrellaMode_glb != -1)
+        {
+            newEn += Energy_UmbrellaPotential(nBead1_glb, nBead2_glb, spring_constant_glb,equilibrium_distance_glb);
+
         }
 
     if (bSystemHasCont_glb || bSystemHasOvlp_glb || bSystemHasFSol_glb)
@@ -829,7 +862,7 @@ int Move_SmallClus_Network(int chainID, float MyTemp)
     int r_Disp[POS_MAX];
     int yTemp;
     int i, j;
-    // Radii for translation moves. All moves are L/2 radius
+    // Radii for translation moves. All moves are L/4 radius
     // I guess moving single chains around as well is not a bad idea
 
     LatPos_gen_rand_wRad(r_Disp, naBoxSize_glb[0] / 2);
@@ -866,6 +899,11 @@ int Move_SmallClus_Network(int chainID, float MyTemp)
                         }
                 }
         }
+    if (nBiasPotential_UmbrellaMode_glb != -1)
+        {
+            oldEn += Energy_UmbrellaPotential(nBead1_glb, nBead2_glb, spring_constant_glb,equilibrium_distance_glb);
+
+        }
 
     if (bSystemHasCont_glb || bSystemHasOvlp_glb || bSystemHasFSol_glb)
         {
@@ -899,6 +937,12 @@ int Move_SmallClus_Network(int chainID, float MyTemp)
                             newEn += Energy_BiasingPotential(i);
                         }
                 }
+        }
+    
+    if (nBiasPotential_UmbrellaMode_glb != -1)
+        {
+            newEn += Energy_UmbrellaPotential(nBead1_glb, nBead2_glb, spring_constant_glb,equilibrium_distance_glb);
+
         }
 
     if (bSystemHasCont_glb || bSystemHasOvlp_glb || bSystemHasFSol_glb)
@@ -1148,6 +1192,11 @@ int Move_CoLocal(int thisBeadID, float MyTemp)
             oldEn += Energy_BiasingPotential(thisBeadID);
             oldEn += Energy_BiasingPotential(otherBeadID);
         }
+    if (nBiasPotential_UmbrellaMode_glb != -1)
+        {
+            oldEn += Energy_UmbrellaPotential(nBead1_glb, nBead2_glb, spring_constant_glb,equilibrium_distance_glb);
+
+        }
 
     int ovlp_num, cont_num;
     Energy_Iso_ForCoLocal(thisBeadID, otherBeadID, r_pos1, &oldEn, &newEn, &ovlp_num, &cont_num, naOldOvlpNeighs_glb,
@@ -1183,6 +1232,11 @@ int Move_CoLocal(int thisBeadID, float MyTemp)
         {
             newEn += Energy_BiasingPotential(thisBeadID);
             newEn += Energy_BiasingPotential(otherBeadID);
+        }
+    if (nBiasPotential_UmbrellaMode_glb != -1)
+        {
+            newEn += Energy_UmbrellaPotential(nBead1_glb, nBead2_glb, spring_constant_glb,equilibrium_distance_glb);
+
         }
 
     Energy_Iso_ForCoLocal(thisBeadID, otherBeadID, r_posNew1, &newEn, &oldEn, &ovlp_num, &cont_num, naOldOvlpNeighs_glb,
@@ -1288,6 +1342,11 @@ int Move_MultiLocal(int beadID, float MyTemp)
                     oldEn += Energy_BiasingPotential(tmpBead);
                 }
         }
+    if (nBiasPotential_UmbrellaMode_glb != -1)
+        {
+            oldEn += Energy_UmbrellaPotential(nBead1_glb, nBead2_glb, spring_constant_glb,equilibrium_distance_glb);
+
+        }
 
     int old_ovlp_num, old_cont_num, new_ovlp_num, new_cont_num;
 
@@ -1332,6 +1391,11 @@ int Move_MultiLocal(int beadID, float MyTemp)
                     tmpBead = beadsList[i];
                     newEn += Energy_BiasingPotential(tmpBead);
                 }
+        }
+    if (nBiasPotential_UmbrellaMode_glb != -1)
+        {
+            newEn += Energy_UmbrellaPotential(nBead1_glb, nBead2_glb, spring_constant_glb,equilibrium_distance_glb);
+
         }
 
     lLDub FSum = 0.;
@@ -1495,6 +1559,11 @@ int Move_Pivot(int chainID, float MyTemp)
                     oldEn += Energy_BiasingPotential(tmpBead);
                 }
         }
+    if (nBiasPotential_UmbrellaMode_glb != -1)
+        {
+            oldEn += Energy_UmbrellaPotential(nBead1_glb, nBead2_glb, spring_constant_glb,equilibrium_distance_glb);
+
+        }
 
     int old_ovlp_num, old_cont_num;
     int resi;
@@ -1528,6 +1597,11 @@ int Move_Pivot(int chainID, float MyTemp)
                     tmpBead = beadsList[i];
                     newEn += Energy_BiasingPotential(tmpBead);
                 }
+        }
+    if (nBiasPotential_UmbrellaMode_glb != -1)
+        {
+            newEn += Energy_UmbrellaPotential(nBead1_glb, nBead2_glb, spring_constant_glb,equilibrium_distance_glb);
+
         }
 
     int new_ovlp_num, new_cont_num;
@@ -1661,6 +1735,11 @@ int Move_BranchedRot(int chainID, float MyTemp)
                     oldEn += Energy_BiasingPotential(tmpBead);
                 }
         }
+    if (nBiasPotential_UmbrellaMode_glb != -1)
+        {
+            oldEn += Energy_UmbrellaPotential(nBead1_glb, nBead2_glb, spring_constant_glb,equilibrium_distance_glb);
+
+        }
 
     int old_ovlp_num, old_cont_num;
     int resi;
@@ -1691,6 +1770,11 @@ int Move_BranchedRot(int chainID, float MyTemp)
                     tmpBead = beadsList[i];
                     newEn += Energy_BiasingPotential(tmpBead);
                 }
+        }
+    if (nBiasPotential_UmbrellaMode_glb != -1)
+        {
+            newEn += Energy_UmbrellaPotential(nBead1_glb, nBead2_glb, spring_constant_glb,equilibrium_distance_glb);
+
         }
 
     int new_ovlp_num, new_cont_num;
@@ -1741,6 +1825,7 @@ int Move_BranchedRot(int chainID, float MyTemp)
 int Move_SmallClus_Proximity(const int chainID, const float myTemp)
 {
     // Performs a cluster move where a given chain and it's cluster are moved.
+    // No new 'bonds' are made so the move is reversible....
 
     int bAccept = 0; // Used in MC steps, assume that move fails initially.
 
@@ -1795,6 +1880,11 @@ int Move_SmallClus_Proximity(const int chainID, const float myTemp)
                         }
                 }
         }
+    if (nBiasPotential_UmbrellaMode_glb != -1)
+        {
+            oldEn += Energy_UmbrellaPotential(nBead1_glb, nBead2_glb, spring_constant_glb,equilibrium_distance_glb);
+
+        }
 
     // If no CONT interactions, then just checking the cluster is enough. If we have a different cluster, we immediately
     // reject. Therefore, the clusters are moved as rigid bodies and will have the same OVLP energies before and after.
@@ -1846,6 +1936,11 @@ int Move_SmallClus_Proximity(const int chainID, const float myTemp)
                             newEn += Energy_BiasingPotential(i);
                         }
                 }
+        }
+    if (nBiasPotential_UmbrellaMode_glb != -1)
+        {
+            newEn += Energy_UmbrellaPotential(nBead1_glb, nBead2_glb, spring_constant_glb,equilibrium_distance_glb);
+
         }
 
     if (bSystemHasCont_glb)
@@ -1947,6 +2042,11 @@ int Move_Clus_Proximity(const float myTemp)
                         }
                 }
         }
+    if (nBiasPotential_UmbrellaMode_glb != -1)
+        {
+           oldEn += Energy_UmbrellaPotential(nBead1_glb, nBead2_glb, spring_constant_glb,equilibrium_distance_glb);
+
+        }
 
     // If no CONT interactions, then just checking the cluster is enough. If we have a different cluster, we immediately
     // reject. Therefore, the clusters are moved as rigid bodies and will have the same OVLP energies before and after.
@@ -1998,6 +2098,11 @@ int Move_Clus_Proximity(const float myTemp)
                         }
                 }
         }
+    if (nBiasPotential_UmbrellaMode_glb != -1)
+        {
+            newEn += Energy_UmbrellaPotential(nBead1_glb, nBead2_glb, spring_constant_glb,equilibrium_distance_glb);
+
+        }
 
     if (bSystemHasCont_glb)
         {
@@ -2037,7 +2142,7 @@ int Move_Clus_Proximity(const float myTemp)
 }
 
 // All the _Equil variants of the moves are spatially the same as their non
-// _Equil variants. The only difference is that the anisotropic interaction is
+// _Equil variants. The only difference is that the aniso-tropic interaction is
 // ignored, and thus no bias is applied.
 
 int Move_Local_Equil(int beadID, float MyTemp)
@@ -2080,6 +2185,7 @@ int Move_Local_Equil(int beadID, float MyTemp)
     const int resi = bead_info_glb[beadID][BEAD_TYPE];
 
     oldEn = nBiasPotential_Mode_glb == -1 ? 0.f : Energy_BiasingPotential(beadID);
+    oldEn += nBiasPotential_UmbrellaMode_glb == -1 ? 0.f : Energy_UmbrellaPotential(nBead1_glb, nBead2_glb, spring_constant_glb,equilibrium_distance_glb);
     newEn = 0.;
 
     Energy_Iso_ForLocalEquil(beadID, resi, r_pos0, &oldEn, &newEn, &old_ovlp_num, &old_cont_num, naOldOvlpNeighs_glb,
@@ -2094,6 +2200,7 @@ int Move_Local_Equil(int beadID, float MyTemp)
     OP_System_MoveBeadTo(beadID, r_posNew);
 
     newEn += nBiasPotential_Mode_glb == -1 ? 0.f : Energy_BiasingPotential(beadID);
+    newEn += nBiasPotential_UmbrellaMode_glb == -1 ? 0.f : Energy_UmbrellaPotential(nBead1_glb, nBead2_glb, spring_constant_glb,equilibrium_distance_glb);
 
     Energy_Iso_ForLocalEquil(beadID, resi, r_posNew, &newEn, &oldEn, &new_ovlp_num, &new_cont_num, naNewOvlpNeighs_glb,
                              naNewContNeighs_glb);
@@ -2190,6 +2297,11 @@ int Move_Snake_Equil(int chainID, float MyTemp)
                     oldEn += Energy_BiasingPotential(i);
                 }
         }
+    if (nBiasPotential_UmbrellaMode_glb != -1)
+        {
+           oldEn += Energy_UmbrellaPotential(nBead1_glb, nBead2_glb, spring_constant_glb,equilibrium_distance_glb);
+
+        }
 
     int old_ovlp_num, old_cont_num, new_ovlp_num, new_cont_num;
 
@@ -2216,6 +2328,11 @@ int Move_Snake_Equil(int chainID, float MyTemp)
                 {
                     newEn += Energy_BiasingPotential(i);
                 }
+        }
+    if (nBiasPotential_UmbrellaMode_glb != -1)
+        {
+            newEn += Energy_UmbrellaPotential(nBead1_glb, nBead2_glb, spring_constant_glb,equilibrium_distance_glb);
+
         }
 
     lLDub FSum = 0.;
@@ -2280,6 +2397,11 @@ int Move_Trans_Equil(int chainID, float MyTemp)
                     oldEn += Energy_BiasingPotential(i);
                 }
         }
+    if (nBiasPotential_UmbrellaMode_glb != -1)
+        {
+            oldEn += Energy_UmbrellaPotential(nBead1_glb, nBead2_glb, spring_constant_glb,equilibrium_distance_glb);
+
+        }
 
     for (i = firstB; i < lastB; i++)
         {
@@ -2296,6 +2418,11 @@ int Move_Trans_Equil(int chainID, float MyTemp)
                 {
                     newEn += Energy_BiasingPotential(i);
                 }
+        }
+    if (nBiasPotential_UmbrellaMode_glb != -1)
+        {
+            newEn += Energy_UmbrellaPotential(nBead1_glb, nBead2_glb, spring_constant_glb,equilibrium_distance_glb);
+
         }
 
     for (i = firstB; i < lastB; i++)
@@ -2384,6 +2511,11 @@ int Move_MultiLocal_Equil(int beadID, float MyTemp)
                     oldEn += Energy_BiasingPotential(tmpBead);
                 }
         }
+    if (nBiasPotential_UmbrellaMode_glb != -1)
+        {
+            oldEn += Energy_UmbrellaPotential(nBead1_glb, nBead2_glb, spring_constant_glb,equilibrium_distance_glb);
+
+        }
 
     int old_ovlp_num, old_cont_num, new_ovlp_num, new_cont_num;
 
@@ -2425,6 +2557,11 @@ int Move_MultiLocal_Equil(int beadID, float MyTemp)
                     tmpBead = beadsList[i];
                     newEn += Energy_BiasingPotential(tmpBead);
                 }
+        }
+    if (nBiasPotential_UmbrellaMode_glb != -1)
+        {
+            newEn += Energy_UmbrellaPotential(nBead1_glb, nBead2_glb, spring_constant_glb,equilibrium_distance_glb);
+
         }
 
     for (i = 0; i < beadNum; i++)
@@ -2554,6 +2691,11 @@ int Move_Pivot_Equil(int chainID, float MyTemp)
                     oldEn += Energy_BiasingPotential(tmpBead);
                 }
         }
+    if (nBiasPotential_UmbrellaMode_glb != -1)
+        {
+            oldEn += Energy_UmbrellaPotential(nBead1_glb, nBead2_glb, spring_constant_glb,equilibrium_distance_glb);
+
+        }
 
     int old_ovlp_num, old_cont_num;
 
@@ -2582,6 +2724,11 @@ int Move_Pivot_Equil(int chainID, float MyTemp)
                     tmpBead = beadsList[i];
                     newEn += Energy_BiasingPotential(tmpBead);
                 }
+        }
+    if (nBiasPotential_UmbrellaMode_glb != -1)
+        {
+            newEn += Energy_UmbrellaPotential(nBead1_glb, nBead2_glb, spring_constant_glb,equilibrium_distance_glb);
+
         }
 
     int new_ovlp_num, new_cont_num;
@@ -2696,6 +2843,11 @@ int Move_BranchedRot_Equil(int chainID, float MyTemp)
                     oldEn += Energy_BiasingPotential(tmpBead);
                 }
         }
+    if (nBiasPotential_UmbrellaMode_glb != -1)
+        {
+            oldEn += Energy_UmbrellaPotential(nBead1_glb, nBead2_glb, spring_constant_glb,equilibrium_distance_glb);
+
+        }
 
     int old_ovlp_num, old_cont_num;
 
@@ -2721,6 +2873,11 @@ int Move_BranchedRot_Equil(int chainID, float MyTemp)
                     tmpBead = beadsList[i];
                     newEn += Energy_BiasingPotential(tmpBead);
                 }
+        }
+    if (nBiasPotential_UmbrellaMode_glb != -1)
+        {
+            newEn += Energy_UmbrellaPotential(nBead1_glb, nBead2_glb, spring_constant_glb,equilibrium_distance_glb);
+
         }
 
     int new_ovlp_num, new_cont_num;
@@ -3560,10 +3717,6 @@ lLDub OP_GenMHValue(lLDub fRos, lLDub bRos, lLDub Delta_En, lLDub Cur_Temp)
     return MH_Value;
 }
 
-///
-/// \param firstB
-/// \param lastB
-/// \param r_posNew
 void OP_System_Snake_SlitherFwd(const int firstB, const int lastB, const int* r_posNew)
 {
     int i;

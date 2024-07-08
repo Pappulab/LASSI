@@ -7,11 +7,11 @@
 #include <string.h>
 #include <time.h>
 
-#define MAX_AA         10
+#define MAX_AA         50
 #define MAX_CHAINTYPES 10
-#define MAX_CHAINLEN   500
-#define MAX_BONDS      4
-#define MAX_VALENCY    500
+#define MAX_CHAINLEN   4200
+#define MAX_BONDS      6
+#define MAX_VALENCY    1500
 
 // energy parameters
 #define E_TOT   0 // index zero must be assigned for total energy
@@ -22,7 +22,8 @@
 #define E_T_IND 5
 #define E_STIFF 6
 #define E_BIAS  7
-#define MAX_E   8 // just for counting; must be the last number of this list
+#define E_UMBRELLA  8
+#define MAX_E   9 // just for counting; must be the last number of this list
 
 // MC move parameters
 #define MV_NULL       0 // index zero indicates null move
@@ -50,7 +51,8 @@
 #define REPORT_NETWORK 5
 #define REPORT_RDFTOT  6
 #define REPORT_COMDEN  7
-#define MAX_REPORT     8 // just for counting; must be the last number of this list
+#define REPORT_UMBRELLA 8
+#define MAX_REPORT     9 // just for counting; must be the last number of this list
 
 // auxiliary definitions
 #define POS_X   0
@@ -84,11 +86,17 @@ lInt** chain_info_glb;
 lInt** topo_info_glb;
 lInt** linker_len_glb;
 
-int tot_beads_glb;
-int tot_chains_glb;
-int tot_chain_types_glb;
+size_t tot_beads_glb;
+size_t tot_chains_glb;
+size_t tot_chain_types_glb;
 lInt nAnnealing_Mode_glb, nTemp_inv_glb;
 lInt nBiasPotential_Mode_glb, RotBias_Mode_glb;
+//Umbrella potential
+lInt nBiasPotential_UmbrellaMode_glb;
+int nBead1_glb,nBead2_glb;
+double spring_constant_glb,equilibrium_distance_glb; 
+
+
 lInt nBiasPotential_KeepON_glb, nBiasPotential_CoupledToTemp_glb;
 
 // system setup
@@ -133,6 +141,7 @@ float fKT_glb, fPreKT_glb, fCuTemp_glb, fDeltaTemp_glb, fMC_TempRate_glb, fSquis
 float* faKT_Cycle_glb;
 lLong nMCStepsPerCycle_glb, nMCStepsForTherm_glb;
 float faMCFreq_glb[MAX_MV];
+float faMCFreqEquil_glb[MAX_MV];
 lInt nTotCycleNum_glb;
 
 // random number generator nRNG_Seed_glb
@@ -145,6 +154,7 @@ char strFileTraj_glb[512];
 char strFileMCMove_glb[512];
 char strFileSysProp_glb[512];
 char strRestartFile_glb[512];
+char strUmbrellaFile_glb[512];
 lLong naReportFreqs_glb[MAX_REPORT]; // Array to store report frequencies.
 lLong nTrajMode_glb;
 // Matrix to store acceptances and rejections 0: Rejected; 1: Accepted

@@ -1,11 +1,59 @@
 #include "energy.h"
 #include "structure.h"
 
+
+float Energy_UmbrellaPotential(int beadID1, int beadID2, double stiff_Umbrella, double equilibrium_distance)
+{   //printf("-1 Reached %d %d %lf %lf \n",beadID1,beadID2,stiff_Umbrella,equilibrium_distance);
+    float totEn                = 0.00f;
+    float distance_12          = 0.00f;
+    int bead1_Pos[POS_MAX]  = {bead_info_glb[nBead1_glb][0], bead_info_glb[nBead1_glb][1], bead_info_glb[nBead1_glb][2]};
+    int bead2_Pos[POS_MAX]  = {bead_info_glb[nBead2_glb][0], bead_info_glb[nBead2_glb][1], bead_info_glb[nBead2_glb][2]};
+
+    int posDiff[POS_MAX] = {bead1_Pos[0] - bead2_Pos[0], bead1_Pos[1] - bead2_Pos[1], bead1_Pos[2] - bead2_Pos[2]};
+
+    float chain_1_com[POS_MAX]={0.};
+    float chain_2_com[POS_MAX]={0.};
+
+    int chainID1, chainID2=0;
+    
+    switch (nBiasPotential_UmbrellaMode_glb)
+        {
+            case 1:
+                /*
+                 * The potential has the form (r-r_{cen})^2
+                 */
+                distance_12 = Dist_PointToPoint(bead1_Pos,bead2_Pos);
+                
+                
+                totEn = 0.5*spring_constant_glb * pow((distance_12-equilibrium_distance_glb),2);
+                //printf("Equilibrium distance: %lf \n",distance_12);
+                break;
+            
+            case 2:
+                chainID1=beadID1;
+                chainID2=beadID2;
+                Calc_CenterOfMass_OfChain(chain_1_com, chainID1);
+                Calc_CenterOfMass_OfChain(chain_2_com, chainID2);
+                distance_12 = Dist_PointToPoint_Float(chain_1_com,chain_2_com);
+                
+                totEn = 0.5*spring_constant_glb * pow((distance_12-equilibrium_distance_glb),2);
+                break;
+
+            default:
+                totEn = 0.f;
+                break;
+        }
+    //printf("Spring Potential: %d \t %lf \n",nBiasPotential_UmbrellaMode_glb,totEn);
+    return totEn;
+}
+
+
 /// Energy_BiasingPotential calculates the biasing potential used in the
 /// thermalization/equilibration The function calculates (T_current - T_final)
 /// and if < 0.001, sets nBiasPotential_Mode_glb = 0.
 /// \param beadID
 /// \return The energy, given the nBiasPotential_Mode_glb
+
 float Energy_BiasingPotential(const int beadID)
 {
     float totEn                = 0.f;
@@ -297,9 +345,9 @@ float Energy_Topo_Angle(int const beadID)
     BeadPos_sub_wPBC(vec1, r_pos0, r_posB);
     BeadPos_sub_wPBC(vec2, r_posF, r_pos0);
 
-    const float dumCosTheta = Vec3n_CosTheta(vec1, vec2);
+    const float dumCosTheta = (1.f - Vec3n_CosTheta(vec1, vec2) * Vec3n_CosTheta(vec1, vec2));
 
-    return -faEnergy_glb[resi][resi][E_STIFF] * (1.f - dumCosTheta * dumCosTheta);
+    return faEnergy_glb[resi][resi][E_STIFF] * dumCosTheta;
 }
 
 /// Energy_OfOvlp_wNeighList: Given this bead, and a supplied list of neighbors
@@ -611,6 +659,11 @@ float Energy_Isotropic_Old(const int beadID)
     float xDis = 0.f; // Distance between beads.
     int resi   = bead_info_glb[beadID][BEAD_TYPE];
     totEn += nBiasPotential_Mode_glb == -1 ? 0.f : Energy_BiasingPotential(beadID);
+    printf("2 Reached %d %d %d %lf %lf\n",(nBead1_glb, nBead2_glb, spring_constant_glb,equilibrium_distance_glb));
+    exit(0);
+
+    totEn += nBiasPotential_UmbrellaMode_glb == -1 ? 0.f : Energy_UmbrellaPotential(nBead1_glb, nBead2_glb, spring_constant_glb,equilibrium_distance_glb);
+
 
     if (nBeadTypeCanOvlp_glb[resi] == 0 && nBeadTypeCanCont_glb[resi] == 0 && nBeadTypeCanFSol_glb[resi] == 0 &&
         nBeadTypeCanTInd_glb[resi] == 0)
@@ -696,6 +749,11 @@ float Energy_Isotropic(const int beadID)
     float xDis = 0.; // Distance between beads.
     int resi   = bead_info_glb[beadID][BEAD_TYPE];
     totEn += nBiasPotential_Mode_glb == -1 ? 0.f : Energy_BiasingPotential(beadID);
+
+    totEn += nBiasPotential_UmbrellaMode_glb == -1 ? 0.f : Energy_UmbrellaPotential(nBead1_glb, nBead2_glb, spring_constant_glb,equilibrium_distance_glb);
+
+        printf("3 Reached %d %d %d %lf %lf\n",(nBead1_glb, nBead2_glb, spring_constant_glb,equilibrium_distance_glb));
+    exit(0);
 
     if (nBeadTypeCanOvlp_glb[resi] == 0 && nBeadTypeCanCont_glb[resi] == 0 && nBeadTypeCanFSol_glb[resi] == 0 &&
         nBeadTypeCanTInd_glb[resi] == 0)
@@ -831,6 +889,10 @@ float Energy_Isotropic_For_Chain(const int beadID)
     int resi   = bead_info_glb[beadID][BEAD_TYPE];
     totEn += nBiasPotential_Mode_glb == -1 ? 0. : Energy_BiasingPotential(beadID);
 
+    totEn += nBiasPotential_UmbrellaMode_glb == -1 ? 0.f : Energy_UmbrellaPotential(nBead1_glb, nBead2_glb, spring_constant_glb,equilibrium_distance_glb);
+        printf("4 Reached %d %d %d %lf %lf\n",(nBead1_glb, nBead2_glb, spring_constant_glb,equilibrium_distance_glb));
+    exit(0);
+
     if (nBeadTypeCanOvlp_glb[resi] == 0 && nBeadTypeCanCont_glb[resi] == 0 && nBeadTypeCanFSol_glb[resi] == 0 &&
         nBeadTypeCanTInd_glb[resi] == 0)
         {
@@ -910,6 +972,10 @@ float Energy_Isotropic_Contiguous_Range(const int beadID, const int smallest_bea
     float xDis = 0.; // Distance between beads.
     int resi   = bead_info_glb[beadID][BEAD_TYPE];
     totEn += nBiasPotential_Mode_glb == -1 ? 0. : Energy_BiasingPotential(beadID);
+
+    totEn += nBiasPotential_UmbrellaMode_glb == -1 ? 0.f : Energy_UmbrellaPotential(nBead1_glb, nBead2_glb, spring_constant_glb,equilibrium_distance_glb);
+    printf("5 Reached %d %d %d %lf %lf\n",(nBead1_glb, nBead2_glb, spring_constant_glb,equilibrium_distance_glb));
+    exit(0);
 
     if (nBeadTypeCanOvlp_glb[resi] == 0 && nBeadTypeCanCont_glb[resi] == 0 && nBeadTypeCanFSol_glb[resi] == 0 &&
         nBeadTypeCanTInd_glb[resi] == 0)
@@ -998,6 +1064,10 @@ float Energy_Isotropic_With_List(const int beadID, const int* bead_list, const i
     float xDis = 0.; // Distance between beads.
     int resi   = bead_info_glb[beadID][BEAD_TYPE];
     totEn += nBiasPotential_Mode_glb == -1 ? 0.f : Energy_BiasingPotential(beadID);
+
+    totEn += nBiasPotential_UmbrellaMode_glb == -1 ? 0.f : Energy_UmbrellaPotential(nBead1_glb, nBead2_glb, spring_constant_glb,equilibrium_distance_glb);
+    printf("6 Reached %d %d %d %lf %lf\n",(nBead1_glb, nBead2_glb, spring_constant_glb,equilibrium_distance_glb));
+    exit(0);
 
     if (nBeadTypeCanOvlp_glb[resi] == 0 && nBeadTypeCanCont_glb[resi] == 0 && nBeadTypeCanFSol_glb[resi] == 0 &&
         nBeadTypeCanTInd_glb[resi] == 0)
@@ -1098,13 +1168,12 @@ void Energy_Total_System(void)
                                                       &ovlp_num);
                     faCurrEn_glb[E_CONT] += Energy_OfCont_wNeighList(i, naOldContNeighs_glb, cont_num);
                 }
-            else if (nBeadTypeCanOvlp_glb[resi] || nBeadTypeCanFSol_glb[resi])
+            else
                 {
                     ovlp_num = NeighborSearch_ForOvlp(i, bead_info_glb[i], naOldOvlpNeighs_glb);
-                    faCurrEn_glb[E_OVLP] += Energy_OfOvlp_wNeighList(i, naOldOvlpNeighs_glb, ovlp_num);
-                    faCurrEn_glb[E_F_SOL] += (float) (26 - ovlp_num) * faEnergy_glb[resi][resi][E_F_SOL];
                 }
-
+            faCurrEn_glb[E_OVLP] += Energy_OfOvlp_wNeighList(i, naOldOvlpNeighs_glb, ovlp_num);
+            faCurrEn_glb[E_F_SOL] += (float) (26 - ovlp_num) * faEnergy_glb[resi][resi][E_F_SOL];
         }
 
     if (bSystemHasTopo_glb)
@@ -1122,6 +1191,16 @@ void Energy_Total_System(void)
                     faCurrEn_glb[E_BIAS] += Energy_BiasingPotential(i);
                 }
         }
+    if (nBiasPotential_UmbrellaMode_glb != -1)
+        {
+            //printf("1 Reached %d %d %lf %lf\n", nBead1_glb, nBead2_glb, spring_constant_glb, equilibrium_distance_glb);
+    // exit(0);
+        // printf("%lf",Energy_UmbrellaPotential(nBead1_glb, nBead2_glb, spring_constant_glb,equilibrium_distance_glb));
+
+        faCurrEn_glb[E_UMBRELLA] += Energy_UmbrellaPotential(nBead1_glb, nBead2_glb, spring_constant_glb,equilibrium_distance_glb);
+
+        }
+    
 
     // Taking care of double-counting energies.
     faCurrEn_glb[E_SC_SC] *= 0.5f;
@@ -1218,6 +1297,10 @@ void Energy_Iso_ForLocal(const int beadID, const int resi, const int* r_pos0, lo
     if (nBeadTypeCanFSol_glb[resi])
         { // Solvation energy.
             *oldEn = *oldEn + (float) (26 - *ovlp_num) * faEnergy_glb[resi][resi][E_F_SOL];
+        }
+
+    if (bSystemHasFSol_glb)
+        {
             *newEn = *newEn + Energy_ofSol_wNeighList(ovlp_neighs, *ovlp_num);
         }
 }
@@ -1251,6 +1334,10 @@ void Energy_Iso_ForLocalEquil(const int beadID, const int resi, const int* r_pos
     if (nBeadTypeCanFSol_glb[resi])
         { // Solvation energy.
             *oldEn = *oldEn + (float) (26 - *ovlp_num) * faEnergy_glb[resi][resi][E_F_SOL];
+        }
+
+    if (bSystemHasFSol_glb)
+        {
             *newEn = *newEn + Energy_ofSol_wNeighList(ovlp_neighs, *ovlp_num);
         }
 }
@@ -1285,6 +1372,10 @@ void Energy_Iso_ForChains(const int beadID, long double* oldEn, long double* new
     if (nBeadTypeCanFSol_glb[resi])
         { // Solvation energy.
             *oldEn = *oldEn + (float) (26 - *ovlp_num) * faEnergy_glb[resi][resi][E_F_SOL];
+        }
+
+    if (bSystemHasFSol_glb)
+        {
             *newEn = *newEn + Energy_ofSol_wNeighList(ovlp_neighs, *ovlp_num);
         }
 }
@@ -1319,6 +1410,10 @@ void Energy_Iso_ForChainsEquil(const int beadID, long double* oldEn, long double
     if (nBeadTypeCanFSol_glb[resi])
         { // Solvation energy.
             *oldEn = *oldEn + (float) (26 - *ovlp_num) * faEnergy_glb[resi][resi][E_F_SOL];
+        }
+
+    if (bSystemHasFSol_glb)
+        {
             *newEn = *newEn + Energy_ofSol_wNeighList(ovlp_neighs, *ovlp_num);
         }
 }
@@ -1354,6 +1449,10 @@ void Energy_Iso_ForCoLocal(const int thisBeadID, const int otherBeadID, const in
     if (nBeadTypeCanFSol_glb[resi])
         { // Solvation energy.
             *oldEn = *oldEn + (float) (26 - *ovlp_num) * faEnergy_glb[resi][resi][E_F_SOL];
+        }
+
+    if (bSystemHasFSol_glb)
+        {
             *newEn = *newEn + Energy_ofSol_wNeighList(ovlp_neighs, *ovlp_num);
         }
 }
@@ -1379,12 +1478,6 @@ void Energy_Iso_ForLists(const int beadIdx, int const listSize, const int beadLi
             *ovlp_num = NeighborSearch_ForOvlp(beadID, r_pos0, ovlp_neighs);
         }
 
-    if (nBeadTypeCanFSol_glb[resi])
-        { // Solvation energy.
-            *oldEn = *oldEn + (float) (26 - *ovlp_num) * faEnergy_glb[resi][resi][E_F_SOL];
-            *newEn = *newEn + Energy_ofSol_wNeighList(ovlp_neighs, *ovlp_num);
-        }
-
     if (nBeadTypeCanCont_glb[resi])
         { // CONT energy.
             *oldEn = *oldEn + Energy_OfCont_wNeighList_ForLists(beadID, listSize, beadList, cont_neighs, *cont_num);
@@ -1393,6 +1486,16 @@ void Energy_Iso_ForLists(const int beadIdx, int const listSize, const int beadLi
     if (nBeadTypeCanOvlp_glb[resi])
         { // OVLP energy.
             *oldEn = *oldEn + Energy_OfOvlp_wNeighList_ForLists(beadID, listSize, beadList, ovlp_neighs, *ovlp_num);
+        }
+
+    if (nBeadTypeCanFSol_glb[resi])
+        { // Solvation energy.
+            *oldEn = *oldEn + (float) (26 - *ovlp_num) * faEnergy_glb[resi][resi][E_F_SOL];
+        }
+
+    if (bSystemHasFSol_glb)
+        {
+            *newEn = *newEn + Energy_ofSol_wNeighList(ovlp_neighs, *ovlp_num);
         }
 }
 
@@ -1430,6 +1533,10 @@ void Energy_Iso_ForRange(const int beadID, const int smallestBead, const int lar
     if (nBeadTypeCanFSol_glb[resi])
         { // Solvation energy.
             *oldEn = *oldEn + (float) (26 - *ovlp_num) * faEnergy_glb[resi][resi][E_F_SOL];
+        }
+
+    if (bSystemHasFSol_glb)
+        {
             *newEn = *newEn + Energy_ofSol_wNeighList(ovlp_neighs, *ovlp_num);
         }
 }
@@ -1468,6 +1575,10 @@ void Energy_Iso_ForRangeEquil(const int beadID, const int smallestBead, const in
     if (nBeadTypeCanFSol_glb[resi])
         { // Solvation energy.
             *oldEn = *oldEn + (float) (26 - *ovlp_num) * faEnergy_glb[resi][resi][E_F_SOL];
+        }
+
+    if (bSystemHasFSol_glb)
+        {
             *newEn = *newEn + Energy_ofSol_wNeighList(ovlp_neighs, *ovlp_num);
         }
 }

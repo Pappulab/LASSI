@@ -34,6 +34,7 @@ int Parse_Keyfile(char* filename)
     for (i = 0; i < MAX_MV; i++)
         {
             faMCFreq_glb[i] = 0.0f; // initialization; to be normalized
+            faMCFreqEquil_glb[i] = 0.0f; // initialization; to be normalized
         }
     nBiasPotential_Mode_glb    = 0;
     nAnnealing_Mode_glb        = -1;
@@ -125,6 +126,23 @@ int Parse_Keyfile(char* filename)
                         {
                             sscanf(strLine, "%*s %d", &nBiasPotential_Mode_glb);
                         }
+
+                    //Mode, beadID1, beadID2, k, r_0: in US: 1/2k(r-r_0)^2
+                    else if (strcmp(strKeyword, "MC_UMBRELLA_SAMPLING_MODE") == 0)
+                        {
+                            sscanf(strLine, "%*s %d %d %d %lf %lf", &nBiasPotential_UmbrellaMode_glb,
+                                                                    &nBead1_glb,
+                                                                    &nBead2_glb,
+                                                                    &spring_constant_glb,
+                                                                    &equilibrium_distance_glb);
+                            printf(" Umbrella Sampling %d %d %d %f %f \n", nBiasPotential_UmbrellaMode_glb,
+                                                                    nBead1_glb,
+                                                                    nBead2_glb,
+                                                                    spring_constant_glb,
+                                                                    equilibrium_distance_glb);
+                            // exit(0);
+                        }
+
                     else if (strcmp(strKeyword, "MV_TRANS_FREQ") == 0)
                         {
                             sscanf(strLine, "%*s %f", &faMCFreq_glb[MV_TRANS]);
@@ -176,6 +194,30 @@ int Parse_Keyfile(char* filename)
                     else if (strcmp(strKeyword, "MV_PR_CLSTR") == 0)
                         {
                             sscanf(strLine, "%*s %f", &faMCFreq_glb[MV_PR_CLSTR]);
+                        }
+                    else if (strcmp(strKeyword, "MV_TRANS_EQUIL_FREQ") == 0)
+                        {
+                            sscanf(strLine, "%*s %f", &faMCFreqEquil_glb[MV_TRANS]);
+                        }
+                    else if (strcmp(strKeyword, "MV_LOCAL_EQUIL_FREQ") == 0)
+                        {
+                            sscanf(strLine, "%*s %f", &faMCFreqEquil_glb[MV_LOCAL]);
+                        }
+                    else if (strcmp(strKeyword, "MV_SNAKE_EQUIL_FREQ") == 0)
+                        {
+                            sscanf(strLine, "%*s %f", &faMCFreqEquil_glb[MV_SNAKE]);
+                        }
+                    else if (strcmp(strKeyword, "MV_MTLOCAL_EQUIL_FREQ") == 0)
+                        {
+                            sscanf(strLine, "%*s %f", &faMCFreqEquil_glb[MV_MTLOCAL]);
+                        }
+                    else if (strcmp(strKeyword, "MV_PIVOT_EQUIL_FREQ") == 0)
+                        {
+                            sscanf(strLine, "%*s %f", &faMCFreqEquil_glb[MV_PIVOT]);
+                        }
+                    else if (strcmp(strKeyword, "MV_BRROT_EQUIL_FREQ") == 0)
+                        {
+                            sscanf(strLine, "%*s %f", &faMCFreqEquil_glb[MV_BRROT]);
                         }
                     else if (strcmp(strKeyword, "RESTART_FILE") == 0)
                         {
@@ -230,6 +272,10 @@ int Parse_Keyfile(char* filename)
                         {
                             sscanf(strLine, "%*s %ld", &naReportFreqs_glb[REPORT_COMDEN]);
                         }
+                    else if (strcmp(strKeyword, "REPORT_UMBRELLA_FREQ") == 0)
+                        {
+                            sscanf(strLine, "%*s %ld", &naReportFreqs_glb[REPORT_UMBRELLA]);
+                        }
                     else if (strcmp(strKeyword, "ANALYSIS_CLUSTER_MODE") == 0)
                         {
                             sscanf(strLine, "%*s %d", &nClusteringMode_glb);
@@ -274,9 +320,11 @@ int Parse_Keyfile(char* filename)
         }
 
     float freq_tot = 0.0f;
+    float freq_tot_equil = 0.0f;
     for (i = MV_NULL + 1; i < MAX_MV; i++)
         {
             freq_tot += faMCFreq_glb[i];
+            freq_tot_equil += faMCFreqEquil_glb[i];
         }
 
     if (freq_tot == 0)
@@ -291,6 +339,21 @@ int Parse_Keyfile(char* filename)
             for (i = MV_NULL + 1; i < MAX_MV; i++)
                 {
                     faMCFreq_glb[i] /= freq_tot;
+                }
+        }
+
+    if (freq_tot_equil == 0)
+        {
+            for (i = MV_NULL + 1; i < MAX_MV; i++)
+                {
+            	    faMCFreqEquil_glb[i] = faMCFreq_glb[i];
+                }
+        }
+    else
+        {
+            for (i = MV_NULL + 1; i < MAX_MV; i++)
+                {
+            	    faMCFreqEquil_glb[i] /= freq_tot_equil;
                 }
         }
 
@@ -800,16 +863,16 @@ void Parse_StructureFile(char* filename)
 /// \param n_bead_num: Stores how many total beads are in the structure file.
 /// \param n_chain_num: Stores how many total chains are in the structure file.
 /// \param n_chain_types: Stores how many different chain-types are in the file.
-void Parse_StructureFile_CalcBeadsAndChains(char* filename, int* n_bead_num, int* n_chain_num,
-                                            int* n_chain_types)
+void Parse_StructureFile_CalcBeadsAndChains(char* filename, size_t* n_bead_num, size_t* n_chain_num,
+                                            size_t* n_chain_types)
 {
-    int dum_beads       = 0;
-    int dum_chains      = 0;
-    int dum_chain_types = 0;
-    int per_chain_num   = 0;
-    int per_ch_bd_num   = 0;
-    int errCode         = 0;
-    int nFlag           = -1;
+    size_t dum_beads       = 0;
+    size_t dum_chains      = 0;
+    size_t dum_chain_types = 0;
+    int per_chain_num      = 0;
+    int per_ch_bd_num      = 0;
+    int errCode            = 0;
+    int nFlag              = -1;
     char strLine[1000];
     char strKey[1000];
 

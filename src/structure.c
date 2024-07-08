@@ -2,7 +2,6 @@
 #include "cluster.h"
 #include "energy.h"
 #include "mcmove.h"
-#include "print.h"
 
 /// Lat_Ind_FromCoords - helper function to get the correct 1D index of this position
 /// \param i
@@ -70,7 +69,7 @@ float Dist_PointToPoint(const int* const restrict f1, const int* const restrict 
 /// Dist_BeadToPoint - euclidean distance between beadID and the vector f1.
 /// \param beadID
 /// \param f1
-/// \return sqrt(dx^2 + dy^2 + dz^2)
+/// \return
 float Dist_BeadToPoint(const int beadID, const int* const f1)
 {
     int d[POS_MAX];
@@ -86,7 +85,7 @@ float Dist_BeadToPoint(const int beadID, const int* const f1)
 /// Dist_BeadToPoint_Double - euclidean distance between beadID and the double array f1.
 /// \param beadID
 /// \param f1
-/// \return sqrt(dx^2 + dy^2 + dz^2)
+/// \return
 float Dist_BeadToPoint_Double(const int beadID, const lDub* f1)
 {
     lDub d[POS_MAX];
@@ -102,7 +101,7 @@ float Dist_BeadToPoint_Double(const int beadID, const lDub* f1)
 /// Dist_BeadToPoint_Float - euclidean distance between beadID and the float array f1.
 /// \param beadID
 /// \param f1
-/// \return sqrt(dx^2 + dy^2 + dz^2)
+/// \return
 float Dist_BeadToPoint_Float(const int beadID, const float* f1)
 {
     float d[POS_MAX];
@@ -118,7 +117,7 @@ float Dist_BeadToPoint_Float(const int beadID, const float* f1)
 /// Dist_BeadToBead - euclidean distance between the two beads.
 /// \param n1
 /// \param n2
-/// \return sqrt(dx^2 + dy^2 + dz^2)
+/// \return
 float Dist_BeadToBead(const int n1, const int n2)
 {
     lInt d[POS_MAX];
@@ -133,279 +132,96 @@ float Dist_BeadToBead(const int n1, const int n2)
     return sqrtf((float) (d[POS_X] * d[POS_X] + d[POS_Y] * d[POS_Y] + d[POS_Z] * d[POS_Z]));
 }
 
-/// CheckSystemUtil_BeadPosAndLattPosOK. Loop over all beads and make sure that the bead's internal position
-/// matches the beadID that is placed at that location.
-/// \return beadID of the bead that failed, -1 if all good.
-int CheckSystemUtil_BeadPosAndLattPosOK(void)
+/// Check_System_Structure - performs a intensive and extensive sanity check. Check:
+/// 1. All distances between beads in a molecule are legal.
+/// 2. All bonds are symmetric.
+/// 3. Bonds are only between possibly interacting beads.
+/// 4. Beads' locations correspond with actual lattice location.
+/// 5. Bonds are not between beads that are too far apart.
+/// \return 0 if everything is okay, beadID+1 if failed.
+int Check_System_Structure(void)
 {
-    int beadID;
-    int latt_pos_ind;
-    int latt_bead;
-
-    for (beadID = 0; beadID < tot_beads_glb; beadID++)
+    int i, j;          // Looping variables
+    int idx;           // Internal iterators for covalent bonds.
+    int tmpR[POS_MAX]; // Just a vector to store coordinates
+    int bondPart;
+    for (i = 0; i < tot_beads_glb; i++)
         {
-            latt_pos_ind = Lat_Ind_OfBead(beadID);
-            latt_bead    = naTotLattice_glb[latt_pos_ind];
-            if (latt_bead != beadID)
+            idx      = 0;
+            bondPart = topo_info_glb[i][idx];
+            for (j = 0; j < POS_MAX; j++)
                 {
-                    return beadID;
+                    tmpR[j] = bead_info_glb[i][j];
                 }
-        }
-
-    return -1;
-}
-
-/// Check_LinkerConstraintForBead - we loop over all possible covalently bonded beads for beadID and check if the
-/// linkers are OK.
-/// \param beadID
-/// \return beadID of the bead-bond-partner that failed, -1 if all good.
-int Check_LinkerConstraintForBead(const int beadID)
-{
-    int idx; // Iterator to loop over bond Partners
-    int bondPartner;
-    idx         = 0;
-    bondPartner = topo_info_glb[beadID][idx]; // Initializing the two.
-    while (idx < MAX_BONDS && topo_info_glb[beadID][idx] != -1)
-        { // Keep going till we run out of partners
-            bondPartner = topo_info_glb[beadID][idx];
-            if (Dist_BeadToBead(beadID, bondPartner) > LINKER_RSCALE * (float) linker_len_glb[beadID][idx])
+            if (naTotLattice_glb[Lat_Ind_FromVec(tmpR)] == -1)
                 {
-                    return bondPartner; // This means that we have broken one of the linkers.
+                    printf("Lattice Position for bead %d is empty! Chain: %d\n", i, bead_info_glb[i][BEAD_CHAINID]);
+                    return i + 1;
                 }
-            idx++;
-        }
-    return -1; // This means that all linker constraints are satisfied.
-}
-
-/// CheckSystemUtil_MolecularStructuresOK. Loop over all beads and check if the linker constraints of all the
-/// beads are satisfied correctly.
-/// \return
-int CheckSystemUtil_MolecularStructuresOK(void)
-{
-    int beadID;
-
-    for (beadID = 0; beadID < tot_chains_glb; beadID++)
-        {
-            if (Check_LinkerConstraintForBead(beadID) >= 0)
-                {
-                    return beadID;
+            if (i - naTotLattice_glb[Lat_Ind_FromVec(tmpR)] != 0)
+                { // This means there is a mismatch between where the bead is and where the lattice thinks the bead is
+                    printf("Bead position and lattice value not the same. Crashing\t\t");
+                    printf("B1:%d B2:%d\t C1:%d C2:%d\n", i, naTotLattice_glb[Lat_Ind_FromVec(tmpR)],
+                           bead_info_glb[i][BEAD_CHAINID],
+                           bead_info_glb[naTotLattice_glb[Lat_Ind_FromVec(tmpR)]][BEAD_CHAINID]);
+                    return i + 1;
                 }
-        }
-
-    return -1;
-}
-
-/// CheckSystemUtil_BeadBondsSymmetricOK. Loops over all beads and makes sure that the bead I am bonded to is also
-/// bonded to me. \return beadID of the bead that failed, -1 if all good.
-int CheckSystemUtil_BeadBondsSymmetricOK(void)
-{
-    int beadID;
-
-    for (beadID = 0; beadID < tot_beads_glb; beadID++)
-        {
-            int bondPartner = bead_info_glb[beadID][BEAD_FACE];
-            if (bondPartner != -1)
+            while (topo_info_glb[i][idx] != -1 && idx < MAX_BONDS)
                 {
-                    if (bead_info_glb[bondPartner][BEAD_FACE] != beadID)
+                    bondPart = topo_info_glb[i][idx];
+                    if (Dist_BeadToBead(i, bondPart) > LINKER_RSCALE * linker_len_glb[i][idx])
                         {
-                            return beadID;
+                            printf("Bad beads! %d\t(%d %d %d)\t\tTopo:(%d %d %d)\t\tLinkers:(%.5f\t%.5f\t%.5f)\n", i,
+                                   bead_info_glb[i][0], bead_info_glb[i][1], bead_info_glb[i][2], topo_info_glb[i][0],
+                                   topo_info_glb[i][1], topo_info_glb[i][2], (float) linker_len_glb[i][0],
+                                   (float) linker_len_glb[i][1], (float) linker_len_glb[i][2]);
+                            printf("\t\t\t\t\t-------------------->\t\t%f\tSHOULD BE\t%f\n",
+                                   Dist_BeadToBead(i, bondPart), LINKER_RSCALE * (float) linker_len_glb[i][idx]);
+                            printf("Bad beads! %d\t(%d %d %d)\t\tTopo:(%d %d %d)\t\tLinkers:(%.5f\t%.5f\t%.5f)\n\n",
+                                   bondPart, bead_info_glb[bondPart][0], bead_info_glb[bondPart][1],
+                                   bead_info_glb[bondPart][2], topo_info_glb[bondPart][0], topo_info_glb[bondPart][1],
+                                   topo_info_glb[bondPart][2], (float) linker_len_glb[bondPart][0],
+                                   (float) linker_len_glb[bondPart][1], (float) linker_len_glb[bondPart][2]);
+                            return i + 1;
+                        }
+                    idx++;
+                }
+            if (bead_info_glb[i][BEAD_FACE] != -1)
+                {
+                    if (nBeadTypeIsSticker_glb[bead_info_glb[i][BEAD_TYPE]] == 0)
+                        {
+                            printf("This bead -- %d -- should not have a bond. Crashing.\n", i);
+                            return i + 1;
+                        }
+                    if (bead_info_glb[i][BEAD_FACE] == i)
+                        {
+                            printf("Self bonded.\n");
+                            return i + 1;
+                        }
+                    if (i != bead_info_glb[bead_info_glb[i][BEAD_FACE]][BEAD_FACE])
+                        {
+                            printf("Bad bond!\n\t%d %d %d %f\nCrashing.\n", i, bead_info_glb[i][BEAD_FACE],
+                                   bead_info_glb[bead_info_glb[i][BEAD_FACE]][BEAD_FACE],
+                                   faEnergy_glb[bead_info_glb[i][BEAD_TYPE]]
+                                               [bead_info_glb[bead_info_glb[i][BEAD_FACE]][BEAD_TYPE]][E_SC_SC]);
+                            return i + 1;
+                        }
+                    if (Dist_BeadToBead(i, bead_info_glb[i][BEAD_FACE]) > LINKER_RSCALE)
+                        {
+                            printf("Bad bond! Distance is wrong\n\t%d %d %d\n Distance is %f. Crashing.\n", i,
+                                   bead_info_glb[i][BEAD_FACE], bead_info_glb[bead_info_glb[i][BEAD_FACE]][BEAD_FACE],
+                                   Dist_BeadToBead(i, bead_info_glb[i][BEAD_FACE]));
+                            return i + 1;
                         }
                 }
         }
-
-    return -1;
-}
-
-/// CheckSystemUtil_BeadBondsDistanceOK. Loops over all beads and checks that the distance between bonded beads is not
-/// greater than the allowed threshold.
-/// \return beadID of the bead that failed, -1 if all good.
-int CheckSystemUtil_BeadBondsDistanceOK(void)
-{
-    int beadID;
-    //    float bDist;
-    for (beadID = 0; beadID < tot_beads_glb; beadID++)
-        {
-            int bondPartner = bead_info_glb[beadID][BEAD_FACE];
-            if (bondPartner != -1)
-                {
-                    const float bDist = Dist_BeadToBead(beadID, bondPartner);
-                    if (bDist > LINKER_RSCALE)
-                        {
-                            return beadID;
-                        }
-                }
-        }
-
-    return -1;
-}
-
-/// CheckSystemUtil_NoSelfBonds. Loops over all beads and makes sure that no bead is bonded to itself.
-/// \return beadID of the bead that failed, -1 if all good.
-int CheckSystemUtil_NoSelfBonds(void)
-{
-    int beadID;
-
-    for (beadID = 0; beadID < tot_beads_glb; beadID++)
-        {
-            int bondPartner = bead_info_glb[beadID][BEAD_FACE];
-            if (bondPartner == beadID)
-                {
-                    return beadID;
-                }
-        }
-
-    return -1;
-}
-
-/// PerformRuntimeSanityCheck_BeadPosAndLattPos. Performs sanity check to make sure that the lattice has the bead
-/// at the bead's location. If there is an error, we exit out of the program after printing out the relevant information
-/// \param nGen Which MC Step this crash has occurred on.
-/// \param run_cycle Which run_cycle this crash has occurred on.
-void PerformRuntimeSanityCheck_BeadPosAndLattPos(const long nGen, const int run_cycle)
-{
-    int badBead = CheckSystemUtil_BeadPosAndLattPosOK();
-    if (badBead != -1)
-        {
-            ScreenIO_Print_SanityCheckFailurePreamble(nGen, run_cycle);
-            FileIO_PrintCrashSnapshot();
-            fputs("Lattice positions and bead positions do not match!\n\nDetails of crash:\n", stderr);
-
-            ScreenIO_Print_SanityFail_BeadPosAndLattPos(badBead);
-
-            fputs("-------------------------------------------------------------------------------", stderr);
-            exit(1);
-        }
-}
-
-/// PerformRuntimeSanityCheck_MolecularStructure. Performs a sanity check to make sure all linkers are unbroken.
-/// If there is an error, we exit out of the program after printing out the relevant information
-/// \param nGen Which MC Step this crash has occurred on.
-/// \param run_cycle Which run_cycle this crash has occurred on.
-void PerformRuntimeSanityCheck_MolecularStructure(const long nGen, const int run_cycle)
-{
-    const int badBead = CheckSystemUtil_MolecularStructuresOK();
-    if (badBead != -1)
-        {
-            ScreenIO_Print_SanityCheckFailurePreamble(nGen, run_cycle);
-            FileIO_PrintCrashSnapshot();
-            fputs("Molecular structure has been broken!\n\nDetails of crash:\n", stderr);
-
-            ScreenIO_Print_SanityFail_MolecularStructure(badBead);
-
-            fputs("-------------------------------------------------------------------------------", stderr);
-            exit(1);
-        }
-}
-
-/// PerformRuntimeSanityCheck_SelfBonds. Performs a sanity check to make sure no bead is self-bonded.
-/// If there is an error, we print out the relevant information and crash the simulation.
-/// \param nGen Which MC Step this crash has occurred on.
-/// \param run_cycle Which run_cycle this crash has occurred on.
-void PerformRuntimeSanityCheck_SelfBonds(const long nGen, const int run_cycle)
-{
-    const int badBead = CheckSystemUtil_NoSelfBonds();
-    if (badBead != -1)
-        {
-            ScreenIO_Print_SanityCheckFailurePreamble(nGen, run_cycle);
-            FileIO_PrintCrashSnapshot();
-            fputs("A bead is self-bonded!\n\nDetails of crash:\n", stderr);
-
-            ScreenIO_Print_SanityFail_SelfBond(badBead);
-
-            fputs("-------------------------------------------------------------------------------", stderr);
-            exit(1);
-        }
-}
-
-/// PerformRuntimeSanityCheck_BondSymmetry. Performs a sanity check to make sure all bonded beads are bonded to each
-/// other, or that the bonds are symmetric. If there is an error, we print out the relevant information and crash
-/// the simulation.
-/// \param nGen Which MC Step this crash has occurred on.
-/// \param run_cycle Which run_cycle this crash has occurred on.
-void PerformRuntimeSanityCheck_BondSymmetry(const long nGen, const int run_cycle)
-{
-    const int badBead = CheckSystemUtil_BeadBondsSymmetricOK();
-    if (badBead != -1)
-        {
-            ScreenIO_Print_SanityCheckFailurePreamble(nGen, run_cycle);
-            FileIO_PrintCrashSnapshot();
-            fputs("Anisotropic bonds are not symmetric!\n\nDetails of crash:\n", stderr);
-
-            ScreenIO_Print_SanityFail_BeadBondSymmetry(badBead);
-
-            fputs("-------------------------------------------------------------------------------", stderr);
-            exit(1);
-        }
-}
-
-/// PerformRuntimeSanityCheck_BondDistance. Performs a sanity check to make sure that the distance between all bonded
-/// beads is not greater than the global allowed threshold.
-/// \param nGen Which MC Step this crash has occurred on.
-/// \param run_cycle Which run_cycle this crash has occurred on.
-void PerformRuntimeSanityCheck_BondDistance(const long nGen, const int run_cycle)
-{
-    const int badBead = CheckSystemUtil_BeadBondsDistanceOK();
-    if (badBead != -1)
-        {
-            ScreenIO_Print_SanityCheckFailurePreamble(nGen, run_cycle);
-            FileIO_PrintCrashSnapshot();
-            fputs("Bond distance is too large!\n\nDetails of crash:\n", stderr);
-
-            ScreenIO_Print_SanityFail_BeadBondDistance(badBead);
-
-            fputs("-------------------------------------------------------------------------------", stderr);
-            exit(1);
-        }
-}
-
-/// PerformRuntimeSanityChecks. Performs the following sanity checks:
-/// 1: PerformRuntimeSanityCheck_BeadPosAndLattPos
-/// 2: PerformRuntimeSanityCheck_MolecularStructure
-/// 3: PerformRuntimeSanityCheck_SelfBonds
-/// 4: PerformRuntimeSanityCheck_BondSymmetry
-/// 5: PerformRuntimeSanityCheck_BondDistance
-/// \param nGen
-/// \param run_cycle
-void PerformRuntimeSanityChecks(const long nGen, const int run_cycle)
-{
-    /*
-     * The following set of snippets cause specific failures.
-     */
-    //    //Causes lattice failure only
-    //    naTotLattice_glb[Lat_Ind_OfBead(10)]=5;
-    //
-    //    //Causes structure failure only
-    //    bead_info_glb[2][0] = 30;
-    //    bead_info_glb[3][0] = 0;
-    //    naTotLattice_glb[Lat_Ind_OfBead(2)]=2;
-    //    naTotLattice_glb[Lat_Ind_OfBead(3)]=3;
-    //
-    //    //Causes bond-symmetry failure only
-    //    bead_info_glb[4][BEAD_FACE] = 5;
-    //    bead_info_glb[5][BEAD_FACE] = -1;
-    //
-    //    //Causes self-bond failure only
-    //    bead_info_glb[6][BEAD_FACE] = 6;
-    //
-    //    //Causes bond-distance failure only
-    //    bead_info_glb[2][BEAD_FACE] = 3;
-    //    bead_info_glb[3][BEAD_FACE] = 2;
-
-    PerformRuntimeSanityCheck_BeadPosAndLattPos(nGen, run_cycle);
-
-    PerformRuntimeSanityCheck_MolecularStructure(nGen, run_cycle);
-
-    PerformRuntimeSanityCheck_SelfBonds(nGen, run_cycle);
-
-    PerformRuntimeSanityCheck_BondSymmetry(nGen, run_cycle);
-
-    PerformRuntimeSanityCheck_BondDistance(nGen, run_cycle);
+    return 0;
 }
 
 /// Dist_Vec3n - non periodic boundary euclidean magnitude of vector
 /// \param f1: The array where indicies 0,1 and 3 correspond to x y and z.
 /// \return
-float Dist_Vec3n(const int* const f1)
+float Dist_Vec3n(const int* f1)
 { // Outputs the magnitude of the vector
     return sqrtf((float) (f1[0] * f1[0] + f1[1] * f1[1] + f1[2] * f1[2]));
 }
@@ -413,9 +229,164 @@ float Dist_Vec3n(const int* const f1)
 /// Dist_VecMagSq - non periodic boundary euclidean magnitude of vector
 /// \param f1: The array where indicies 0,1 and 3 correspond to x y and z.
 /// \return Square of magnitude: x^2 + y^2 + z^2
-int Dist_VecMagSq(const int* const f1)
+int Dist_VecMagSq(const int* f1)
 { // Outputs the magnitude of the vector
     return (f1[0] * f1[0] + f1[1] * f1[1] + f1[2] * f1[2]);
+}
+
+/// GyrTensor_ClusterSpecific - calculates the total Gyration Tensor for a given cluster
+/// \param ClusSize - the total size of the cluster.
+/// \param ClusIndex - the index on naClusterMatrix_glb where the cluster is stored.
+/// THIS IS VERY OLD AND HASN'T BEEN LOOKED AT IN A WHILE
+/// TODO: Update this for the new version
+void GyrTensor_ClusterSpecific(int ClusSize, int ClusIndex)
+{
+    // Calculate the components of the gyration tensor for a given cluster.
+    // ClusSize is the size of the cluster -- obviously -- whereas ClusIndex tell us
+    // where in naClusterMatrix_glb the chain indecies are located. naClusterMatrix_glb[ClusIndex][0-ClusSize] is all
+    // the chainID's I need for the calculation Remember that the Gyration Tensor is a 3x3 symmetric object so we only
+    // need 6 numbers.
+    int i, k, j, j2; // Basic indecies for loops
+    for (i = 0; i < 7; i++)
+        {
+            faGyrTensor_glb[i] = 0.;
+        }                          // Initializing
+    int firstB, lastB;             // Tracks the first and last bead of the given chain
+    float tot_COM[POS_MAX] = {0.}; // This is where we shall store the COM of the cluster.
+    int NumRes             = 0;    // Tracks how many residues are in this cluster
+
+    // The only thing one needs to be careful about is to take PBC into account; the rest is tedium.
+    // Use good old differential geometry to map each coordinate to two new coordinates, and unpack at the end.
+    float theta[POS_MAX] = {0.};
+    float zeta[POS_MAX]  = {0.}; // Extra coordinates for goodness
+    float dumArg         = 0.;   // Just a dummy variable to be more efficient
+    float dumArg2        = 0.;   // Another one
+    // printf("Starting with COM\n");
+    // Calculating the COM
+    for (i = 0; i < ClusSize; i++)
+        {
+            firstB = chain_info_glb[naClusterMatrix_glb[ClusIndex][i]][CHAIN_START];
+            lastB  = firstB + chain_info_glb[naClusterMatrix_glb[ClusIndex][i]][CHAIN_LENGTH];
+            // printf("%d %d\n", firstB, lastB);
+            // Just easier to track each chain like this
+            for (k = firstB; k < lastB; k++)
+                {
+                    NumRes++; // Adding a residue to the total
+                    for (j = 0; j < POS_MAX; j++)
+                        {
+                            dumArg = 2. * M_PI * ((float) bead_info_glb[k][j] / (float) naBoxSize_glb[j]);
+                            theta[j] += cosf(dumArg);
+                            zeta[j] += sinf(dumArg); // Since I am taking the average just keep adding
+                        }
+                }
+            // printf("Next bead\n");
+        }
+    // printf("Done with COM\n");
+    // Calculating average, and then COM
+    for (j = 0; j < POS_MAX; j++)
+        {
+            theta[j]   = theta[j] / (float) NumRes;
+            zeta[j]    = zeta[j] / (float) NumRes;
+            tot_COM[j] = atan2f(-theta[j], -zeta[j]) + M_PI;
+            tot_COM[j] = naBoxSize_glb[j] * (tot_COM[j] / 2. / M_PI);
+        }
+
+    // Using the COM to calculate the Gyration Tensor
+    //  GyrTen_{ij} = 1/N sum_1^N (r_i-com_i)(r_j-com_j) so just take the sums and divide at the end
+    for (i = 0; i < ClusSize; i++)
+        {
+            firstB = chain_info_glb[naClusterMatrix_glb[ClusIndex][i]][CHAIN_START];
+            lastB  = firstB + chain_info_glb[naClusterMatrix_glb[ClusIndex][i]][CHAIN_LENGTH];
+            // Just easier to track each chain like this
+            for (k = firstB; k < lastB; k++)
+                {
+                    for (j = 0; j < POS_MAX; j++)
+                        {
+                            for (j2 = j; j2 < POS_MAX; j2++)
+                                {
+                                    dumArg =
+                                        fabsf((float) bead_info_glb[k][j] - tot_COM[j]) <
+                                                (float) naBoxSize_glb[j] -
+                                                    fabsf((float) bead_info_glb[k][j] - tot_COM[j]) ?
+                                            fabsf((float) bead_info_glb[k][j] - tot_COM[j]) :
+                                            (float) naBoxSize_glb[j] - fabsf((float) bead_info_glb[k][j] - tot_COM[j]);
+                                    dumArg2 = fabsf((float) bead_info_glb[k][j2] - tot_COM[j2]) <
+                                                      (float) naBoxSize_glb[j2] -
+                                                          fabsf((float) bead_info_glb[k][j2] - tot_COM[j2]) ?
+                                                  fabsf((float) bead_info_glb[k][j2] - tot_COM[j2]) :
+                                                  (float) naBoxSize_glb[j2] -
+                                                      fabsf((float) bead_info_glb[k][j2] - tot_COM[j2]);
+                                    faGyrTensor_glb[j + 3 * (j2 - j)] += dumArg * dumArg2;
+                                    // 0 = xx; 1 = yy; 2 = zz; 3 = xy; 6 = xz; 4 = yz; Need smarter indexing
+                                }
+                        }
+                }
+        }
+
+    // Calculating the average;
+    for (i = 0; i < 7; i++)
+        {
+            faGyrTensor_glb[i] /= (float) NumRes;
+        } // printf("%f\n",faGyrTensor_glb[i]);}printf("\n");
+
+    // exit(1);
+}
+
+/// GyrTensor_GyrRad - calculates the total Gyration Tensor of the system.
+/// THIS IS VERY OLD AND HASN'T BEEN LOOKED AT IN A WHILE
+/// TODO: Update this for the new version
+void GyrTensor_GyrRad(void)
+{                    // Calculates the gyration tensor for the whole system
+    int i, k, j, j2; // Basic indecies for loops
+    for (i = 0; i < 7; i++)
+        {
+            faGyrTensor_glb[i] = 0.f;
+        }                           // Initializing
+    float tot_COM[POS_MAX] = {0.f}; // This is where we shall store the COM of the cluster.
+
+    // The only thing one needs to be careful about is to take PBC into account; the rest is tedium.
+    // Use good old differential geometry to map each coordinate to two new coordinates, and unpack at the end.
+    float theta[POS_MAX] = {0.f};
+    float zeta[POS_MAX]  = {0.f}; // Extra coordinates for goodness
+    float dumArg         = 0.f;   // Just a dummy variable to be more efficient
+    float dumArg2        = 0.f;   // Another one
+
+    for (i = 0; i < tot_beads_glb; i++)
+        {
+            for (j = 0; j < POS_MAX; j++)
+                {
+                    tot_COM[j] += bead_info_glb[i][j];
+                }
+        }
+
+    // Calculating average, and then COM
+    for (j = 0; j < POS_MAX; j++)
+        {
+            tot_COM[j] /= (float) tot_beads_glb;
+        }
+    // printf("\n");
+    // Using the COM to calculate the Gyration Tensor
+    //  GyrTen_{ij} = 1/N sum_1^N (r_i-com_i)(r_j-com_j) so just take the sums and divide at the end
+    for (i = 0; i < tot_beads_glb; i++)
+        {
+            for (j = 0; j < POS_MAX; j++)
+                {
+                    dumArg = (float) bead_info_glb[i][j] - tot_COM[j];
+                    for (j2 = j; j2 < POS_MAX; j2++)
+                        {
+                            dumArg2 = (float) bead_info_glb[i][j2] - tot_COM[j2];
+                            faGyrTensor_glb[j + 3 * (j2 - j)] += dumArg * dumArg2;
+                            // printf("%.2f\t", dumArg2);
+                            // 0 = xx; 1 = yy; 2 = zz; 3 = xy; 6 = xz; 4 = yz; Need smarter indexing
+                        }
+                } // printf("\n");
+        }
+    // exit(1);
+    // Calculating the average;
+    for (i = 0; i < 7; i++)
+        {
+            faGyrTensor_glb[i] /= (float) tot_beads_glb;
+        } // printf("%f\n",faGyrTensor_glb[i]);}printf("\n");
 }
 
 /// GyrTensor_GyrRad_Avg - calculates the total radius of gyration of the system, while not being smart about the
@@ -543,7 +514,7 @@ void RDF_ComponentWise_Avg(void)
 /// \param beadID
 /// \param tmpR
 /// \return 1 means all is good, 0 means bad.
-int Check_LinkerConstraint(const int beadID, const int* const tmpR)
+int Check_LinkerConstraint(const int beadID, const int* tmpR)
 {
     // Check if the proposed new location for beadID is such that all the linkers are unbroken.
     int idx;         // Iterator to loop over bond Partners
@@ -561,6 +532,60 @@ int Check_LinkerConstraint(const int beadID, const int* const tmpR)
             idx++;
         }
     return 1; // This means that all linker constraints are satisfied.
+}
+
+/// Check_MTLinkerConstraint_OLD - if I move beadID and all of it's covalent bonded beads to the locations stored in
+/// tmpR[][], would all the linker constraints be satisfied?
+/// \param beadID
+/// \param tmpR
+/// \return
+int Check_MTLinkerConstraint_OLD(int beadID, int (*tmpR)[POS_MAX])
+{
+
+    int curID = beadID;
+    int idx, bPart;
+    int j;
+    int topIt = 0;
+    int canI  = 1;
+
+    while (curID != -1)
+        {
+            for (j = 0; j < POS_MAX; j++)
+                {
+                    bead_info_glb[curID][j] = tmpR[topIt][j]; // Moving
+                }
+            curID = topo_info_glb[beadID][topIt++];
+        }
+
+    curID = beadID;
+    topIt = 0;
+    while (curID != -1 && canI == 1)
+        {
+            idx   = 0;
+            bPart = topo_info_glb[curID][idx];
+            while (bPart != -1 && idx < MAX_BONDS)
+                {
+                    if (Dist_BeadToBead(curID, bPart) > LINKER_RSCALE * (float) linker_len_glb[curID][idx])
+                        {
+                            canI = 0;
+                            break;
+                        }
+                    bPart = topo_info_glb[curID][++idx];
+                }
+            curID = topo_info_glb[beadID][topIt++];
+        }
+    curID = beadID;
+    topIt = 0;
+    while (curID != -1)
+        {
+            for (j = 0; j < POS_MAX; j++)
+                {
+                    bead_info_glb[curID][j] = old_bead_glb[curID][j]; // Moving back
+                }
+            curID = topo_info_glb[beadID][topIt++];
+        }
+
+    return canI;
 }
 
 /// Check_LinkerConstraints_ForBeadList - given that all the beads in beadList are at the new
@@ -716,6 +741,75 @@ void Calc_CenterOfMass_OfCluster(lDub* const naCOM_out, const int cluster_size, 
                         }
                 }
         }
+    int nCheck[POS_MAX] = {0};
+
+    for (j = 0; j < POS_MAX; j++)
+        {
+            if ((zeta[j] == 0.) && (xi[j] == 0.))
+                { // If both 0, then undefined, so skip.
+                    nCheck[j] = 0;
+                }
+            else
+                {
+                    nCheck[j] = 1;
+                }
+        }
+
+    for (j = 0; j < POS_MAX; j++)
+        {
+            if (nCheck[j] == 1)
+                {
+                    xi[j] /= (lLDub) bead_total_now;
+                    zeta[j] /= (lLDub) bead_total_now;
+                    tot_COM[j] = atan2(-zeta[j], -xi[j]) + M_PI;
+                    tot_COM[j] /= dumConst[j];
+                }
+        }
+
+    for (j = 0; j < POS_MAX; j++)
+        {
+            naCOM_out[j] = tot_COM[j];
+        }
+}
+
+/// \param naCOM_out
+/// \param cluster_size
+/// \param naClusList_in
+void Calc_CenterOfMass_OfChain(float* const naCOM_out, const int chainID)
+{
+    // This version measures the COM of a cluster of size c
+    //  cluster size, given the molecule ID's in naList_glb.
+    // The COM from this is not necessarily the COM of the system as a whole.
+    int thisMol, i, j, k;         // Iterators
+    thisMol=chainID;
+    int fB, lB;                   // Keep track of first and last beads of a given molecule
+    float tot_COM[POS_MAX] = {0.}; // This is where the COM will be stored
+    int bead_total_now    = 0;
+
+    lDub zeta[POS_MAX] = {0.};
+    lDub xi[POS_MAX]   = {0.};
+    lDub dumArg        = 0.;
+
+    lLDub dumConst[POS_MAX] = {0.};
+    for (j = 0; j < POS_MAX; j++)
+        {
+            dumConst[j] = 2. * M_PI / (lLDub) naBoxSize_glb[j];
+        }
+
+
+    fB      = chain_info_glb[thisMol][CHAIN_START];
+    lB      = fB + chain_info_glb[thisMol][CHAIN_LENGTH];
+    for (i = fB; i < lB; i++)
+        {
+            bead_total_now++;
+            for (j = 0; j < POS_MAX; j++)
+                {
+                    dumArg = dumConst[j] * (lDub) bead_info_glb[i][j];
+                    zeta[j] += sin(dumArg);
+                    xi[j] += cos(dumArg);
+                }
+        }
+
     int nCheck[POS_MAX] = {0};
 
     for (j = 0; j < POS_MAX; j++)
@@ -997,7 +1091,7 @@ void RadDen_Avg_MolTypeWise_FromMolTypeCen_Old_CorrectVersion(void)
 void RadialDensityAnalysis_Perform_Analysis(void)
 {
 
-    RadDenHistUtil_ForSystem_FromLargestClusterOfMolTypes();
+	RadDenHistUtil_ForSystem_FromLargestClusterOfMolTypes_AllChains();
     RadDenHistUtil_ForSystem_FromCenterOfMassOfMolTypes();
 
     nTotRadDenCounter_glb++;
@@ -1068,7 +1162,7 @@ void RadDenHistUtil_ForSystem_FromLargestClusterOfMolTypes(void)
     int* const naFullClusCumSizes = calloc((tot_chains_glb + 1), sizeof(int));
 
     const int nMolWiseClusNum = ClusUtil_OfSystem_MolWise_GetLargestClusters(naMolWiseClusIDs, naFullClusList,
-                                                                             naFullClusSizes, naFullClusCumSizes);
+                                                                             naFullClusCumSizes, naFullClusSizes);
 
     for (nCurrentType = 0; nCurrentType < tot_chain_types_glb + 1; nCurrentType++)
         {
@@ -1096,6 +1190,65 @@ void RadDenHistUtil_ForSystem_FromLargestClusterOfMolTypes(void)
                             fDis    = Dist_BeadToPoint(i, naCOM_r);
                             nRadBin = (int) (4.f * fDis);
                             ldaRadDen_Arr_glb[RadDenArr_Index(0, nRadDenMolComp, nRadBin)] += 1.0;
+                        }
+                }
+        }
+
+    free(naTmpClusChainList);
+    free(naFullClusSizes);
+    free(naFullClusList);
+    free(naFullClusCumSizes);
+    free(naMolWiseClusIDs);
+}
+
+void RadDenHistUtil_ForSystem_FromLargestClusterOfMolTypes_AllChains(void)
+{
+
+    int i, j, k;        // Iterators for loop
+    int thisType;       // Tracks the type of the chain
+    int nRadDenMolComp; // Tracks which component of ldRadDen
+    lDub LaTypeCOM_r[POS_MAX] = {0.};
+    int naCOM_r[POS_MAX]      = {0};
+    int nRadBin;
+    float fDis       = 0.f; // Tracks the distance between the COM and the specific bead
+    int nCurrentType = 0;
+    int fB, lB;
+    int nMolWiseClusSize = 0;
+
+    int* const naMolWiseClusIDs   = malloc((tot_chain_types_glb + 2) * sizeof(int));
+    int* const naTmpClusChainList = malloc((tot_chains_glb + 1) * sizeof(int));
+    int* const naFullClusList     = malloc((tot_chains_glb + 1) * sizeof(int));
+    int* const naFullClusSizes    = calloc((tot_chains_glb + 1), sizeof(int));
+    int* const naFullClusCumSizes = calloc((tot_chains_glb + 1), sizeof(int));
+
+    const int nMolWiseClusNum = ClusUtil_OfSystem_MolWise_GetLargestClusters(naMolWiseClusIDs, naFullClusList,
+                                                                             naFullClusSizes, naFullClusCumSizes);
+
+    for (nCurrentType = 0; nCurrentType < tot_chain_types_glb + 1; nCurrentType++)
+        {
+
+            nMolWiseClusSize = ClusUtil_GetCluster_FromFullClusAndCumSizes(
+                naMolWiseClusIDs[nCurrentType], naTmpClusChainList, naFullClusList, naFullClusCumSizes, naFullClusSizes,
+                nMolWiseClusNum);
+
+            Calc_CenterOfMass_OfCluster(LaTypeCOM_r, nMolWiseClusSize, naTmpClusChainList);
+
+            for (j = 0; j < POS_MAX; j++)
+                {
+                    naCOM_r[j] = (int) LaTypeCOM_r[j];
+                }
+
+            for (k = 0; k < tot_chains_glb; k++)
+                {
+                    fB       = chain_info_glb[k][CHAIN_START];
+                    lB       = fB + chain_info_glb[k][CHAIN_LENGTH];
+                    thisType = chain_info_glb[k][CHAIN_TYPE];
+                    nRadDenMolComp = RadDen_ComponentIndex(nCurrentType - 1, thisType);
+                    for (i = fB; i < lB; i++)
+                        {
+                    	    fDis    = Dist_BeadToPoint(i, naCOM_r);
+                    	    nRadBin = (int) (4.f * fDis);
+                    	    ldaRadDen_Arr_glb[RadDenArr_Index(0, nRadDenMolComp, nRadBin)] += 1.0;
                         }
                 }
         }
@@ -1457,11 +1610,11 @@ void BeadPos_sub_wPBC(int* outVec, const int* firVec, const int* secVec)
         }
     for (j = 0; j < POS_MAX; j++)
         {
-            outVec[j] = outVec[j] < -naBoxSize_glb[j] / 2 ? outVec[j] + naBoxSize_glb[j] / 2 : outVec[j];
+            outVec[j] = outVec[j] < -naBoxSize_glb[j] / 2 ? outVec[j] + naBoxSize_glb[j] : outVec[j];
         }
     for (j = 0; j < POS_MAX; j++)
         {
-            outVec[j] = outVec[j] >= naBoxSize_glb[j] / 2 ? outVec[j] - naBoxSize_glb[j] / 2 : outVec[j];
+            outVec[j] = outVec[j] >= naBoxSize_glb[j] / 2 ? outVec[j] - naBoxSize_glb[j] : outVec[j];
         }
 }
 

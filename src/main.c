@@ -67,10 +67,15 @@ int main(int argc, char* argv[])
 
     // Performing a sanity check to see if all the beads and structures are
     // correct.
-
-
-    puts("Performing initial sanity check.\n");
-    PerformRuntimeSanityChecks(-1, -1);
+    if (Check_System_Structure() == 0)
+        {
+            printf("Check structure sanity: OK\n");
+        }
+    else
+        {
+            printf("ERROR: wrong structure.\n");
+            exit(1);
+        }
 
     clock_t tEnd        = clock();
     double elapsed_time = (double) (tEnd - tStart) / (double) CLOCKS_PER_SEC;
@@ -93,7 +98,7 @@ int main(int argc, char* argv[])
 
     for (nGen = 0; nGen < nMCStepsForTherm_glb; nGen++)
         { // Intentionally not performing any data acquisition in the thermalization phase.
-            nMCInfo = MC_Step_Therm(fCuTemp_glb);
+            nMCInfo = MC_Step_Equil(fCuTemp_glb);
             //        printf("(%d,%d)\n", nMCInfo / 12, nMCInfo % 2);
             DataPrinting_Thermalization(nGen);
         }

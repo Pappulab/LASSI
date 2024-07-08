@@ -250,7 +250,7 @@ int Clus_Network_LimitedCluster(int const chainID)
     // The idea is to check every bead and see if there is a unique bonded
     // chain, and to add it to naList_glb If Cluster becomes larger than 5, exit and
     // return -1
-    const int ClusterLimit = nLimitedClusterSize_glb;
+    const size_t ClusterLimit = nLimitedClusterSize_glb;
     int i, j; // Loop iterators
     for (i = 0; i < ClusterLimit; i++)
         {
@@ -2054,7 +2054,6 @@ int ClusUtil_GetCluster_FromFullClusAndCumSizes(const int nClusID, int* const na
         {
             naOutClusList[i] = naFullClusList[i + nStart];
         }
-
     return thisSize;
 }
 
@@ -2066,23 +2065,13 @@ int ClusUtil_GetCluster_FromFullClusAndCumSizes(const int nClusID, int* const na
 void ClusHistUtil_AddToHist_MolTypeWiseDecomp_FromCluster(lLDub* const restrict ldaMolWiseHist,
                                                           const int* const restrict naClusList, const int nClusSize)
 {
-#ifdef DEBUG_BUILD
-    if (nClusSize < 1)
-        {
-            fprintf(stderr, "Cluster size is %d\n", nClusSize);
-            fputs("Cluster sizes have to be positive integers\n", stderr);
-            fputs("Crashing!\n", stderr);
-            exit(1);
-        }
-#endif
     int i;
-    const int clusSizeBin = nClusSize - 1;
     int chainID, chainType, histBin;
     for (i = 0; i < nClusSize; i++)
         {
             chainID   = naClusList[i];
             chainType = chain_info_glb[chainID][CHAIN_TYPE];
-            histBin   = MolClusArr_Index(0, chainType, clusSizeBin);
+            histBin   = MolClusArr_Index(0, chainType, nClusSize - 1);
             ldaMolWiseHist[histBin]++;
         }
 }
@@ -2277,7 +2266,7 @@ int ClusUtil_OfSystem_SecondLargest(int* const naOutClusList, const int nMode)
     return clusterSize;
 }
 
-/// ClusUtil_OvlpCluster_OfSystem_SecondLargest
+///
 /// \param naOutClusList
 /// \return Size of the cluster
 int ClusUtil_OvlpCluster_OfSystem_SecondLargest(int* naOutClusList)
@@ -2397,10 +2386,8 @@ int ClusUtil_AnisoCluster_OfSystem_SecondLargest_ForMCMove(int* naOutClusList)
 
 ///
 /// \param naClusIDsList_out
-/// \param naFullClusList_out
 /// \param naClusSizes_out
-/// \param naCumClusSizes_out
-/// \return
+/// \param naCumSizes_out
 int ClusUtil_OfSystem_MolWise_GetLargestClusters(int* const restrict naClusIDsList_out,
                                                  int* const restrict naFullClusList_out,
                                                  int* const restrict naClusSizes_out,

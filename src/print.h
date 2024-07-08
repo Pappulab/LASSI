@@ -17,18 +17,6 @@ void ScreenIO_Print_Log_Thermalization(const long nGen);
 
 void ScreenIO_Print_Log_FullRun(const long nGen, const int run_cycle);
 
-void ScreenIO_Print_SanityCheckFailurePreamble(long nGen, int run_cycle);
-
-void ScreenIO_Print_SanityFail_BeadPosAndLattPos(int badBead);
-
-void ScreenIO_Print_SanityFail_MolecularStructure(int badBead);
-
-void ScreenIO_Print_SanityFail_SelfBond(int badBead);
-
-void ScreenIO_Print_SanityFail_BeadBondSymmetry(int badBead);
-
-void ScreenIO_Print_SanityFail_BeadBondDistance(int badBead);
-
 char ForPrinting_GetReportState(const long nGen, const long thisReport);
 
 void DataPrinting_Thermalization(const long nGen);
@@ -58,8 +46,6 @@ void FileIOUtil_CreateFile_Overwrite(const char* fileName);
 void FileIOUtil_CreateFile_Binary_Overwrite(const char* fileName);
 
 void FileIO_CreateRunningDataFiles(void);
-
-void FileIO_PrintCrashSnapshot(void);
 
 void FileIO_WriteTo_MCMoveFile(const char* filename, const long nGen, const float fMCTemp);
 
