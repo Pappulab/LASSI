@@ -1,3 +1,5 @@
 /.idea/
 /cmake-build-debug/
 /cmake-build-release/
+src/lassi
+runs/Test_Simulation/lassi
