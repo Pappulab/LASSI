@@ -1,0 +1,26 @@
+{
+    "configurations": [
+        {
+            "name": "Debug Lassi",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/lassi_debug",
+            "args": ["-k", "param.key"],
+            "stopAtEntry": true,
+            "cwd": "${workspaceFolder}/output",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "Compile Lassi",  // Match the label of your build task in tasks.json
+            "miDebuggerPath": "/usr/bin/gdb",
+        }
+    ],
+    "version": "2.0.0"
+}
