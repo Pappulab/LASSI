@@ -1,0 +1,42 @@
+[
+{
+  "directory": "/home/pht1004/LASSI_DEBUG/LASSI/build",
+  "command": "/usr/bin/cc  -I/home/pht1004/LASSI_DEBUG/LASSI/.  -Og -g -std=gnu11 -o CMakeFiles/lassi.dir/src/cluster.c.o -c /home/pht1004/LASSI_DEBUG/LASSI/src/cluster.c",
+  "file": "/home/pht1004/LASSI_DEBUG/LASSI/src/cluster.c"
+},
+{
+  "directory": "/home/pht1004/LASSI_DEBUG/LASSI/build",
+  "command": "/usr/bin/cc  -I/home/pht1004/LASSI_DEBUG/LASSI/.  -Og -g -std=gnu11 -o CMakeFiles/lassi.dir/src/energy.c.o -c /home/pht1004/LASSI_DEBUG/LASSI/src/energy.c",
+  "file": "/home/pht1004/LASSI_DEBUG/LASSI/src/energy.c"
+},
+{
+  "directory": "/home/pht1004/LASSI_DEBUG/LASSI/build",
+  "command": "/usr/bin/cc  -I/home/pht1004/LASSI_DEBUG/LASSI/.  -Og -g -std=gnu11 -o CMakeFiles/lassi.dir/src/initialize.c.o -c /home/pht1004/LASSI_DEBUG/LASSI/src/initialize.c",
+  "file": "/home/pht1004/LASSI_DEBUG/LASSI/src/initialize.c"
+},
+{
+  "directory": "/home/pht1004/LASSI_DEBUG/LASSI/build",
+  "command": "/usr/bin/cc  -I/home/pht1004/LASSI_DEBUG/LASSI/.  -Og -g -std=gnu11 -o CMakeFiles/lassi.dir/src/main.c.o -c /home/pht1004/LASSI_DEBUG/LASSI/src/main.c",
+  "file": "/home/pht1004/LASSI_DEBUG/LASSI/src/main.c"
+},
+{
+  "directory": "/home/pht1004/LASSI_DEBUG/LASSI/build",
+  "command": "/usr/bin/cc  -I/home/pht1004/LASSI_DEBUG/LASSI/.  -Og -g -std=gnu11 -o CMakeFiles/lassi.dir/src/mcmove.c.o -c /home/pht1004/LASSI_DEBUG/LASSI/src/mcmove.c",
+  "file": "/home/pht1004/LASSI_DEBUG/LASSI/src/mcmove.c"
+},
+{
+  "directory": "/home/pht1004/LASSI_DEBUG/LASSI/build",
+  "command": "/usr/bin/cc  -I/home/pht1004/LASSI_DEBUG/LASSI/.  -Og -g -std=gnu11 -o CMakeFiles/lassi.dir/src/parsekey.c.o -c /home/pht1004/LASSI_DEBUG/LASSI/src/parsekey.c",
+  "file": "/home/pht1004/LASSI_DEBUG/LASSI/src/parsekey.c"
+},
+{
+  "directory": "/home/pht1004/LASSI_DEBUG/LASSI/build",
+  "command": "/usr/bin/cc  -I/home/pht1004/LASSI_DEBUG/LASSI/.  -Og -g -std=gnu11 -o CMakeFiles/lassi.dir/src/print.c.o -c /home/pht1004/LASSI_DEBUG/LASSI/src/print.c",
+  "file": "/home/pht1004/LASSI_DEBUG/LASSI/src/print.c"
+},
+{
+  "directory": "/home/pht1004/LASSI_DEBUG/LASSI/build",
+  "command": "/usr/bin/cc  -I/home/pht1004/LASSI_DEBUG/LASSI/.  -Og -g -std=gnu11 -o CMakeFiles/lassi.dir/src/structure.c.o -c /home/pht1004/LASSI_DEBUG/LASSI/src/structure.c",
+  "file": "/home/pht1004/LASSI_DEBUG/LASSI/src/structure.c"
+}
+]

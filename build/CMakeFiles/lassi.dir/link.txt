@@ -1,0 +1,1 @@
+/usr/bin/cc  -Og -g CMakeFiles/lassi.dir/src/cluster.c.o CMakeFiles/lassi.dir/src/energy.c.o CMakeFiles/lassi.dir/src/initialize.c.o CMakeFiles/lassi.dir/src/main.c.o CMakeFiles/lassi.dir/src/mcmove.c.o CMakeFiles/lassi.dir/src/parsekey.c.o CMakeFiles/lassi.dir/src/print.c.o CMakeFiles/lassi.dir/src/structure.c.o -o lassi 

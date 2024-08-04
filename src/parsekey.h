@@ -1,13 +1,19 @@
-#ifndef _PARSEKEY_H_   // include guard
+#ifndef _PARSEKEY_H_ // include guard
 #define _PARSEKEY_H_
 
-#include <stdio.h>
-#include <string.h>
+#include "global.h"
 
-int Parse_Keyfile(char *filename);
+//#include <stdio.h>
+//#include <string.h>
 
-int Parse_EnergyFile(char *strEnFile);
+int Parse_Keyfile(char* filename);
 
-void Parse_StructureFile(char *filename);
+int Parse_EnergyFile(char* strEnFile);
 
+void Parse_StructureFile(char* filename);
+
+void Parse_StructureFile_CalcBeadsAndChains(char* filename, int* n_bead_num, int* n_chain_types,
+                                            int* n_chain_num);
+
+void CreateBeadsAndChains(size_t n_bead_num, size_t n_chain_num);
 #endif // _PARSEKEY_H_

@@ -1,0 +1,10 @@
+1. a family of functions which name is 'MC_RosenbluthSampling_For~' are modified.
+	-Anisotropic energy is excluded in calculating because it already considered during biased sampling
+	-OP_ShuffleArray() will not be called because it looks like redundancy because OP_PickRotState() randomly choose a state.
+	-A dissociated state is integrated in an array of normalized Boltzmann factors, implicitly (always assumed to be appended in the last of the array)
+2. functions related to MCmoves are modified to satisfy the detailed balance (mainly, exclusion of counting anisotropic energy)
+3. a family of functions (Check_RotStates_wNeighList~) are modified to handle the hierarchical dependancy, as mentioned in the paper (LaSSI debugging.pdf)
+4. BeadPos_sub_wPBC is corrected.
+5. OP_GetTopoBonds and related functions are slightly modified to prevent segmantation fault err when using tight MAX_BONDS value.
+
+** there might be other minor modifications that do not affect the results.

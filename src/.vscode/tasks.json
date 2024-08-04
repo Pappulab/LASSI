@@ -1,0 +1,45 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Compile Lassi",
+            "type": "shell",
+            "command": "gcc",
+            "args": [
+                "-g",
+                "-march=x86-64",
+                "-std=gnu11",
+                "main.c",
+                "parsekey.c",
+                "print.c",
+                "initialize.c",
+                "structure.c",
+                "energy.c",
+                "cluster.c",
+                "mcmove.c",
+                "-o",
+                "lassi_debug",
+                "-lm",
+                "-fcommon"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": {
+                "owner": "cpp",
+                "fileLocation": [
+                    "absolute"
+                ],
+                "pattern": {
+                    "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+                    "file": 1,
+                    "line": 2,
+                    "column": 3,
+                    "severity": 4,
+                    "message": 5
+                }
+            }
+        }
+    ]
+}
