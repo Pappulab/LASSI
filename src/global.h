@@ -9,7 +9,7 @@
 
 #define MAX_AA         10
 #define MAX_CHAINTYPES 10
-#define MAX_CHAINLEN   500
+#define MAX_CHAINLEN   1000
 #define MAX_BONDS      5
 #define MAX_VALENCY    500
 
