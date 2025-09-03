@@ -404,6 +404,10 @@ void Global_Array_Initialization_AtStart(void)
             faKT_Cycle_glb[i] = fKT_glb + (float) i * fDeltaTemp_glb;
         }
 
+    if (RotBias_Mode_glb == 1) {
+        fRot_Bias = expf(-fRot_Bias / fKT_glb);
+    }
+
     if (nTemp_inv_glb == 1)
         {
             for (i = 0; i < nTotCycleNum_glb; i++)
@@ -790,6 +794,8 @@ void Calculate_Rot_Bias(const float CurrentTemp)
                 }
             // printf("\n");
         }
+
+        fRot_Bias = expf(-f_globRotBias / CurrentTemp);
 }
 
 /// Temperature_Function - used to calculate what fCuTemp_glb should (current temperature) based on how long the
