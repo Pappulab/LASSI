@@ -128,13 +128,12 @@ float fLinkerSprCon_glb;
 float fLinkerEqLen_glb;
 
 // MC setup
-float fKT_glb, fPreKT_glb, fCuTemp_glb, fDeltaTemp_glb, fMC_TempRate_glb, fSquishRad_glb,
+float fKT_glb, fPreKT_glb, fCuTemp_glb, fDeltaTemp_glb, fMC_TempRate_glb, fRot_Bias, f_globRotBias, fSquishRad_glb,
     fSquishRad_Sq_glb, fSquish_Stiff_glb;
 float* faKT_Cycle_glb;
 lLong nMCStepsPerCycle_glb, nMCStepsForTherm_glb;
 float faMCFreq_glb[MAX_MV];
-lInt nTotCycleNum_glb;
-
+lInt nMCMaxTrials, nTotCycleNum_glb; // Legacy code: nMCMaxTrials is never used but declared to avoid conflict.
 // random number generator nRNG_Seed_glb
 lInt nRNG_Seed_glb;
 

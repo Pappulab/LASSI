@@ -125,6 +125,14 @@ int Parse_Keyfile(char* filename)
                         {
                             sscanf(strLine, "%*s %d", &nBiasPotential_Mode_glb);
                         }
+                    else if (strcmp(strKeyword, "ROT_ENERGY_BIAS") == 0) 
+                        {
+                            sscanf(strLine, "%*s %f", &f_globRotBias);
+                        }
+                    else if (strcmp(strKeyword, "MC_MAX_TRIALS") == 0) 
+                        {
+                            sscanf(strLine, "%*s %d", &nMCMaxTrials);
+                        }
                     else if (strcmp(strKeyword, "MV_TRANS_FREQ") == 0)
                         {
                             sscanf(strLine, "%*s %f", &faMCFreq_glb[MV_TRANS]);
